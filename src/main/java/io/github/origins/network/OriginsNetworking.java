@@ -1,10 +1,47 @@
 package io.github.origins.network;
 
+import io.github.origins.Origins;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.NetworkRegistry;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
+
 public final class OriginsNetworking {
+    private static final String PROTOCOL_VERSION = "1";
+    private static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
+        .named(new ResourceLocation(Origins.MOD_ID, "main"))
+        .networkProtocolVersion(() -> PROTOCOL_VERSION)
+        .clientAcceptedVersions(PROTOCOL_VERSION::equals)
+        .serverAcceptedVersions(PROTOCOL_VERSION::equals)
+        .simpleChannel();
+    private static boolean bootstrapped;
+
     private OriginsNetworking() {
     }
 
     public static void bootstrap() {
-        // Networking setup will be wired in a future phase.
+        if (bootstrapped) {
+            return;
+        }
+
+        int index = 0;
+        CHANNEL.registerMessage(
+            index++,
+            SyncPlayerOriginPayload.class,
+            SyncPlayerOriginPayload::encode,
+            SyncPlayerOriginPayload::decode,
+            SyncPlayerOriginPayload::handle
+        );
+
+        bootstrapped = true;
+    }
+
+    public static void sendToPlayer(ServerPlayer player, Object payload) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), payload);
+    }
+
+    public static void sendToServer(Object payload) {
+        CHANNEL.sendToServer(payload);
     }
 }
