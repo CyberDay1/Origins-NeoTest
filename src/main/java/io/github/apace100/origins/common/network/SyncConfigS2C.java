@@ -1,6 +1,6 @@
 package io.github.apace100.origins.common.network;
 
-import io.github.apace100.origins.common.config.OriginsConfig;
+import io.github.apace100.origins.common.config.ModConfigs;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.network.NetworkEvent;
@@ -21,7 +21,7 @@ public record SyncConfigS2C(boolean syncPowersOnLogin, int maxTrackedPowers) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             if (context.getDirection() != null && context.getDirection().getReceptionSide().isClient()) {
-                OriginsConfig.applySync(payload);
+                ModConfigs.applySync(payload);
             }
         });
         context.setPacketHandled(true);

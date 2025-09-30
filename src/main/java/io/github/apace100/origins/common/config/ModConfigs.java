@@ -8,7 +8,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.event.ModConfigEvent;
 
-public final class OriginsConfig {
+public final class ModConfigs {
     public static final ModConfigSpec SPEC;
     public static final Common COMMON;
 
@@ -18,12 +18,12 @@ public final class OriginsConfig {
         SPEC = builder.build();
     }
 
-    private OriginsConfig() {
+    private ModConfigs() {
     }
 
     public static void register(ModLoadingContext context, IEventBus modBus) {
         context.registerConfig(ModConfig.Type.COMMON, SPEC, Origins.MOD_ID + "-common.toml");
-        modBus.addListener(OriginsConfig::onConfigReloaded);
+        modBus.addListener(ModConfigs::onConfigReloaded);
     }
 
     private static void onConfigReloaded(ModConfigEvent event) {

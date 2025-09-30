@@ -5,16 +5,15 @@ import io.github.apace100.origins.Origins;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-public final class OriginsCommands {
-    private OriginsCommands() {
+public final class ModCommands {
+    private ModCommands() {
     }
 
-    public static void register(IEventBus modBus) {
-        NeoForge.EVENT_BUS.addListener(OriginsCommands::onRegisterCommands);
+    public static void register() {
+        NeoForge.EVENT_BUS.addListener(ModCommands::onRegisterCommands);
     }
 
     private static void onRegisterCommands(RegisterCommandsEvent event) {

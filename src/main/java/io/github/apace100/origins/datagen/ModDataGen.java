@@ -3,12 +3,12 @@ package io.github.apace100.origins.datagen;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-public final class OriginsDataGeneration {
-    private OriginsDataGeneration() {
+public final class ModDataGen {
+    private ModDataGen() {
     }
 
     public static void register(IEventBus modBus) {
-        modBus.addListener(OriginsDataGeneration::gatherData);
+        modBus.addListener(ModDataGen::gatherData);
     }
 
     private static void gatherData(GatherDataEvent event) {
