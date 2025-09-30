@@ -3,11 +3,12 @@ package io.github.apace100.origins.common.network;
 import io.github.apace100.origins.Origins;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.NetworkDirection;
 import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.simple.SimpleChannel;
 
-public final class Network {
+public final class ModNetworking {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
         .named(new ResourceLocation(Origins.MOD_ID, "main"))
@@ -19,21 +20,19 @@ public final class Network {
     private static boolean bootstrapped;
     private static int index;
 
-    private Network() {
+    private ModNetworking() {
     }
 
-    public static void init() {
+    public static void register() {
         if (bootstrapped) {
             return;
         }
 
-        CHANNEL.registerMessage(
-            nextIndex(),
-            SyncConfigS2C.class,
-            SyncConfigS2C::encode,
-            SyncConfigS2C::decode,
-            SyncConfigS2C::handle
-        );
+        CHANNEL.messageBuilder(SyncConfigS2C.class, nextIndex(), NetworkDirection.PLAY_TO_CLIENT)
+            .encoder(SyncConfigS2C::encode)
+            .decoder(SyncConfigS2C::decode)
+            .consumerMainThread(SyncConfigS2C::handle)
+            .add();
 
         bootstrapped = true;
     }

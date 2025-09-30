@@ -9,10 +9,10 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModBlocks {
-    public static final DeferredRegister<Block> REGISTER =
+    public static final DeferredRegister<Block> BLOCKS =
         DeferredRegister.create(Registries.BLOCK, Origins.MOD_ID);
 
-    public static final DeferredHolder<Block, Block> ORIGIN_STONE = REGISTER.register(
+    public static final DeferredHolder<Block, Block> ORIGIN_STONE = BLOCKS.register(
         "origin_stone",
         () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE))
     );

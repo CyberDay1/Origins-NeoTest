@@ -7,9 +7,9 @@ issueTrackerURL="https://github.com/apace100/origins/issues"
 modId="origins"
 version="${mod_version}"
 displayName="Origins (NeoForge)"
-authors="Apace100"
+authors="Apace100, Contributors"
 description='''
-Port of the Origins mod to NeoForge 1.21.1
+Origins mod ported to NeoForge.
 '''
 
 [[dependencies.origins]]
