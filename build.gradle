@@ -19,7 +19,6 @@ repositories {
 }
 
 dependencies {
-    // NeoForge API & dev env for compile; no separate 'userdev' block is used.
     implementation "net.neoforged:neoforge:${project.neoForgeVersion}"
 }
 
@@ -29,7 +28,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 processResources {
-    // Expand only the NeoForge descriptor with the mod version
     filesMatching("META-INF/neoforge.mods.toml") {
         expand(mod_version: project.mod_version)
         filteringCharset = "UTF-8"
@@ -37,7 +35,6 @@ processResources {
 }
 
 jar {
-    // Optional: attach license if present without failing
     if (file("LICENSE").exists()) {
         from("LICENSE") {
             rename { "LICENSE_${archivesBaseName}" }

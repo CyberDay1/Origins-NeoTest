@@ -1,8 +1,6 @@
-# Gradle
 .gradle/
 build/
 out/
-classes/
 
 # IDE
 .idea/
@@ -10,15 +8,6 @@ classes/
 *.ipr
 *.iws
 .vscode/
-.settings/
-*.launch
-bin/
-.classpath
-.project
-
-# Run directories
-run/
-runs/
 
 # OS
 .DS_Store
