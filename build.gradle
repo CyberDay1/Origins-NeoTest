@@ -1,11 +1,11 @@
 plugins {
-    id 'java'
-    id 'net.neoforged.gradle.userdev' version '7.0.190'
+    id "java"
+    id "net.neoforged.gradle.userdev" version "7.0.190"
 }
 
-group = 'com.example'
+group = "io.github.apace100"
 version = project.mod_version
-archivesBaseName = 'origins-neoforge'
+archivesBaseName = "origins-neoforge"
 
 java {
     toolchain {
@@ -14,14 +14,33 @@ java {
 }
 
 repositories {
-    mavenLocal()
-    maven { url = 'https://maven.neoforged.net/releases' }
     mavenCentral()
+    maven { url = "https://maven.neoforged.net/releases" }
 }
 
 dependencies {
+    // NeoForge API & dev env for compile; no separate 'userdev' block is used.
     implementation "net.neoforged:neoforge:${project.neoForgeVersion}"
-    implementation 'com.google.guava:guava:31.1-jre'
 }
 
-mappings channel: 'official', version: project.minecraftVersion
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release = 21
+}
+
+processResources {
+    // Expand only the NeoForge descriptor with the mod version
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand(mod_version: project.mod_version)
+        filteringCharset = "UTF-8"
+    }
+}
+
+jar {
+    // Optional: attach license if present without failing
+    if (file("LICENSE").exists()) {
+        from("LICENSE") {
+            rename { "LICENSE_${archivesBaseName}" }
+        }
+    }
+}
