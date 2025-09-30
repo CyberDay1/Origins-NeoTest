@@ -3,12 +3,9 @@ plugins {
     id 'net.neoforged.gradle.userdev' version '7.0.190'
 }
 
-group = 'io.github.apace100'
-version = modVersion
-
-base {
-    archivesName = 'origins-neoforge'
-}
+group = project.modGroup
+version = project.modVersion
+archivesBaseName = 'origins-neoforge'
 
 java {
     toolchain {
@@ -17,23 +14,24 @@ java {
 }
 
 repositories {
-    mavenCentral()
+    mavenLocal()
     maven { url = 'https://maven.neoforged.net/releases' }
+    mavenCentral()
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neoForgeVersion}"
+    implementation "net.neoforged:neoforge:${project.neoForgeVersion}"
     implementation 'com.google.guava:guava:31.1-jre'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    options.release = 21
-}
-
-tasks.named('processResources', ProcessResources).configure {
-    inputs.property 'modVersion', modVersion
-    filesMatching('META-INF/neoforge.mods.toml') {
-        expand(modVersion: modVersion)
+processResources {
+    def props = [
+        version         : project.version,
+        neoForgeVersion : project.neoForgeVersion,
+        minecraftVersion: project.minecraftVersion
+    ]
+    inputs.properties(props)
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand(props)
     }
 }
