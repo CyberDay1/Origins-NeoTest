@@ -1,11 +1,17 @@
+import org.gradle.language.jvm.tasks.ProcessResources
+
 plugins {
     id 'java'
     id 'net.neoforged.gradle.userdev' version '7.0.190'
 }
 
 group = 'com.example'
-version = '1.0.0'
-archivesBaseName = 'origins-neoforge'
+
+def mod_version = project.findProperty("mod_version") ?: "2.0.0"
+def minecraft_version = project.findProperty("minecraftVersion") ?: "1.21.1"
+
+version = "${mod_version}+mc${minecraft_version}-neoforge"
+archivesBaseName = 'TectonicExpanded'
 
 java {
     toolchain {
@@ -27,4 +33,48 @@ dependencies {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release.set(21)
+}
+
+tasks.withType(ProcessResources).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand("mod_version": mod_version)
+    }
+}
+
+tasks.register("validateModVersion") {
+    group = "verification"
+    description = "Ensures the descriptor version matches the configured mod_version."
+
+    def descriptorFiles = fileTree(project.projectDir) {
+        include("src/**/META-INF/neoforge.mods.toml")
+        include("versions/**/src/**/META-INF/neoforge.mods.toml")
+    }
+
+    inputs.property("modVersion", mod_version)
+    inputs.files(descriptorFiles)
+
+    doLast {
+        descriptorFiles.files.each { File descriptor ->
+            if (!descriptor.exists()) {
+                return
+            }
+
+            def matcher = descriptor.text =~ /(?m)^\s*version\s*=\s*"([^"]+)"/
+
+            if (!matcher.find()) {
+                throw new GradleException("Unable to find version entry in ${descriptor.relativeTo(project.projectDir)}")
+            }
+
+            def descriptorVersion = matcher.group(1)
+
+            if (descriptorVersion != mod_version) {
+                throw new GradleException("Descriptor version (${descriptorVersion}) in ${descriptor.relativeTo(project.projectDir)} does not match mod_version (${mod_version})")
+            }
+        }
+    }
+}
+
+tasks.named("check").configure {
+    dependsOn("validateModVersion")
 }

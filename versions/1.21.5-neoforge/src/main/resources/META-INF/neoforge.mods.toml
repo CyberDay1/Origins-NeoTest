@@ -1,0 +1,10 @@
+modLoader="javafml"
+loaderVersion="[2,)"
+license="MIT"
+
+[[mods]]
+modId="tectonicexpanded"
+version="${mod_version}"
+displayName="Tectonic Expanded"
+description="Expanded tectonic worldgen"
+authors="CyberDay1"
