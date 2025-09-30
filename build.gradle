@@ -1,27 +1,30 @@
 plugins {
-  id "java"
-  id "net.neoforged.gradle.userdev" version "7.0.145"
+    id 'java'
+    id 'net.neoforged.gradle.userdev' version '7.0.190'
 }
+
+group = 'com.example'
+version = '1.0.0'
+archivesBaseName = 'origins-neoforge'
 
 java {
-  toolchain { languageVersion = JavaLanguageVersion.of(21) }
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
-group = "com.cyberday1"
-version = "0.1.0+mc1.21.1-neoforge"
-
 repositories {
-  mavenCentral()
-  maven { url = "https://maven.neoforged.net/releases" }
+    mavenLocal()
+    maven { url = 'https://maven.neoforged.net/releases' }
+    mavenCentral()
 }
 
 dependencies {
-  implementation "net.neoforged:neoforge:21.1.209"
+    implementation "net.neoforged:neoforge:${neoForgeVersion}"
+    implementation 'com.google.guava:guava:31.1-jre'
 }
 
-tasks.withType(ProcessResources).configureEach {
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-  filesMatching("**/*.json", "**/*.toml") {
-    expand("mod_id": "origins", "mod_version": project.version)
-  }
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(21)
 }
