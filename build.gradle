@@ -3,9 +3,9 @@ plugins {
     id 'net.neoforged.gradle.userdev' version '7.0.190'
 }
 
-group = 'io.github.apace100'
-version = project.mod_version
-archivesBaseName = 'origins-neoforge'
+group = project.findProperty('group') ?: 'io.github.apace100'
+version = (project.findProperty('mod_version') ?: '1.0.0')
+archivesBaseName = project.findProperty('archives_base_name') ?: 'origins-neoforge'
 
 java {
     toolchain {
@@ -19,26 +19,66 @@ repositories {
     mavenCentral()
 }
 
+minecraft {
+    // official mappings for the target MC version
+    mappings channel: 'official', version: project.minecraftVersion
+
+    runs {
+        client {
+            workingDirectory project.file('run/client')
+            property 'forge.logging.console.level', 'debug'
+        }
+        server {
+            workingDirectory project.file('run/server')
+            property 'forge.logging.console.level', 'debug'
+        }
+        data {
+            workingDirectory project.file('run/data')
+            args '--mod', 'origins', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+    }
+}
+
 dependencies {
+    // NeoForge runtime
     implementation "net.neoforged:neoforge:${project.neoForgeVersion}"
+
+    // Example utility lib
     implementation 'com.google.guava:guava:31.1-jre'
 }
 
-minecraft {
-    mappings channel: 'official', version: project.minecraftVersion
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/generated/resources'
+            exclude '.cache/**'
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
 }
 
 processResources {
-    filesMatching('META-INF/neoforge.mods.toml') {
-        expand(mod_version: project.mod_version)
-        filteringCharset = 'UTF-8'
+    // Expand mod version into TOML if the placeholder is present
+    inputs.property 'version', project.version
+    filesMatching('META-INF/*.toml') {
+        expand(version: project.version, mod_version: project.version)
     }
 }
 
 jar {
-    if (file('LICENSE').exists()) {
-        from('LICENSE') {
-            rename { "LICENSE_${archivesBaseName}" }
-        }
+    archiveBaseName.set(archivesBaseName)
+    manifest {
+        attributes(
+            'Specification-Title': archivesBaseName,
+            'Specification-Vendor': group,
+            'Specification-Version': project.version,
+            'Implementation-Title': archivesBaseName,
+            'Implementation-Version': project.version,
+            'Implementation-Vendor': group
+        )
     }
 }
