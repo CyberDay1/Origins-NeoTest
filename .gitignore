@@ -1,29 +1,25 @@
-# gradle
-
+# Gradle
 .gradle/
 build/
 out/
 classes/
 
-# eclipse
-
-*.launch
-
-# idea
-
+# IDE
 .idea/
 *.iml
 *.ipr
 *.iws
-
-# vscode
-
-.settings/
 .vscode/
+.settings/
+*.launch
 bin/
 .classpath
 .project
 
-# fabric
-
+# Run directories
 run/
+runs/
+
+# OS
+.DS_Store
+Thumbs.db
