@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "origins:block/origin_stone"
+    }
+  }
+}

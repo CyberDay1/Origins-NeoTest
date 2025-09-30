@@ -4,8 +4,11 @@ plugins {
 }
 
 group = 'io.github.apace100'
-version = '1.0.0'
-archivesBaseName = 'origins-neoforge'
+version = modVersion
+
+base {
+    archivesName = 'origins-neoforge'
+}
 
 java {
     toolchain {
@@ -26,4 +29,11 @@ dependencies {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 21
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    inputs.property 'modVersion', modVersion
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand(modVersion: modVersion)
+    }
 }

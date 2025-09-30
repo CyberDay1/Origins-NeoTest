@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "minecraft:amethyst_shard" },
+    { "item": "minecraft:ender_eye" },
+    { "item": "minecraft:ghast_tear" }
+  ],
+  "result": {
+    "item": "origins:orb_of_origin"
+  }
+}
