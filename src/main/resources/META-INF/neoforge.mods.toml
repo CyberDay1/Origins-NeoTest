@@ -1,11 +1,11 @@
-modLoader="javafml"
-loaderVersion="[1,)"
+modLoader="neoforge"
+loaderVersion="[21,)"
 license="MIT"
 issueTrackerURL="https://github.com/apace100/origins/issues"
 
 [[mods]]
 modId="origins"
-version="${mod_version}"
+version="${modVersion}"
 displayName="Origins (NeoForge)"
 authors="Apace100, Contributors"
 description='''
