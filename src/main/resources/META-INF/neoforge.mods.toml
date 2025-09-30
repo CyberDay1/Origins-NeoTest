@@ -1,19 +1,16 @@
 modLoader="javafml"
-loaderVersion="[1,)"
+loaderVersion="[2,)"
 license="MIT"
 
 [[mods]]
 modId="origins"
 version="${mod_version}"
 displayName="Origins (NeoForge)"
-authors="Apace100, Contributors"
-description='''
-Origins: Live as a supernatural being with unique traits.
-'''
+description="A NeoForge port of the Origins mod."
 
 [[dependencies.origins]]
-modId="neoforge"
-mandatory=true
-versionRange="[21.1,)"
-ordering="NONE"
-side="BOTH"
+    modId="neoforge"
+    mandatory=true
+    versionRange="[21.1,)"
+    ordering="NONE"
+    side="BOTH"
