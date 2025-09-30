@@ -26,7 +26,7 @@ public final class OriginsNeoForge {
         ModConditions.register(modEventBus);
 
         ModConfigs.register(ModLoadingContext.get(), modEventBus);
-        ModNetworking.register();
+        ModNetworking.register(modEventBus);
         ModCommands.register();
         ModDataGen.register(modEventBus);
     }
