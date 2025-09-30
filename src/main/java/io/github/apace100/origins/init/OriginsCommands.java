@@ -1,6 +1,7 @@
-package io.github.origins.command;
+package io.github.apace100.origins.init;
 
 import com.mojang.brigadier.CommandDispatcher;
+import io.github.apace100.origins.Origins;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,7 @@ public final class OriginsCommands {
     private OriginsCommands() {
     }
 
-    public static void register(IEventBus modBus) {
+    public static void register(IEventBus modEventBus) {
         NeoForge.EVENT_BUS.addListener(OriginsCommands::onRegisterCommands);
     }
 
@@ -22,7 +23,7 @@ public final class OriginsCommands {
 
     private static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
-            Commands.literal("origins")
+            Commands.literal(Origins.MOD_ID)
                 .requires(source -> source.hasPermission(2))
                 .executes(context -> {
                     context.getSource().sendSuccess(

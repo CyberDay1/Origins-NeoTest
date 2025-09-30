@@ -1,8 +1,8 @@
-package io.github.origins.datagen;
+package io.github.apace100.origins.datagen;
 
-import io.github.origins.Origins;
-import io.github.origins.registry.ModBlocks;
-import io.github.origins.registry.ModItems;
+import io.github.apace100.origins.Origins;
+import io.github.apace100.origins.init.OriginsBlocks;
+import io.github.apace100.origins.init.OriginsItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
@@ -13,8 +13,8 @@ final class OriginsEnglishLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        addItem(ModItems.ORB_OF_ORIGIN, "Orb of Origin");
-        add(ModBlocks.ORIGIN_STONE.get(), "Origin Stone");
+        addItem(OriginsItems.ORB_OF_ORIGIN.get(), "Orb of Origin");
+        add(OriginsBlocks.ORIGIN_STONE.get(), "Origin Stone");
         add("commands.origins.reload_soon", "Origins reload is coming soon");
     }
 }

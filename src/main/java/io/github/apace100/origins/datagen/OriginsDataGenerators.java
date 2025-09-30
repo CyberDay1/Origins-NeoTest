@@ -1,4 +1,4 @@
-package io.github.origins.datagen;
+package io.github.apace100.origins.datagen;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
