@@ -1,31 +1,9 @@
 pluginManagement {
-	resolutionStrategy {
-		eachPlugin({
-			if (requested.id.namespace == 'net.minecraftforge')
-				it.useModule(group: 'net.minecraftforge.gradle', name:'ForgeGradle', version: '5.1.33')
-			if (requested.id.namespace == 'org.spongepowered')
-				it.useModule(group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT')
-			if (requested.id.namespace == 'org.parchmentmc.librarian')
-				it.useModule(group: 'org.parchmentmc', name: 'librarian', version: '1.2.0')
-		})
-	}
-	repositories {
-		//No you cannot use forge in intellij.
-		//Gradle 7.4.2 and down do not support HTTP/1.1 properly.
-		//For those wondering IDEA-292250.
-		mavenLocal()
-		gradlePluginPortal()
-		maven { url 'https://repo.spongepowered.org/maven' }
-		maven { url "https://maven.minecraftforge.net" }
-		maven { url "https://plugins.gradle.org/m2" }
-		maven { url "https://maven.shedaniel.me/" }
-		maven { url 'https://maven.parchmentmc.org' }
-		mavenCentral()
-	}
+  repositories {
+    gradlePluginPortal()
+    maven { url "https://maven.neoforged.net/releases" }
+    mavenCentral()
+  }
 }
 
-rootProject.name = 'Origins'
-
-include 'calio'
-include 'apoli'
-include 'origins'
+rootProject.name = "Origins"
