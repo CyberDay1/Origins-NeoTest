@@ -5,18 +5,17 @@ import io.github.apace100.origins.Origins;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
+@Mod.EventBusSubscriber(modid = Origins.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class ModCommands {
     private ModCommands() {
     }
 
-    public static void register() {
-        NeoForge.EVENT_BUS.addListener(ModCommands::onRegisterCommands);
-    }
-
-    private static void onRegisterCommands(RegisterCommandsEvent event) {
+    @SubscribeEvent
+    public static void onRegisterCommands(RegisterCommandsEvent event) {
         register(event.getDispatcher());
     }
 

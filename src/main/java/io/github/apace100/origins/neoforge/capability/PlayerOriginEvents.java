@@ -1,19 +1,18 @@
 package io.github.apace100.origins.neoforge.capability;
 
+import io.github.apace100.origins.Origins;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
+@Mod.EventBusSubscriber(modid = Origins.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class PlayerOriginEvents {
     private PlayerOriginEvents() {
     }
 
-    public static void register() {
-        NeoForge.EVENT_BUS.addListener(PlayerOriginEvents::onClone);
-        NeoForge.EVENT_BUS.addListener(PlayerOriginEvents::onLoggedOut);
-    }
-
-    private static void onClone(PlayerEvent.Clone event) {
+    @SubscribeEvent
+    public static void onClone(PlayerEvent.Clone event) {
         if (event.getEntity().level().isClientSide) {
             return;
         }
@@ -21,7 +20,8 @@ public final class PlayerOriginEvents {
         PlayerOriginManager.copy(event.getOriginal(), event.getEntity());
     }
 
-    private static void onLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+    @SubscribeEvent
+    public static void onLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }

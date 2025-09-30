@@ -1,17 +1,20 @@
 package io.github.apace100.origins.common.network;
 
+import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.config.ModConfigs;
 import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import io.github.apace100.origins.neoforge.capability.PlayerOriginManager;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
+@Mod.EventBusSubscriber(modid = Origins.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class ModNetworking {
     private static final String PROTOCOL_VERSION = "1";
 
@@ -20,7 +23,6 @@ public final class ModNetworking {
 
     public static void register(IEventBus modBus) {
         modBus.addListener(ModNetworking::onRegisterPayloadHandlers);
-        NeoForge.EVENT_BUS.addListener(ModNetworking::onPlayerLoggedIn);
     }
 
     private static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
@@ -29,7 +31,8 @@ public final class ModNetworking {
         registrar.playToClient(SyncOriginS2C.TYPE, SyncOriginS2C.STREAM_CODEC, SyncOriginS2C::handle);
     }
 
-    private static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
