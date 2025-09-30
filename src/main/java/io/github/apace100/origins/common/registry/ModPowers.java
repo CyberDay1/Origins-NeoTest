@@ -8,9 +8,9 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModPowers {
-    public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(Origins.MOD_ID, "powers");
+    public static final ResourceLocation REGISTRY_NAME = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "powers");
     public static final DeferredRegister<Codec<?>> POWERS =
-        DeferredRegister.createSimple(Codec.class, REGISTRY_NAME);
+        DeferredRegister.create(REGISTRY_NAME, Origins.MOD_ID);
 
     public static final DeferredHolder<Codec<?>, Codec<PlaceholderPower>> PLACEHOLDER =
         POWERS.register("placeholder", PlaceholderPower::codec);

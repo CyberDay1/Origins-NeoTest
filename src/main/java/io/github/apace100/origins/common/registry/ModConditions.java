@@ -9,9 +9,9 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModConditions {
-    public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(Origins.MOD_ID, "conditions");
+    public static final ResourceLocation REGISTRY_NAME = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "conditions");
     public static final DeferredRegister<Codec<?>> CONDITIONS =
-        DeferredRegister.createSimple(Codec.class, REGISTRY_NAME);
+        DeferredRegister.create(REGISTRY_NAME, Origins.MOD_ID);
 
     public static final DeferredHolder<Codec<?>, Codec<AlwaysTrueCondition>> ALWAYS_TRUE =
         CONDITIONS.register("always_true", AlwaysTrueCondition::codec);
