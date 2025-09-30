@@ -1,4 +1,4 @@
-package io.github.apace100.origins.core.registry;
+package io.github.apace100.origins.api.registry;
 
 import java.util.Map;
 import java.util.Optional;

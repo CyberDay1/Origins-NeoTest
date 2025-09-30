@@ -1,41 +1,45 @@
-package io.github.apace100.origins.init;
+package io.github.apace100.origins.common.network;
 
 import io.github.apace100.origins.Origins;
-import io.github.apace100.origins.network.SyncPlayerOriginPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.simple.SimpleChannel;
 
-public final class OriginsNetworking {
+public final class Network {
     private static final String PROTOCOL_VERSION = "1";
-    private static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
+    public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
         .named(new ResourceLocation(Origins.MOD_ID, "main"))
         .networkProtocolVersion(() -> PROTOCOL_VERSION)
         .clientAcceptedVersions(PROTOCOL_VERSION::equals)
         .serverAcceptedVersions(PROTOCOL_VERSION::equals)
         .simpleChannel();
-    private static boolean bootstrapped;
 
-    private OriginsNetworking() {
+    private static boolean bootstrapped;
+    private static int index;
+
+    private Network() {
     }
 
-    public static void register() {
+    public static void init() {
         if (bootstrapped) {
             return;
         }
 
-        int index = 0;
         CHANNEL.registerMessage(
-            index++,
-            SyncPlayerOriginPayload.class,
-            SyncPlayerOriginPayload::encode,
-            SyncPlayerOriginPayload::decode,
-            SyncPlayerOriginPayload::handle
+            nextIndex(),
+            SyncConfigS2C.class,
+            SyncConfigS2C::encode,
+            SyncConfigS2C::decode,
+            SyncConfigS2C::handle
         );
 
         bootstrapped = true;
+    }
+
+    private static int nextIndex() {
+        return index++;
     }
 
     public static void sendToPlayer(ServerPlayer player, Object payload) {
