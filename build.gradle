@@ -1,29 +1,11 @@
-import org.gradle.language.jvm.tasks.ProcessResources
-
 plugins {
     id 'java'
     id 'net.neoforged.gradle.userdev' version '7.0.190'
 }
 
-group = project.findProperty('maven_group') ?: 'com.example'
-
-def mod_version = project.findProperty('mod_version') ?: '2.0.0'
-def minecraft_version = project.findProperty('minecraftVersion') ?: '1.21.1'
-def neoForge_version = project.findProperty('neoForgeVersion') ?: '21.1.209'
-def mod_id = project.findProperty('mod_id') ?: 'tectonicexpanded'
-def mod_name = project.findProperty('mod_name') ?: 'Tectonic Expanded'
-def mod_authors = project.findProperty('mod_authors') ?: 'CyberDay1'
-def mod_license = project.findProperty('mod_license') ?: 'MIT'
-def mod_description = project.findProperty('mod_description') ?: 'Expanded tectonic worldgen'
-def loader_version_range = project.findProperty('loaderVersionRange') ?: '[2,)'
-def neoForge_version_range = project.findProperty('neoForgeVersionRange') ?: "[${neoForge_version},)"
-def minecraft_version_range = project.findProperty('minecraftVersionRange') ?: "[${minecraft_version},${minecraft_version}]"
-
-version = "${mod_version}+mc${minecraft_version}-neoforge"
-
-base {
-    archivesName = mod_name.replaceAll(/\s+/, '')
-}
+group = 'com.example'
+version = project.mod_version
+archivesBaseName = 'origins-neoforge'
 
 java {
     toolchain {
@@ -38,70 +20,8 @@ repositories {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neoForge_version}"
+    implementation "net.neoforged:neoforge:${project.neoForgeVersion}"
     implementation 'com.google.guava:guava:31.1-jre'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-    options.release.set(21)
-}
-
-tasks.withType(ProcessResources).configureEach {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    def expandProps = [
-        mod_id                 : mod_id,
-        mod_name               : mod_name,
-        mod_version            : mod_version,
-        mod_authors            : mod_authors,
-        mod_license            : mod_license,
-        mod_description        : mod_description,
-        loaderVersionRange     : loader_version_range,
-        neoForgeVersionRange   : neoForge_version_range,
-        minecraftVersionRange  : minecraft_version_range
-    ]
-
-    inputs.properties(expandProps)
-
-    filesMatching('META-INF/neoforge.mods.toml') {
-        expand(expandProps)
-    }
-}
-
-tasks.register("validateModVersion") {
-    group = "verification"
-    description = "Ensures the descriptor version matches the configured mod_version."
-
-    def descriptorFiles = fileTree(project.projectDir) {
-        include("src/**/META-INF/neoforge.mods.toml")
-        include("versions/**/src/**/META-INF/neoforge.mods.toml")
-    }
-
-    inputs.property("modVersion", mod_version)
-    inputs.files(descriptorFiles)
-
-    doLast {
-        descriptorFiles.files.each { File descriptor ->
-            if (!descriptor.exists()) {
-                return
-            }
-
-            def matcher = descriptor.text =~ /(?m)^\s*version\s*=\s*"([^"]+)"/
-
-            if (!matcher.find()) {
-                throw new GradleException("Unable to find version entry in ${descriptor.relativeTo(project.projectDir)}")
-            }
-
-            def descriptorVersion = matcher.group(1)
-
-            if (descriptorVersion != mod_version) {
-                throw new GradleException("Descriptor version (${descriptorVersion}) in ${descriptor.relativeTo(project.projectDir)} does not match mod_version (${mod_version})")
-            }
-        }
-    }
-}
-
-tasks.named("check").configure {
-    dependsOn("validateModVersion")
-}
+mappings channel: 'official', version: project.minecraftVersion
