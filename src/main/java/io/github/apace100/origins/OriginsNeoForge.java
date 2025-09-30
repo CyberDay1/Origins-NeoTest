@@ -1,12 +1,13 @@
 package io.github.apace100.origins;
 
-import io.github.apace100.origins.platform.neoforge.event.CommonEvents;
 import io.github.apace100.origins.platform.neoforge.init.ModBlocks;
-import io.github.apace100.origins.platform.neoforge.init.ModCommands;
-import io.github.apace100.origins.platform.neoforge.init.ModConfigs;
-import io.github.apace100.origins.platform.neoforge.init.ModDataGen;
 import io.github.apace100.origins.platform.neoforge.init.ModItems;
-import io.github.apace100.origins.platform.neoforge.init.ModPackets;
+import io.github.origins.core.action.Actions;
+import io.github.origins.core.condition.Conditions;
+import io.github.origins.core.power.Powers;
+import io.github.origins.platform.neoforge.OriginsLifecycle;
+import io.github.origins.platform.neoforge.config.OriginsConfig;
+import io.github.origins.platform.neoforge.datagen.OriginsDataGen;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
@@ -21,13 +22,16 @@ public final class OriginsNeoForge {
         ModItems.REGISTER.register(modEventBus);
         ModBlocks.REGISTER.register(modEventBus);
 
-        modEventBus.addListener(ModDataGen::gatherData);
+        Actions.ACTIONS.register(modEventBus);
+        Conditions.CONDITIONS.register(modEventBus);
+        Powers.POWERS.register(modEventBus);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModConfigs.COMMON_SPEC);
+        modEventBus.addListener(OriginsLifecycle::onCommonSetup);
+        modEventBus.addListener(OriginsDataGen::onGatherData);
+        modEventBus.addListener(OriginsConfig::onReload);
 
-        ModPackets.register();
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, OriginsConfig.COMMON_SPEC);
 
-        NeoForge.EVENT_BUS.register(new CommonEvents());
-        NeoForge.EVENT_BUS.addListener(ModCommands::register);
+        NeoForge.EVENT_BUS.addListener(OriginsLifecycle::onRegisterCommands);
     }
 }
