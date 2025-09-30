@@ -1,30 +1,35 @@
 package io.github.apace100.origins.platform.capabilities;
 
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.capabilities.ICapabilitySerializable;
-import net.neoforged.neoforge.capabilities.CapabilityToken;
-import net.neoforged.neoforge.capabilities.Capability;
-import net.neoforged.neoforge.capabilities.CapabilityManager;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 
-public class PlayerOriginProvider implements ICapabilitySerializable<CompoundTag> {
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-    public static final Capability<PlayerOrigin> ORIGIN_CAP = CapabilityManager.get(new CapabilityToken<>() {});
+public class PlayerOriginProvider implements ICapabilityProvider<Player, Void, PlayerOrigin> {
+    private static PlayerOriginProvider instance;
 
-    private final PlayerOrigin backend = new PlayerOrigin();
+    private final Map<UUID, PlayerOrigin> origins = new ConcurrentHashMap<>();
 
-    @Override
-    public <T> T getCapability(Capability<T> cap, Direction side) {
-        return cap == ORIGIN_CAP ? ORIGIN_CAP.orEmpty(cap, backend) : null;
+    public PlayerOriginProvider() {
+        instance = this;
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        return backend.saveNBT();
+    public PlayerOrigin getCapability(Player player, Void context) {
+        return origins.computeIfAbsent(player.getUUID(), uuid -> new PlayerOrigin());
     }
 
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        backend.loadNBT(nbt);
+    public static PlayerOriginProvider getInstance() {
+        return instance;
+    }
+
+    public void set(Player player, PlayerOrigin origin) {
+        origins.put(player.getUUID(), origin);
+    }
+
+    public void invalidate(UUID uuid) {
+        origins.remove(uuid);
     }
 }

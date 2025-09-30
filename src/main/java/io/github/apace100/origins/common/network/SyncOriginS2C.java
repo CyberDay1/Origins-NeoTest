@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.Optional;
 
 public record SyncOriginS2C(Optional<ResourceLocation> originId) implements CustomPacketPayload {
-    public static final Type<SyncOriginS2C> TYPE = new Type<>(new ResourceLocation(Origins.MOD_ID, "sync_origin"));
+    public static final Type<SyncOriginS2C> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "sync_origin"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncOriginS2C> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), SyncOriginS2C::originId, SyncOriginS2C::new
     );

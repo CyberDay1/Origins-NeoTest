@@ -6,7 +6,7 @@ import net.neoforged.neoforge.capabilities.EntityCapability;
 
 public final class OriginCapabilities {
     public static final EntityCapability<PlayerOrigin, Void> PLAYER_ORIGIN = EntityCapability.createVoid(
-        new ResourceLocation(Origins.MOD_ID, "origin"), PlayerOrigin.class
+        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "origin"), PlayerOrigin.class
     );
 
     private OriginCapabilities() {

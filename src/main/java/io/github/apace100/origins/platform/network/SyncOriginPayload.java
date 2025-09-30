@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SyncOriginPayload(String originId) implements CustomPacketPayload {
 
-    public static final Type<SyncOriginPayload> TYPE = new Type<>(new ResourceLocation("origins", "sync_origin"));
+    public static final Type<SyncOriginPayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath("origins", "sync_origin"));
     public static final StreamCodec<FriendlyByteBuf, SyncOriginPayload> STREAM_CODEC =
             StreamCodec.of((buf, payload) -> buf.writeUtf(payload.originId),
                            buf -> new SyncOriginPayload(buf.readUtf()));

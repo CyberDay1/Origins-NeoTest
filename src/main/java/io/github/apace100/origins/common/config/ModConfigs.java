@@ -5,8 +5,8 @@ import io.github.apace100.origins.common.network.SyncConfigS2C;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.event.ModConfigEvent;
 
 public final class ModConfigs {
     public static final ModConfigSpec SPEC;
@@ -22,7 +22,7 @@ public final class ModConfigs {
     }
 
     public static void register(ModLoadingContext context, IEventBus modBus) {
-        context.registerConfig(ModConfig.Type.COMMON, SPEC, Origins.MOD_ID + "-common.toml");
+        context.getActiveContainer().registerConfig(ModConfig.Type.COMMON, SPEC, Origins.MOD_ID + "-common.toml");
         modBus.addListener(ModConfigs::onConfigReloaded);
     }
 

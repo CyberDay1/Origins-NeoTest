@@ -2,6 +2,7 @@ package io.github.apace100.origins.platform.network;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class OriginsNetworking {
 
@@ -10,6 +11,7 @@ public class OriginsNetworking {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").play(SyncOriginPayload.TYPE, SyncOriginPayload.STREAM_CODEC, SyncOriginPayload::handle);
+        PayloadRegistrar registrar = event.registrar("1");
+        registrar.playToClient(SyncOriginPayload.TYPE, SyncOriginPayload.STREAM_CODEC, SyncOriginPayload::handle);
     }
 }

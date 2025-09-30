@@ -9,9 +9,9 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModActions {
-    public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(Origins.MOD_ID, "actions");
+    public static final ResourceLocation REGISTRY_NAME = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "actions");
     public static final DeferredRegister<Codec<?>> ACTIONS =
-        DeferredRegister.createSimple(Codec.class, REGISTRY_NAME);
+        DeferredRegister.create(REGISTRY_NAME, Origins.MOD_ID);
 
     public static final DeferredHolder<Codec<?>, Codec<NoOpAction>> NO_OP =
         ACTIONS.register("noop", NoOpAction::codec);
