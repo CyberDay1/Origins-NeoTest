@@ -1,6 +1,8 @@
 package io.github.apace100.origins.common.network;
 
 import io.github.apace100.origins.common.config.ModConfigs;
+import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
+import io.github.apace100.origins.neoforge.capability.PlayerOriginManager;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
@@ -24,6 +26,7 @@ public final class ModNetworking {
     private static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
         registrar.playToClient(SyncConfigS2C.TYPE, SyncConfigS2C.STREAM_CODEC, SyncConfigS2C::handle);
+        registrar.playToClient(SyncOriginS2C.TYPE, SyncOriginS2C.STREAM_CODEC, SyncOriginS2C::handle);
     }
 
     private static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
@@ -32,6 +35,12 @@ public final class ModNetworking {
         }
 
         sendToPlayer(player, ModConfigs.createSyncPayload());
+
+        PlayerOrigin origin = PlayerOriginManager.get(player);
+        if (origin != null) {
+            PlayerOriginManager.load(player, origin);
+            sendToPlayer(player, SyncOriginS2C.from(origin));
+        }
     }
 
     public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
