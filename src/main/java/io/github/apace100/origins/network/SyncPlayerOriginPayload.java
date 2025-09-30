@@ -1,4 +1,4 @@
-package io.github.origins.network;
+package io.github.apace100.origins.network;
 
 import java.util.UUID;
 import java.util.function.Supplier;

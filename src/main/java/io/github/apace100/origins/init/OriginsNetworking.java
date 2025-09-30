@@ -1,6 +1,7 @@
-package io.github.origins.network;
+package io.github.apace100.origins.init;
 
-import io.github.origins.Origins;
+import io.github.apace100.origins.Origins;
+import io.github.apace100.origins.network.SyncPlayerOriginPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.NetworkRegistry;
@@ -20,7 +21,7 @@ public final class OriginsNetworking {
     private OriginsNetworking() {
     }
 
-    public static void bootstrap() {
+    public static void register() {
         if (bootstrapped) {
             return;
         }

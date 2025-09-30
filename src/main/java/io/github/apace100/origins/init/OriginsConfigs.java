@@ -1,13 +1,13 @@
-package io.github.origins.config;
+package io.github.apace100.origins.init;
 
-import io.github.origins.Origins;
+import io.github.apace100.origins.Origins;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.event.ModConfigEvent;
 
-public final class ModConfigs {
+public final class OriginsConfigs {
     public static final ModConfigSpec COMMON_SPEC;
     public static final Common COMMON;
 
@@ -17,15 +17,15 @@ public final class ModConfigs {
         COMMON_SPEC = builder.build();
     }
 
-    private ModConfigs() {
+    private OriginsConfigs() {
     }
 
-    public static void register(IEventBus modBus) {
+    public static void register(IEventBus modEventBus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON_SPEC, Origins.MOD_ID + "-common.toml");
-        modBus.addListener(ModConfigs::handleConfigReload);
+        modEventBus.addListener(OriginsConfigs::onConfigReload);
     }
 
-    private static void handleConfigReload(ModConfigEvent event) {
+    private static void onConfigReload(ModConfigEvent event) {
         if (event.getConfig().getSpec() == COMMON_SPEC) {
             COMMON.reload();
         }
@@ -38,9 +38,7 @@ public final class ModConfigs {
         private Common(ModConfigSpec.Builder builder) {
             builder.push("networking");
             syncPowersOnLogin = builder
-                .comment(
-                    "If true, Origins will request a full power sync from the server whenever a player joins."
-                )
+                .comment("If true, Origins will request a full power sync from the server whenever a player joins.")
                 .define("syncPowersOnLogin", true);
             builder.pop();
 

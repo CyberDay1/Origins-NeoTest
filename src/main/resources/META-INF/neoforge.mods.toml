@@ -1,10 +1,20 @@
 modLoader="javafml"
 loaderVersion="[1,)"
 license="MIT"
+issueTrackerURL="https://github.com/apace100/origins/issues"
 
 [[mods]]
 modId="origins"
 version="${mod_version}"
-displayName="Origins NeoForge"
-authors="YourName"
-description="NeoForge port of Origins."
+displayName="Origins (NeoForge)"
+authors="Apace100"
+description='''
+Port of the Origins mod to NeoForge 1.21.1
+'''
+
+[[dependencies.origins]]
+modId="neoforge"
+mandatory=true
+versionRange="[21.1,)"
+ordering="NONE"
+side="BOTH"
