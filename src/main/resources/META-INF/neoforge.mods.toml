@@ -1,24 +1,24 @@
 modLoader="javafml"
-loaderVersion="[2,)"
-license="MIT"
+loaderVersion="${loaderVersionRange}"
+license="${mod_license}"
 
 [[mods]]
-modId="tectonicexpanded"
+modId="${mod_id}"
 version="${mod_version}"
-displayName="Tectonic Expanded"
-description="Expanded tectonic worldgen"
-authors="CyberDay1"
+displayName="${mod_name}"
+authors="${mod_authors}"
+description='''${mod_description}'''
 
-[[dependencies.origins]]
+[[dependencies.${mod_id}]]
 modId="neoforge"
 type="required"
-versionRange="[21.1.209,)"
+versionRange="${neoForgeVersionRange}"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.origins]]
+[[dependencies.${mod_id}]]
 modId="minecraft"
 type="required"
-versionRange="[1.21.1,1.21.1]"
+versionRange="${minecraftVersionRange}"
 ordering="NONE"
 side="BOTH"
