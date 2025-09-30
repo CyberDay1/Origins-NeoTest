@@ -9,8 +9,12 @@ import io.github.apace100.origins.common.registry.ModBlocks;
 import io.github.apace100.origins.common.registry.ModConditions;
 import io.github.apace100.origins.common.registry.ModItems;
 import io.github.apace100.origins.common.registry.ModPowers;
+import io.github.apace100.origins.neoforge.capability.OriginCapabilities;
+import io.github.apace100.origins.neoforge.capability.PlayerOriginProvider;
 import io.github.apace100.origins.datagen.ModDataGen;
+import net.minecraft.world.entity.EntityType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 
@@ -29,5 +33,11 @@ public final class OriginsNeoForge {
         ModNetworking.register(modEventBus);
         ModCommands.register();
         ModDataGen.register(modEventBus);
+
+        modEventBus.addListener(this::registerCapabilities);
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerEntity(OriginCapabilities.PLAYER_ORIGIN, EntityType.PLAYER, new PlayerOriginProvider());
     }
 }
