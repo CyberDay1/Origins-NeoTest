@@ -36,6 +36,13 @@ public final class ModConfigs {
         COMMON.applySync(payload);
     }
 
+    public static SyncConfigS2C createSyncPayload() {
+        return new SyncConfigS2C(
+            COMMON.syncPowersOnLogin.get(),
+            COMMON.maxTrackedPowers.get()
+        );
+    }
+
     public static final class Common {
         public final ModConfigSpec.BooleanValue syncPowersOnLogin;
         public final ModConfigSpec.IntValue maxTrackedPowers;
