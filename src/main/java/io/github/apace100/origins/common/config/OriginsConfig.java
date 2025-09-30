@@ -1,34 +1,39 @@
-package io.github.apace100.origins.init;
+package io.github.apace100.origins.common.config;
 
 import io.github.apace100.origins.Origins;
+import io.github.apace100.origins.common.network.SyncConfigS2C;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.event.ModConfigEvent;
 
-public final class OriginsConfigs {
-    public static final ModConfigSpec COMMON_SPEC;
+public final class OriginsConfig {
+    public static final ModConfigSpec SPEC;
     public static final Common COMMON;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         COMMON = new Common(builder);
-        COMMON_SPEC = builder.build();
+        SPEC = builder.build();
     }
 
-    private OriginsConfigs() {
+    private OriginsConfig() {
     }
 
-    public static void register(IEventBus modEventBus) {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, COMMON_SPEC, Origins.MOD_ID + "-common.toml");
-        modEventBus.addListener(OriginsConfigs::onConfigReload);
+    public static void register(ModLoadingContext context, IEventBus modBus) {
+        context.registerConfig(ModConfig.Type.COMMON, SPEC, Origins.MOD_ID + "-common.toml");
+        modBus.addListener(OriginsConfig::onConfigReloaded);
     }
 
-    private static void onConfigReload(ModConfigEvent event) {
-        if (event.getConfig().getSpec() == COMMON_SPEC) {
-            COMMON.reload();
+    private static void onConfigReloaded(ModConfigEvent event) {
+        if (event.getConfig().getSpec() == SPEC) {
+            COMMON.onReload();
         }
+    }
+
+    public static void applySync(SyncConfigS2C payload) {
+        COMMON.applySync(payload);
     }
 
     public static final class Common {
@@ -38,7 +43,7 @@ public final class OriginsConfigs {
         private Common(ModConfigSpec.Builder builder) {
             builder.push("networking");
             syncPowersOnLogin = builder
-                .comment("If true, Origins will request a full power sync from the server whenever a player joins.")
+                .comment("If true, Origins requests a full power sync from the server whenever a player joins.")
                 .define("syncPowersOnLogin", true);
             builder.pop();
 
@@ -49,8 +54,13 @@ public final class OriginsConfigs {
             builder.pop();
         }
 
-        private void reload() {
-            // Future hooks will consume updated config values.
+        private void onReload() {
+            // TODO: consume updated config values.
+        }
+
+        private void applySync(SyncConfigS2C payload) {
+            syncPowersOnLogin.set(payload.syncPowersOnLogin());
+            maxTrackedPowers.set(payload.maxTrackedPowers());
         }
     }
 }

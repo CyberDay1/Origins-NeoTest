@@ -1,4 +1,4 @@
-package io.github.apace100.origins.init;
+package io.github.apace100.origins.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.apace100.origins.Origins;
@@ -13,7 +13,7 @@ public final class OriginsCommands {
     private OriginsCommands() {
     }
 
-    public static void register(IEventBus modEventBus) {
+    public static void register(IEventBus modBus) {
         NeoForge.EVENT_BUS.addListener(OriginsCommands::onRegisterCommands);
     }
 
@@ -25,13 +25,11 @@ public final class OriginsCommands {
         dispatcher.register(
             Commands.literal(Origins.MOD_ID)
                 .requires(source -> source.hasPermission(2))
-                .executes(context -> {
-                    context.getSource().sendSuccess(
-                        () -> Component.translatable("commands.origins.reload_soon"),
-                        true
-                    );
+                .then(Commands.literal("reload").executes(context -> {
+                    CommandSourceStack source = context.getSource();
+                    source.sendSuccess(() -> Component.translatable("commands.origins.reload_soon"), true);
                     return 1;
-                })
+                }))
         );
     }
 }
