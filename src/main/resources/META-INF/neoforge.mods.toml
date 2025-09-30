@@ -3,11 +3,11 @@ loaderVersion="[2,)"
 license="MIT"
 
 [[mods]]
-modId="origins"
+modId="tectonicexpanded"
 version="${mod_version}"
-displayName="Origins"
+displayName="Tectonic Expanded"
+description="Expanded tectonic worldgen"
 authors="CyberDay1"
-description="Forge → NeoForge port of Origins."
 
 [[dependencies.origins]]
 modId="neoforge"
