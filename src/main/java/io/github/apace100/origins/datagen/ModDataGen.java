@@ -1,5 +1,7 @@
 package io.github.apace100.origins.datagen;
 
+import io.github.apace100.origins.datagen.tags.OriginsBlockTags;
+import io.github.apace100.origins.datagen.tags.OriginsItemTags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -14,19 +16,22 @@ public final class ModDataGen {
 
     private static void gatherData(GatherDataEvent event) {
         var generator = event.getGenerator();
-        var output = generator.getPackOutput();
+        var packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-
-        if (event.includeClient()) {
-            generator.addProvider(true, new ModBlockStateGen(output, existingFileHelper));
-            generator.addProvider(true, new ModItemModelGen(output, existingFileHelper));
-            generator.addProvider(true, new LangGen(output));
-        }
+        var lookupProvider = event.getLookupProvider();
 
         if (event.includeServer()) {
-            var lookup = event.getLookupProvider();
-            generator.addProvider(true, new ModLootTableProvider(output, lookup));
-            generator.addProvider(true, new ModRecipeProvider(output, lookup));
+            var blockTags = new OriginsBlockTags(packOutput, lookupProvider, existingFileHelper);
+            generator.addProvider(true, blockTags);
+            generator.addProvider(true, new OriginsItemTags(packOutput, lookupProvider, blockTags.contentsGetter(), existingFileHelper));
+            generator.addProvider(true, new ModLootTableProvider(packOutput, lookupProvider));
+            generator.addProvider(true, new ModRecipeProvider(packOutput, lookupProvider));
+        }
+
+        if (event.includeClient()) {
+            generator.addProvider(true, new ModBlockStateGen(packOutput, existingFileHelper));
+            generator.addProvider(true, new ModItemModelGen(packOutput, existingFileHelper));
+            generator.addProvider(true, new OriginsLanguageProvider(packOutput, "en_us"));
         }
     }
 }
