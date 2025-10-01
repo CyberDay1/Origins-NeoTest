@@ -7,9 +7,12 @@ import io.github.apace100.origins.power.action.impl.BlockAction;
 import io.github.apace100.origins.power.action.impl.DamageEntityAction;
 import io.github.apace100.origins.power.action.impl.EntityAction;
 import io.github.apace100.origins.power.action.impl.ExecuteCommandAction;
+import io.github.apace100.origins.power.action.impl.ExplosionAction;
 import io.github.apace100.origins.power.action.impl.GiveItemAction;
 import io.github.apace100.origins.power.action.impl.GrantAdvancementAction;
 import io.github.apace100.origins.power.action.impl.ItemAction;
+import io.github.apace100.origins.power.action.impl.LightningAction;
+import io.github.apace100.origins.power.action.impl.ParticleAction;
 import io.github.apace100.origins.power.action.impl.PlaySoundAction;
 import io.github.apace100.origins.power.action.impl.SetBlockAction;
 import io.github.apace100.origins.power.action.impl.SpawnEntityAction;
@@ -53,6 +56,9 @@ public final class ActionRegistry {
         register(PlaySoundAction.TYPE, PlaySoundAction::fromJson);
         register(GrantAdvancementAction.TYPE, GrantAdvancementAction::fromJson);
         register(ExecuteCommandAction.TYPE, ExecuteCommandAction::fromJson);
+        register(ParticleAction.TYPE, ParticleAction::fromJson);
+        register(LightningAction.TYPE, LightningAction::fromJson);
+        register(ExplosionAction.TYPE, ExplosionAction::fromJson);
     }
 
     /**
