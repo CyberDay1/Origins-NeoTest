@@ -15,11 +15,15 @@ import io.github.apace100.origins.power.action.impl.ExecuteCommandAction;
 import io.github.apace100.origins.power.action.impl.ExplosionAction;
 import io.github.apace100.origins.power.action.impl.GiveItemAction;
 import io.github.apace100.origins.power.action.impl.GrantAdvancementAction;
+import io.github.apace100.origins.power.action.impl.HealAction;
 import io.github.apace100.origins.power.action.impl.ItemAction;
 import io.github.apace100.origins.power.action.impl.LightningAction;
 import io.github.apace100.origins.power.action.impl.ModifyAttributeAction;
+import io.github.apace100.origins.power.action.impl.ModifyDamageTakenAction;
+import io.github.apace100.origins.power.action.impl.KnockbackAction;
 import io.github.apace100.origins.power.action.impl.ParticleAction;
 import io.github.apace100.origins.power.action.impl.PlaySoundAction;
+import io.github.apace100.origins.power.action.impl.PreventItemUseAction;
 import io.github.apace100.origins.power.action.impl.ReplaceEquippedItemAction;
 import io.github.apace100.origins.power.action.impl.ResetAttributeAction;
 import io.github.apace100.origins.power.action.impl.SetBlockAction;
@@ -75,6 +79,10 @@ public final class ActionRegistry {
         register(ConsumeItemAction.TYPE, ConsumeItemAction::fromJson);
         register(ReplaceEquippedItemAction.TYPE, ReplaceEquippedItemAction::fromJson);
         register(DamageItemAction.TYPE, DamageItemAction::fromJson);
+        register(ModifyDamageTakenAction.TYPE, ModifyDamageTakenAction::fromJson);
+        register(HealAction.TYPE, HealAction::fromJson);
+        register(KnockbackAction.TYPE, KnockbackAction::fromJson);
+        register(PreventItemUseAction.TYPE, PreventItemUseAction::fromJson);
     }
 
     /**
