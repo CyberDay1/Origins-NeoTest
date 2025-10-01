@@ -13,6 +13,16 @@
   "screen.origins.reset": "Reset Origin",
   "screen.origins.none": "No Origin",
   "screen.origins.no_selection": "No origin selected",
+  "screen.origins.random_origin": "Random Origin",
+  "screen.origins.random_origin.description": "Receive a random origin from the list of available choices.",
+  "screen.origins.random_origin.impact": "Impact: ???",
+  "screen.origins.impact": "Impact: %s",
+  "screen.origins.empty": "No origins are currently available.",
+  "origin.impact.none": "None",
+  "origin.impact.low": "Low",
+  "origin.impact.medium": "Medium",
+  "origin.impact.high": "High",
+  "origin.impact.very_high": "Very High",
   "key.categories.origins": "Origins",
   "key.origins.open_selection": "Open Origin Selection"
 }
