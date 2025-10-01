@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Winged" },
+  "description": { "text": "Your wings allow you to glide naturally without needing an elytra item." },
+  "actions": []
+}

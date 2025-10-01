@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Tailwind" },
+  "description": { "text": "You move a little faster while sprinting." },
+  "actions": []
+}

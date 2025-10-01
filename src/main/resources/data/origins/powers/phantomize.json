@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Phase" },
+  "description": { "text": "Shift between material and phantom form at will." },
+  "actions": []
+}

@@ -7,6 +7,7 @@ import io.github.apace100.origins.common.registry.ModActions;
 import io.github.apace100.origins.common.registry.ModConditions;
 import io.github.apace100.origins.common.registry.ModPowers;
 import io.github.apace100.origins.datagen.ModDataGen;
+import io.github.apace100.origins.neoforge.datapack.OriginsDataLoader;
 import io.github.apace100.origins.registry.ModBlocks;
 import io.github.apace100.origins.registry.ModItems;
 import net.neoforged.api.distmarker.Dist;
@@ -14,6 +15,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 
 @Mod(OriginsNeoForge.MODID)
 public final class OriginsNeoForge {
@@ -30,6 +33,9 @@ public final class OriginsNeoForge {
         ModDataGen.register(modBus);
 
         ModConfigs.register(ModLoadingContext.get());
+
+        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) ->
+            event.addListener(new OriginsDataLoader()));
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             io.github.apace100.origins.client.OriginsClient.init();

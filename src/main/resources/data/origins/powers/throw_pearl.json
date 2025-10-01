@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Ender Step" },
+  "description": { "text": "You can throw a ghostly pearl that teleports you on demand." },
+  "actions": []
+}

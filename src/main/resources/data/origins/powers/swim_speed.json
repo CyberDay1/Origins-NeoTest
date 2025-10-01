@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Swift Swimmer" },
+  "description": { "text": "You move faster while swimming." },
+  "actions": []
+}

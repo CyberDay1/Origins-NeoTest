@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Pumpkin Allergy" },
+  "description": { "text": "Wearing pumpkins obscures your vision entirely." },
+  "actions": []
+}

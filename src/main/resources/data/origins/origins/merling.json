@@ -1,0 +1,11 @@
+{
+  "name": { "text": "Merling" },
+  "description": { "text": "Merlings are at home in the water but struggle on land." },
+  "powers": [
+    "origins:water_breathing",
+    "origins:underwater_vision",
+    "origins:swim_speed"
+  ],
+  "icon": "minecraft:trident",
+  "impact": 2
+}

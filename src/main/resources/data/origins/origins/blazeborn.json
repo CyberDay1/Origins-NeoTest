@@ -1,0 +1,11 @@
+{
+  "name": { "text": "Blazeborn" },
+  "description": { "text": "Blazeborn thrive in scorching environments but find water unbearable." },
+  "powers": [
+    "origins:fire_immunity",
+    "origins:burning_wrath",
+    "origins:nether_spawn"
+  ],
+  "icon": "minecraft:blaze_powder",
+  "impact": 3
+}

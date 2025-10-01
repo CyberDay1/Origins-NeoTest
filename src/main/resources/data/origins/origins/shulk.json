@@ -1,0 +1,11 @@
+{
+  "name": { "text": "Shulk" },
+  "description": { "text": "Sturdy and storage-savvy, Shulks carry their home wherever they go." },
+  "powers": [
+    "origins:shulk_inventory",
+    "origins:shulk_stone_skin",
+    "origins:shulk_heavy_stone"
+  ],
+  "icon": "minecraft:shulker_shell",
+  "impact": 2
+}

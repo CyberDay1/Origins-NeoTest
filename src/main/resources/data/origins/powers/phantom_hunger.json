@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Restless Hunger" },
+  "description": { "text": "You exhaust more quickly while exposed to sunlight." },
+  "actions": []
+}

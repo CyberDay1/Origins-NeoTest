@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Shulker Storage" },
+  "description": { "text": "You keep a special inventory accessible anywhere." },
+  "actions": []
+}

@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Clear Waters" },
+  "description": { "text": "You see clearly underwater." },
+  "actions": []
+}

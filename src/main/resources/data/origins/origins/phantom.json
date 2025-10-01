@@ -1,0 +1,11 @@
+{
+  "name": { "text": "Phantom" },
+  "description": { "text": "Phantoms fade between worlds, gaining mobility but losing hunger in the light." },
+  "powers": [
+    "origins:phantomize",
+    "origins:phantom_invisibility",
+    "origins:phantom_hunger"
+  ],
+  "icon": "minecraft:phantom_membrane",
+  "impact": 2
+}

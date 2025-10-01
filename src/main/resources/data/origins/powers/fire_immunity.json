@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Fire Immunity" },
+  "description": { "text": "Lava and fire cannot harm you." },
+  "actions": []
+}
