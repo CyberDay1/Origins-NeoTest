@@ -18,7 +18,8 @@ public final class DataValidationLogger extends SimplePreparableReloadListener<V
     @Override
     protected void apply(Void value, ResourceManager resourceManager, ProfilerFiller profiler) {
         ReloadStats stats = OriginsDataLoader.getLastReloadStats();
-        Origins.LOGGER.info("[Origins] Datapack reload summary: {} origins, {} powers", stats.originsLoaded(), stats.powersLoaded());
+        Origins.LOGGER.info("[Origins] Datapack reload summary: {} origins, {} powers, {} actions, {} conditions",
+            stats.originsLoaded(), stats.powersLoaded(), stats.actionsLoaded(), stats.conditionsLoaded());
         if (stats.skippedEntries() > 0) {
             Origins.LOGGER.info("[Origins] Datapack skipped {} entries during reload", stats.skippedEntries());
         }
@@ -26,7 +27,7 @@ public final class DataValidationLogger extends SimplePreparableReloadListener<V
             String joined = stats.unknownTypes().stream()
                 .map(ResourceLocation::toString)
                 .collect(Collectors.joining(", "));
-            Origins.LOGGER.warn("[Origins] Datapack unknown power types: {}", joined);
+            Origins.LOGGER.warn("[Origins] Datapack unknown entry types: {}", joined);
         }
     }
 }
