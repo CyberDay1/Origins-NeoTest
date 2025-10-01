@@ -1,7 +1,7 @@
-# Tectonic Expanded (NeoForge)
+# Origins (NeoForge)
 
-This repository contains the NeoForge build logic for the **Tectonic Expanded** mod. The
-project targets Minecraft **1.21.1** on NeoForge **21.1.209** and is configured to build
+This repository contains the NeoForge build logic for the **Origins** mod. The project
+targets Minecraft **1.21.1** on NeoForge **21.1.209** and is configured to build
 with Gradle **8.13** and a Java **21** toolchain.
 
 ## Requirements
@@ -23,10 +23,9 @@ with Gradle **8.13** and a Java **21** toolchain.
 
    The resulting NeoForge mod jar is written to `build/libs/`.
 
-During the build the `neoforge.mods.toml` files located in `src/main/resources` and in any
-version-specific source sets are automatically expanded with the values defined in
-`gradle.properties`. This ensures the published jar always advertises the correct mod id,
-version, and dependency ranges.
+During the build the `neoforge.mods.toml` file located in `src/main/resources` is
+automatically expanded with the values defined in `gradle.properties`. This ensures the
+published jar always advertises the correct mod id, version, and dependency ranges.
 
 ## Updating Minecraft or NeoForge versions
 
@@ -37,4 +36,5 @@ generated `neoforge.mods.toml` continues to match the desired compatibility matr
 
 If you need to produce builds for multiple Minecraft releases, the `versions/` directory
 contains per-version resource overrides. Add or adjust files within the appropriate
-sub-directory to customise metadata or assets for that specific target.
+sub-directory to customise metadata or assets for that specific target before packaging
+them separately.

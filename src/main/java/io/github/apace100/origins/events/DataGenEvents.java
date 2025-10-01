@@ -1,8 +1,8 @@
 package io.github.apace100.origins.events;
 
 import io.github.apace100.origins.Origins;
-import io.github.apace100.origins.datagen.OriginsBlockTags;
-import io.github.apace100.origins.datagen.OriginsItemTags;
+import io.github.apace100.origins.datagen.tags.OriginsBlockTags;
+import io.github.apace100.origins.datagen.tags.OriginsItemTags;
 import io.github.apace100.origins.datagen.OriginsLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

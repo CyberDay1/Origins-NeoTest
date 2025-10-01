@@ -21,14 +21,23 @@ dependencies {
     implementation 'com.google.guava:guava:31.1-jre'
 }
 
+sourceSets {
+    main {
+        resources {
+            exclude('versions/**')
+        }
+    }
+}
+
 tasks.processResources {
-    inputs.properties(
-        'neoforge.mod.id': project.findProperty('mod_id') ?: 'origins',
-        'neoforge.mod.version': project.findProperty('mod_version') ?: '0.1.0',
-        'neoforge.mod.mc': project.findProperty('minecraftVersion') ?: '1.21.1'
-    )
+    def modProps = [
+        mod_id: project.findProperty('mod_id') ?: 'origins',
+        mod_version: project.findProperty('mod_version') ?: '0.1.0',
+        mod_mc: project.findProperty('minecraftVersion') ?: '1.21.1'
+    ]
+    inputs.properties(modProps)
     filesMatching('META-INF/neoforge.mods.toml') {
-        expand(inputs.properties)
+        expand(modProps)
     }
 }
 

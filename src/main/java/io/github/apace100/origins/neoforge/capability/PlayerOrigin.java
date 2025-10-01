@@ -33,6 +33,10 @@ public class PlayerOrigin {
         return originId != null;
     }
 
+    public boolean hasChosen() {
+        return hasOrigin();
+    }
+
     public void clear() {
         this.originId = null;
         this.powers.clear();
