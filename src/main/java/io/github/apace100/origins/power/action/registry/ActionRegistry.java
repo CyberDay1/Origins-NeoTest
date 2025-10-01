@@ -9,6 +9,8 @@ import io.github.apace100.origins.power.action.impl.ClearAllEffectsAction;
 import io.github.apace100.origins.power.action.impl.ClearEffectAction;
 import io.github.apace100.origins.power.action.impl.DamageEntityAction;
 import io.github.apace100.origins.power.action.impl.EntityAction;
+import io.github.apace100.origins.power.action.impl.ConsumeItemAction;
+import io.github.apace100.origins.power.action.impl.DamageItemAction;
 import io.github.apace100.origins.power.action.impl.ExecuteCommandAction;
 import io.github.apace100.origins.power.action.impl.ExplosionAction;
 import io.github.apace100.origins.power.action.impl.GiveItemAction;
@@ -18,6 +20,7 @@ import io.github.apace100.origins.power.action.impl.LightningAction;
 import io.github.apace100.origins.power.action.impl.ModifyAttributeAction;
 import io.github.apace100.origins.power.action.impl.ParticleAction;
 import io.github.apace100.origins.power.action.impl.PlaySoundAction;
+import io.github.apace100.origins.power.action.impl.ReplaceEquippedItemAction;
 import io.github.apace100.origins.power.action.impl.ResetAttributeAction;
 import io.github.apace100.origins.power.action.impl.SetBlockAction;
 import io.github.apace100.origins.power.action.impl.SpawnEntityAction;
@@ -69,6 +72,9 @@ public final class ActionRegistry {
         register(ClearAllEffectsAction.TYPE, ClearAllEffectsAction::fromJson);
         register(ModifyAttributeAction.TYPE, ModifyAttributeAction::fromJson);
         register(ResetAttributeAction.TYPE, ResetAttributeAction::fromJson);
+        register(ConsumeItemAction.TYPE, ConsumeItemAction::fromJson);
+        register(ReplaceEquippedItemAction.TYPE, ReplaceEquippedItemAction::fromJson);
+        register(DamageItemAction.TYPE, DamageItemAction::fromJson);
     }
 
     /**

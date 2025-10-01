@@ -2,10 +2,10 @@ package io.github.apace100.origins.power.condition.impl;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.power.condition.Condition;
+import io.github.apace100.origins.util.EquipmentSlotUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -22,9 +21,8 @@ import java.util.Optional;
  */
 public final class EquippedItemCondition implements Condition<Player> {
     public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "equipped_item");
-    private static final Codec<EquipmentSlot> SLOT_CODEC = Codec.STRING.comapFlatMap(EquippedItemCondition::decodeSlot, slot -> slot.getName().toLowerCase(Locale.ROOT));
     private static final Codec<EquippedItemCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        SLOT_CODEC.fieldOf("slot").forGetter(EquippedItemCondition::slot),
+        EquipmentSlotUtil.codec().fieldOf("slot").forGetter(EquippedItemCondition::slot),
         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(EquippedItemCondition::item)
     ).apply(instance, EquippedItemCondition::new));
 
@@ -63,8 +61,8 @@ public final class EquippedItemCondition implements Condition<Player> {
             return null;
         }
 
-        String rawSlot = GsonHelper.getAsString(json, "slot").toLowerCase(Locale.ROOT);
-        EquipmentSlot slot = parseSlot(rawSlot);
+        String rawSlot = GsonHelper.getAsString(json, "slot");
+        EquipmentSlot slot = EquipmentSlotUtil.parse(rawSlot);
         if (slot == null) {
             Origins.LOGGER.warn("Equipped item condition '{}' references unknown slot '{}'", id, rawSlot);
             return null;
@@ -90,25 +88,5 @@ public final class EquippedItemCondition implements Condition<Player> {
 
     public static Codec<EquippedItemCondition> codec() {
         return CODEC;
-    }
-
-    private static DataResult<EquipmentSlot> decodeSlot(String raw) {
-        EquipmentSlot slot = parseSlot(raw.toLowerCase(Locale.ROOT));
-        if (slot == null) {
-            return DataResult.error(() -> "Unknown equipment slot '" + raw + "'");
-        }
-        return DataResult.success(slot);
-    }
-
-    private static EquipmentSlot parseSlot(String raw) {
-        return switch (raw) {
-            case "mainhand", "main_hand", "hand" -> EquipmentSlot.MAINHAND;
-            case "offhand", "off_hand" -> EquipmentSlot.OFFHAND;
-            case "head", "helmet" -> EquipmentSlot.HEAD;
-            case "chest", "body" -> EquipmentSlot.CHEST;
-            case "legs", "pants" -> EquipmentSlot.LEGS;
-            case "feet", "boots" -> EquipmentSlot.FEET;
-            default -> null;
-        };
     }
 }
