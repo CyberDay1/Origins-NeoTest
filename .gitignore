@@ -2,6 +2,7 @@
 build/
 out/
 runs/
+generated/
 
 # IDE
 .idea/

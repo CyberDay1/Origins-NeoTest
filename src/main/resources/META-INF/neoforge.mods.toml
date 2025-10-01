@@ -4,14 +4,21 @@ license="MIT"
 issueTrackerURL=""
 
 [[mods]]
-modId="origins"
-version="${mod_version}"
+modId="${neoforge.mod.id}"
+version="${neoforge.mod.version}"
 displayName="Origins (NeoForge)"
-description="Origins port for NeoForge 1.21.1"
+description="Origins port for NeoForge ${neoforge.mod.mc}"
 
-[[dependencies.origins]]
+[[dependencies.${neoforge.mod.id}]]
 modId="neoforge"
 mandatory=true
-versionRange="[21.1,)"
+versionRange="[21,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${neoforge.mod.id}]]
+modId="minecraft"
+mandatory=true
+versionRange="[${neoforge.mod.mc},)"
 ordering="NONE"
 side="BOTH"

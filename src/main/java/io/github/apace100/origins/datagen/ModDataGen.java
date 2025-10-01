@@ -31,7 +31,7 @@ public final class ModDataGen {
         if (event.includeClient()) {
             generator.addProvider(true, new ModBlockStateGen(packOutput, existingFileHelper));
             generator.addProvider(true, new ModItemModelGen(packOutput, existingFileHelper));
-            generator.addProvider(true, new OriginsLanguageProvider(packOutput, "en_us"));
+            generator.addProvider(true, new OriginsLanguageProvider(packOutput));
         }
     }
 }
