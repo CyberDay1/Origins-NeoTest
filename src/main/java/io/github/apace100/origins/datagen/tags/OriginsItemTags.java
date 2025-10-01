@@ -1,7 +1,7 @@
 package io.github.apace100.origins.datagen.tags;
 
 import io.github.apace100.origins.Origins;
-import io.github.apace100.origins.common.registry.ModItems;
+import io.github.apace100.origins.registry.ModItems;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;

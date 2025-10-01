@@ -1,17 +1,17 @@
-modLoader="javafml"
-loaderVersion="[1,)"
+modLoader="neoforge"
+loaderVersion="[21,)"
 license="MIT"
+issueTrackerURL=""
 
 [[mods]]
 modId="origins"
 version="${mod_version}"
 displayName="Origins (NeoForge)"
-authors="Apace100, community"
-description="NeoForge port of Origins."
+description="Origins port for NeoForge 1.21.1"
 
 [[dependencies.origins]]
 modId="neoforge"
-type="required"
-versionRange="[21,)"
+mandatory=true
+versionRange="[21.1,)"
 ordering="NONE"
 side="BOTH"

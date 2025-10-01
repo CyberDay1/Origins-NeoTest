@@ -1,7 +1,7 @@
 package io.github.apace100.origins.datagen;
 
 import io.github.apace100.origins.Origins;
-import io.github.apace100.origins.common.registry.ModBlocks;
+import io.github.apace100.origins.registry.ModBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
