@@ -10,12 +10,14 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.origin.Origin;
+import io.github.apace100.origins.common.origin.OriginImpact;
 import io.github.apace100.origins.common.power.ConfiguredPower;
 import io.github.apace100.origins.common.registry.ConfiguredActions;
 import io.github.apace100.origins.common.registry.ConfiguredConditions;
 import io.github.apace100.origins.common.registry.ConfiguredPowers;
 import io.github.apace100.origins.common.registry.ModPowers;
 import io.github.apace100.origins.common.registry.OriginRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +25,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
@@ -41,7 +46,9 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
     private static final Codec<OriginData> ORIGIN_CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ComponentSerialization.CODEC.fieldOf("name").forGetter(OriginData::name),
         ComponentSerialization.CODEC.fieldOf("description").forGetter(OriginData::description),
-        ResourceLocation.CODEC.listOf().optionalFieldOf("powers", List.of()).forGetter(OriginData::powers)
+        ResourceLocation.CODEC.listOf().optionalFieldOf("powers", List.of()).forGetter(OriginData::powers),
+        ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(OriginData::icon),
+        Codec.INT.optionalFieldOf("impact").forGetter(OriginData::impact)
     ).apply(instance, OriginData::new));
     private static final JsonGatherer POWER_GATHERER = new JsonGatherer("origins/powers");
 
@@ -122,7 +129,14 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
     private DataResult<Origin> decodeOrigin(ResourceLocation id, JsonElement element) {
         return ORIGIN_CODEC.parse(JsonOps.INSTANCE, element)
-            .map(data -> new Origin(id, data.name(), data.description(), new ArrayList<>(data.powers())));
+            .map(data -> new Origin(
+                id,
+                data.name(),
+                data.description(),
+                new ArrayList<>(data.powers()),
+                resolveIcon(id, data.icon()),
+                resolveImpact(id, data.impact())
+            ));
     }
 
     private Origin validateOrigin(ResourceLocation id, Origin origin) {
@@ -133,7 +147,35 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             }
             return present;
         }).collect(Collectors.toList());
-        return new Origin(origin.id(), origin.name(), origin.description(), powers);
+        return new Origin(origin.id(), origin.name(), origin.description(), powers, origin.icon().copy(), origin.impact());
+    }
+
+    private ItemStack resolveIcon(ResourceLocation originId, Optional<ResourceLocation> iconId) {
+        if (iconId.isEmpty()) {
+            return new ItemStack(Items.PLAYER_HEAD);
+        }
+
+        ResourceLocation itemId = iconId.get();
+        Optional<Item> item = BuiltInRegistries.ITEM.getOptional(itemId);
+        if (item.isEmpty()) {
+            Origins.LOGGER.warn("Origin {} references unknown icon {}", originId, itemId);
+            return new ItemStack(Items.PLAYER_HEAD);
+        }
+
+        return new ItemStack(item.get());
+    }
+
+    private OriginImpact resolveImpact(ResourceLocation originId, Optional<Integer> impactId) {
+        if (impactId.isEmpty()) {
+            return OriginImpact.NONE;
+        }
+
+        int value = impactId.get();
+        OriginImpact impact = OriginImpact.fromId(value);
+        if (impact.id() != value) {
+            Origins.LOGGER.warn("Origin {} has out of range impact value {}", originId, value);
+        }
+        return impact;
     }
 
     private Codec<? extends ConfiguredPower> resolveCodec(ResourceLocation typeId) {
@@ -161,7 +203,13 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         return null;
     }
 
-    private record OriginData(Component name, Component description, List<ResourceLocation> powers) {
+    private record OriginData(
+        Component name,
+        Component description,
+        List<ResourceLocation> powers,
+        Optional<ResourceLocation> icon,
+        Optional<Integer> impact
+    ) {
     }
 
     private static final class JsonGatherer extends SimpleJsonResourceReloadListener {

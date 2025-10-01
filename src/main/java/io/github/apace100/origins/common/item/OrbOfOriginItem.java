@@ -1,6 +1,8 @@
 package io.github.apace100.origins.common.item;
 
 import io.github.apace100.origins.client.OriginsClientHooks;
+import io.github.apace100.origins.neoforge.capability.OriginCapabilities;
+import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +18,11 @@ public class OrbOfOriginItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        PlayerOrigin origin = player.getCapability(OriginCapabilities.PLAYER_ORIGIN);
+        if (origin != null && origin.hasChosen()) {
+            return InteractionResultHolder.pass(stack);
+        }
+
         if (level.isClientSide) {
             OriginsClientHooks.openOriginScreen(stack);
             return InteractionResultHolder.success(stack);
