@@ -1,7 +1,8 @@
-package io.github.apace100.origins.neoforge.datapack;
+package io.github.apace100.origins.datapack;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -31,10 +32,13 @@ import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -51,8 +55,19 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         Codec.INT.optionalFieldOf("impact").forGetter(OriginData::impact)
     ).apply(instance, OriginData::new));
     private static final JsonGatherer POWER_GATHERER = new JsonGatherer("origins/powers");
+    private static final Map<ResourceLocation, ResourceLocation> POWER_ALIASES = Map.of(
+        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytra"),
+        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytra_flight"),
+        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytrian_flight"),
+        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytra_flight")
+    );
+
+    private static volatile ReloadStats LAST_STATS = ReloadStats.empty();
 
     private Map<ResourceLocation, JsonElement> pendingPowerJson = Map.of();
+    private int skippedPowers;
+    private int skippedOrigins;
+    private final Set<ResourceLocation> unknownPowerTypes = new HashSet<>();
 
     public OriginsDataLoader() {
         super(GSON, "origins/origins");
@@ -60,6 +75,9 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected Map<ResourceLocation, JsonElement> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
+        skippedPowers = 0;
+        skippedOrigins = 0;
+        unknownPowerTypes.clear();
         pendingPowerJson = POWER_GATHERER.gather(resourceManager, profiler);
         return super.prepare(resourceManager, profiler);
     }
@@ -72,7 +90,17 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         Map<ResourceLocation, Origin> origins = decodeOrigins(originJson);
         OriginRegistry.setAll(origins);
 
-        Origins.LOGGER.info("Loaded {} origins and {} powers from datapacks", origins.size(), powers.size());
+        List<ResourceLocation> unknownTypes = unknownPowerTypes.stream()
+            .sorted(Comparator.comparing(ResourceLocation::toString))
+            .toList();
+        LAST_STATS = new ReloadStats(origins.size(), powers.size(), skippedOrigins + skippedPowers, unknownTypes);
+
+        if (skippedOrigins + skippedPowers > 0) {
+            Origins.LOGGER.info("Loaded {} origins and {} powers from datapacks ({} entries skipped)",
+                origins.size(), powers.size(), skippedOrigins + skippedPowers);
+        } else {
+            Origins.LOGGER.info("Loaded {} origins and {} powers from datapacks", origins.size(), powers.size());
+        }
     }
 
     private Map<ResourceLocation, ConfiguredPower> decodePowers(Map<ResourceLocation, JsonElement> powerJson) {
@@ -84,23 +112,28 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
     private Optional<ConfiguredPower> decodePower(ResourceLocation id, JsonElement element) {
         JsonObject json = GsonHelper.convertToJsonObject(element, "value");
-        ResourceLocation typeId;
-        try {
-            typeId = ResourceLocation.parse(GsonHelper.getAsString(json, "type"));
-        } catch (IllegalArgumentException exception) {
-            Origins.LOGGER.error("Failed to parse power {}: {}", id, exception.getMessage());
+        NormalizedPowerJson normalized = normalizePowerJson(id, json);
+        if (normalized == null) {
+            skippedPowers++;
             return Optional.empty();
         }
 
-        Codec<? extends ConfiguredPower> codec = resolveCodec(typeId);
+        Codec<? extends ConfiguredPower> codec = resolveCodec(normalized.type());
         if (codec == null) {
-            Origins.LOGGER.warn("Unknown power type '{}' for data file '{}'", typeId, id);
+            Origins.LOGGER.warn("Unknown power type '{}' for data file '{}'", normalized.type(), id);
+            unknownPowerTypes.add(normalized.type());
+            skippedPowers++;
             return Optional.empty();
         }
 
-        DataResult<? extends ConfiguredPower> result = codec.parse(JsonOps.INSTANCE, json);
-        return result.resultOrPartial(message -> Origins.LOGGER.error("Failed to decode power {}: {}", id, message))
-            .map(ConfiguredPower.class::cast);
+        DataResult<? extends ConfiguredPower> result = codec.parse(JsonOps.INSTANCE, normalized.json());
+        Optional<? extends ConfiguredPower> parsed = result.resultOrPartial(message ->
+            Origins.LOGGER.error("Failed to decode power {}: {}", id, message));
+        if (parsed.isEmpty()) {
+            skippedPowers++;
+            return Optional.empty();
+        }
+        return parsed.map(ConfiguredPower.class::cast);
     }
 
     private ConfiguredPower validatePower(ResourceLocation id, ConfiguredPower power) {
@@ -121,9 +154,14 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
     private Map<ResourceLocation, Origin> decodeOrigins(Map<ResourceLocation, JsonElement> originJson) {
         Map<ResourceLocation, Origin> decoded = new HashMap<>();
-        originJson.forEach((id, element) -> decodeOrigin(id, element)
-            .resultOrPartial(message -> Origins.LOGGER.error("Failed to decode origin {}: {}", id, message))
-            .ifPresent(origin -> decoded.put(id, validateOrigin(id, origin))));
+        originJson.forEach((id, element) -> {
+            DataResult<Origin> result = decodeOrigin(id, element);
+            Optional<Origin> origin = result.resultOrPartial(message -> {
+                Origins.LOGGER.error("Failed to decode origin {}: {}", id, message);
+                skippedOrigins++;
+            });
+            origin.ifPresent(value -> decoded.put(id, validateOrigin(id, value)));
+        });
         return decoded;
     }
 
@@ -203,6 +241,99 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         return null;
     }
 
+    public static ReloadStats getLastReloadStats() {
+        return LAST_STATS;
+    }
+
+    private NormalizedPowerJson normalizePowerJson(ResourceLocation powerId, JsonObject original) {
+        String rawType = GsonHelper.getAsString(original, "type", "");
+        if (rawType.isEmpty()) {
+            Origins.LOGGER.warn("Power {} is missing a type entry", powerId);
+            return null;
+        }
+
+        ResourceLocation parsedType;
+        try {
+            parsedType = ResourceLocation.parse(rawType);
+        } catch (IllegalArgumentException exception) {
+            Origins.LOGGER.warn("Power {} has invalid type '{}': {}", powerId, rawType, exception.getMessage());
+            return null;
+        }
+
+        ResourceLocation canonicalType = POWER_ALIASES.getOrDefault(parsedType, parsedType);
+        if (!canonicalType.equals(parsedType)) {
+            Origins.LOGGER.info("Remapped power {} type {} -> {}", powerId, parsedType, canonicalType);
+        }
+
+        JsonObject normalized = original.deepCopy();
+        normalized.addProperty("type", canonicalType.toString());
+        normalizeConditionField(powerId, normalized);
+        return new NormalizedPowerJson(canonicalType, normalized);
+    }
+
+    private void normalizeConditionField(ResourceLocation powerId, JsonObject json) {
+        if (json.has("condition")) {
+            parseConditionElement(powerId, "condition", json.get("condition"))
+                .ifPresent(id -> json.addProperty("condition", id.toString()));
+            return;
+        }
+
+        for (String alias : List.of("conditions", "predicate")) {
+            if (json.has(alias)) {
+                parseConditionElement(powerId, alias, json.get(alias))
+                    .ifPresent(id -> json.addProperty("condition", id.toString()));
+                json.remove(alias);
+                break;
+            }
+        }
+    }
+
+    private Optional<ResourceLocation> parseConditionElement(ResourceLocation powerId, String field, JsonElement element) {
+        if (element == null || element.isJsonNull()) {
+            return Optional.empty();
+        }
+
+        if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+            String value = element.getAsString();
+            try {
+                return Optional.of(ResourceLocation.parse(value));
+            } catch (IllegalArgumentException exception) {
+                Origins.LOGGER.warn("Power {} has invalid {} value '{}': {}", powerId, field, value, exception.getMessage());
+                return Optional.empty();
+            }
+        }
+
+        if (element.isJsonArray()) {
+            JsonArray array = element.getAsJsonArray();
+            List<ResourceLocation> identifiers = new ArrayList<>();
+            array.forEach(entry -> {
+                if (entry.isJsonPrimitive() && entry.getAsJsonPrimitive().isString()) {
+                    String value = entry.getAsString();
+                    try {
+                        identifiers.add(ResourceLocation.parse(value));
+                    } catch (IllegalArgumentException exception) {
+                        Origins.LOGGER.warn("Power {} has invalid {} array value '{}': {}", powerId, field, value, exception.getMessage());
+                    }
+                } else {
+                    Origins.LOGGER.warn("Power {} has unsupported {} array element {}", powerId, field, entry);
+                }
+            });
+
+            if (identifiers.isEmpty()) {
+                Origins.LOGGER.warn("Power {} provided an empty {} array", powerId, field);
+                return Optional.empty();
+            }
+
+            if (identifiers.size() > 1) {
+                Origins.LOGGER.warn("Power {} {} array has multiple entries; using {}", powerId, field, identifiers.get(0));
+            }
+            return Optional.of(identifiers.get(0));
+        }
+
+        Origins.LOGGER.warn("Power {} has unsupported {} format; expected string or array of strings", powerId, field);
+        return Optional.empty();
+    }
+
     private record OriginData(
         Component name,
         Component description,
@@ -210,6 +341,20 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         Optional<ResourceLocation> icon,
         Optional<Integer> impact
     ) {
+    }
+
+    public record ReloadStats(
+        int originsLoaded,
+        int powersLoaded,
+        int skippedEntries,
+        List<ResourceLocation> unknownTypes
+    ) {
+        static ReloadStats empty() {
+            return new ReloadStats(0, 0, 0, List.of());
+        }
+    }
+
+    private record NormalizedPowerJson(ResourceLocation type, JsonObject json) {
     }
 
     private static final class JsonGatherer extends SimpleJsonResourceReloadListener {

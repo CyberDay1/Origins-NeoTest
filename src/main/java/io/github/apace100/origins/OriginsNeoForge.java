@@ -8,7 +8,8 @@ import io.github.apace100.origins.common.registry.ModActions;
 import io.github.apace100.origins.common.registry.ModConditions;
 import io.github.apace100.origins.common.registry.ModPowers;
 import io.github.apace100.origins.datagen.ModDataGen;
-import io.github.apace100.origins.neoforge.datapack.OriginsDataLoader;
+import io.github.apace100.origins.datapack.DataValidationLogger;
+import io.github.apace100.origins.datapack.OriginsDataLoader;
 import io.github.apace100.origins.registry.ModBlocks;
 import io.github.apace100.origins.registry.ModItems;
 import io.github.apace100.origins.power.OriginPowerManager;
@@ -40,8 +41,10 @@ public final class OriginsNeoForge {
         OriginsConfig.register(ModLoadingContext.get());
         OriginsConfig.registerListeners(modBus);
 
-        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) ->
-            event.addListener(new OriginsDataLoader()));
+        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> {
+            event.addListener(new OriginsDataLoader());
+            event.addListener(new DataValidationLogger());
+        });
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             io.github.apace100.origins.client.OriginsClient.init();
