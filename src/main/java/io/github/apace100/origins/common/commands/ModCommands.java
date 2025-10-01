@@ -1,6 +1,7 @@
 package io.github.apace100.origins.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.apace100.origins.Origins;
@@ -28,14 +29,17 @@ public final class ModCommands {
 
     private static void onRegisterCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        dispatcher.register(Commands.literal(Origins.MOD_ID)
+        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(Origins.MOD_ID)
             .then(Commands.literal("list").executes(ModCommands::list))
             .then(Commands.literal("set")
                 .then(Commands.argument("origin", ResourceLocationArgument.id())
                     .executes(ModCommands::set)))
             .then(Commands.literal("clear")
                 .then(Commands.argument("player", EntityArgument.player())
-                    .executes(ModCommands::clear))));
+                    .executes(ModCommands::clear)));
+
+        DebugCommand.register(root);
+        dispatcher.register(root);
     }
 
     private static int list(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
