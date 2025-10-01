@@ -1,101 +1,78 @@
 package io.github.apace100.origins.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.origin.Origin;
 import io.github.apace100.origins.common.registry.OriginRegistry;
+import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import io.github.apace100.origins.neoforge.capability.PlayerOriginManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-@EventBusSubscriber(modid = Origins.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public final class ModCommands {
-    private static final DynamicCommandExceptionType ERROR_UNKNOWN_ORIGIN = new DynamicCommandExceptionType(id ->
-        Component.translatable("commands.origins.error.unknown", id)
-    );
-
     private ModCommands() {
     }
 
-    @SubscribeEvent
-    public static void onRegisterCommands(RegisterCommandsEvent event) {
-        register(event.getDispatcher());
+    public static void register(IEventBus modBus) {
+        modBus.addListener(ModCommands::onRegisterCommands);
     }
 
-    private static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(
-            Commands.literal(Origins.MOD_ID)
-                .requires(source -> source.hasPermission(2))
-                .then(Commands.literal("reload").executes(context -> {
-                    CommandSourceStack source = context.getSource();
-                    source.sendSuccess(() -> Component.translatable("commands.origins.reload_soon"), true);
-                    return 1;
-                }))
-                .then(Commands.literal("list").executes(context -> listOrigins(context.getSource())))
-                .then(Commands.literal("set")
-                    .then(Commands.argument("player", EntityArgument.player())
-                        .then(Commands.argument("origin", ResourceLocationArgument.id())
-                            .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(
-                                OriginRegistry.ids().stream().map(ResourceLocation::toString).toList(), builder
-                            ))
-                            .executes(context -> setOrigin(
-                                context.getSource(),
-                                EntityArgument.getPlayer(context, "player"),
-                                ResourceLocationArgument.getId(context, "origin")
-                            )))))
-                .then(Commands.literal("reset")
-                    .then(Commands.argument("player", EntityArgument.player())
-                        .executes(context -> resetOrigin(
-                            context.getSource(),
-                            EntityArgument.getPlayer(context, "player")
-                        ))))
-        );
+    private static void onRegisterCommands(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        dispatcher.register(Commands.literal(Origins.MOD_ID)
+            .then(Commands.literal("list").executes(ModCommands::list))
+            .then(Commands.literal("set")
+                .then(Commands.argument("origin", ResourceLocationArgument.id())
+                    .executes(ModCommands::set)))
+            .then(Commands.literal("clear")
+                .then(Commands.argument("player", EntityArgument.player())
+                    .executes(ModCommands::clear))));
     }
 
-    private static int listOrigins(CommandSourceStack source) {
-        var origins = OriginRegistry.values();
-        if (origins.isEmpty()) {
-            source.sendSuccess(() -> Component.translatable("commands.origins.list.empty"), false);
-            return 0;
+    private static int list(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        PlayerOrigin origin = PlayerOriginManager.get(player);
+        if (origin != null && origin.getOriginIdOptional().isPresent()) {
+            ResourceLocation originId = origin.getOriginIdOptional().get();
+            Component originName = OriginRegistry.get(originId)
+                .map(Origin::name)
+                .orElse(Component.literal(originId.toString()));
+            context.getSource().sendSuccess(() -> Component.translatable("commands.origins.list", originName, originId), false);
+        } else {
+            context.getSource().sendSuccess(() -> Component.translatable("commands.origins.list.empty"), false);
         }
-
-        source.sendSuccess(() -> Component.translatable("commands.origins.list.header", origins.size()), false);
-        origins.stream()
-            .sorted((a, b) -> a.id().compareTo(b.id()))
-            .forEach(origin -> source.sendSuccess(() -> describeOrigin(origin), false));
-        return origins.size();
-    }
-
-    private static Component describeOrigin(Origin origin) {
-        return Component.translatable(
-            "commands.origins.list.entry",
-            origin.name(),
-            origin.id().toString(),
-            origin.powers().size()
-        );
-    }
-
-    private static int setOrigin(CommandSourceStack source, ServerPlayer player, ResourceLocation originId) throws CommandSyntaxException {
-        Origin origin = OriginRegistry.get(originId).orElseThrow(() -> ERROR_UNKNOWN_ORIGIN.create(originId));
-        PlayerOriginManager.set(player, origin.id());
-        source.sendSuccess(() -> Component.translatable("commands.origins.set", player.getDisplayName(), origin.name()), true);
         return 1;
     }
 
-    private static int resetOrigin(CommandSourceStack source, ServerPlayer player) {
-        PlayerOriginManager.clear(player);
-        source.sendSuccess(() -> Component.translatable("commands.origins.reset", player.getDisplayName()), true);
+    private static int set(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        ResourceLocation originId = ResourceLocationArgument.getId(context, "origin");
+        Origin definition = OriginRegistry.get(originId).orElse(null);
+        if (definition == null) {
+            context.getSource().sendFailure(Component.translatable("commands.origins.error.unknown", originId));
+            return 0;
+        }
+        if (!PlayerOriginManager.set(player, originId)) {
+            context.getSource().sendFailure(Component.translatable("commands.origins.error.unavailable"));
+            return 0;
+        }
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.set", player.getDisplayName(), definition.name()), true);
+        return 1;
+    }
+
+    private static int clear(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer target = EntityArgument.getPlayer(context, "player");
+        PlayerOriginManager.clear(target);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.origins.clear", target.getDisplayName()), true);
         return 1;
     }
 }

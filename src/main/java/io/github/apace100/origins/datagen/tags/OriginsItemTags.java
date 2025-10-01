@@ -1,6 +1,6 @@
 package io.github.apace100.origins.datagen.tags;
 
-import io.github.apace100.origins.neoforge.OriginsNeoForge;
+import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.registry.ModItems;
 import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
@@ -19,7 +19,7 @@ public class OriginsItemTags extends ItemTagsProvider {
         CompletableFuture<TagLookup<Block>> blockTags,
         ExistingFileHelper existingFileHelper
     ) {
-        super(output, lookupProvider, blockTags, OriginsNeoForge.MODID, existingFileHelper);
+        super(output, lookupProvider, blockTags, Origins.MOD_ID, existingFileHelper);
     }
 
     @Override

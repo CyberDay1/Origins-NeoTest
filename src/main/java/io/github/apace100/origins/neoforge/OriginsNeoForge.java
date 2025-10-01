@@ -2,6 +2,7 @@ package io.github.apace100.origins.neoforge;
 
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.client.OriginsClient;
+import io.github.apace100.origins.common.commands.ModCommands;
 import io.github.apace100.origins.common.config.ModConfigs;
 import io.github.apace100.origins.common.network.ModNetworking;
 import io.github.apace100.origins.common.registry.ModActions;
@@ -15,10 +16,10 @@ import io.github.apace100.origins.datagen.ModDataGen;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.DistExecutor;
-import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 @Mod(Origins.MOD_ID)
 public final class OriginsNeoForge {
@@ -31,13 +32,16 @@ public final class OriginsNeoForge {
         ModActions.register(modEventBus);
         ModConditions.register(modEventBus);
 
-        ModConfigs.register(ModLoadingContext.get(), modEventBus);
+        ModConfigs.register(ModLoadingContext.get());
         ModNetworking.register(modEventBus);
+        ModCommands.register(modEventBus);
         ModDataGen.register(modEventBus);
 
         modEventBus.addListener(this::registerCapabilities);
 
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> OriginsClient::init);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            OriginsClient.init();
+        }
 
     }
 

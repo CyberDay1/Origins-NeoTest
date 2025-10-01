@@ -1,6 +1,6 @@
 package io.github.apace100.origins.datagen;
 
-import io.github.apace100.origins.neoforge.OriginsNeoForge;
+import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.registry.ModBlocks;
 import io.github.apace100.origins.common.registry.ModItems;
 import net.minecraft.data.PackOutput;
@@ -9,7 +9,7 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 public class OriginsLanguageProvider extends LanguageProvider {
 
     public OriginsLanguageProvider(PackOutput output, String locale) {
-        super(output, OriginsNeoForge.MODID, locale);
+        super(output, Origins.MOD_ID, locale);
     }
 
     @Override
@@ -17,13 +17,12 @@ public class OriginsLanguageProvider extends LanguageProvider {
         add(ModBlocks.ORIGIN_STONE.get(), "Origin Stone");
         add(ModItems.ORB_OF_ORIGIN.get(), "Orb of Origin");
 
-        add("commands.origins.reload_soon", "Reload scheduled - datapack changes will apply soon.");
-        add("commands.origins.list.empty", "No origins are currently registered.");
-        add("commands.origins.list.header", "Available origins: %s");
-        add("commands.origins.list.entry", "%s (%s) - %s powers");
-        add("commands.origins.set", "Set %s's origin to %s");
-        add("commands.origins.reset", "Cleared origin for %s");
+        add("commands.origins.list", "Current origin: %s (%s)");
+        add("commands.origins.list.empty", "No origin selected.");
+        add("commands.origins.set", "Set origin for %s to %s");
+        add("commands.origins.clear", "Cleared origin for %s");
         add("commands.origins.error.unknown", "Unknown origin: %s");
+        add("commands.origins.error.unavailable", "You already have an origin assigned.");
 
         add("screen.origins.select_origin", "Choose Your Origin");
         add("screen.origins.origin", "Origin");

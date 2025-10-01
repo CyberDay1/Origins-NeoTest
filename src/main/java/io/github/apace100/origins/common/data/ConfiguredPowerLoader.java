@@ -37,7 +37,7 @@ public final class ConfiguredPowerLoader extends CodecJsonReloadListener<Configu
 
     @SuppressWarnings("unchecked")
     private Codec<ModPowers.PlaceholderPower> findCodec(ResourceLocation typeId) {
-        for (DeferredHolder<Codec<?>, Codec<?>> holder : ModPowers.POWERS.getEntries()) {
+        for (DeferredHolder<Codec<?>, ? extends Codec<?>> holder : ModPowers.POWERS.getEntries()) {
             if (holder.getId().equals(typeId)) {
                 return (Codec<ModPowers.PlaceholderPower>) holder.get();
             }

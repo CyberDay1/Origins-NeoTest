@@ -1,8 +1,17 @@
 modLoader="javafml"
 loaderVersion="[1,)"
 license="MIT"
+
 [[mods]]
 modId="origins"
-version="${version}"
+version="${mod_version}"
 displayName="Origins (NeoForge)"
-description="Port of the Origins mod to NeoForge."
+authors="Apace100, community"
+description="NeoForge port of Origins."
+
+[[dependencies.origins]]
+modId="neoforge"
+type="required"
+versionRange="[21,)"
+ordering="NONE"
+side="BOTH"

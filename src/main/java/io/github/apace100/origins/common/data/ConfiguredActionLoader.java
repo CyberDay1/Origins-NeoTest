@@ -23,7 +23,7 @@ public final class ConfiguredActionLoader extends CodecJsonReloadListener<Config
 
     @SuppressWarnings("unchecked")
     private Codec<Action<Void>> findCodec(ResourceLocation typeId) {
-        for (DeferredHolder<Codec<?>, Codec<?>> holder : ModActions.ACTIONS.getEntries()) {
+        for (DeferredHolder<Codec<?>, ? extends Codec<?>> holder : ModActions.ACTIONS.getEntries()) {
             if (holder.getId().equals(typeId)) {
                 return (Codec<Action<Void>>) holder.get();
             }

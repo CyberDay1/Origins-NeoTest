@@ -4,7 +4,7 @@ plugins {
 }
 
 group = project.modGroup
-version = project.modVersion
+version = project.mod_version
 archivesBaseName = 'origins-neoforge'
 
 java {
@@ -27,6 +27,7 @@ dependencies {
 processResources {
     def props = [
         version         : project.version,
+        mod_version     : project.mod_version,
         neoForgeVersion : project.neoForgeVersion,
         minecraftVersion: project.minecraftVersion
     ]

@@ -2,72 +2,68 @@ package io.github.apace100.origins.common.config;
 
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.network.SyncConfigS2C;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class ModConfigs {
-    public static final ModConfigSpec SPEC;
-    public static final Common COMMON;
+    public static final ModConfigSpec SERVER_SPEC;
+    public static final ModConfigSpec CLIENT_SPEC;
+
+    public static final Server SERVER;
+    public static final Client CLIENT;
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
-        COMMON = new Common(builder);
-        SPEC = builder.build();
+        ModConfigSpec.Builder serverBuilder = new ModConfigSpec.Builder();
+        SERVER = new Server(serverBuilder);
+        SERVER_SPEC = serverBuilder.build();
+
+        ModConfigSpec.Builder clientBuilder = new ModConfigSpec.Builder();
+        CLIENT = new Client(clientBuilder);
+        CLIENT_SPEC = clientBuilder.build();
     }
 
     private ModConfigs() {
     }
 
-    public static void register(ModLoadingContext context, IEventBus modBus) {
-        context.getActiveContainer().registerConfig(ModConfig.Type.COMMON, SPEC, Origins.MOD_ID + "-common.toml");
-        modBus.addListener(ModConfigs::onConfigReloaded);
-    }
-
-    private static void onConfigReloaded(ModConfigEvent event) {
-        if (event.getConfig().getSpec() == SPEC) {
-            COMMON.onReload();
-        }
-    }
-
-    public static void applySync(SyncConfigS2C payload) {
-        COMMON.applySync(payload);
+    public static void register(ModLoadingContext context) {
+        context.getActiveContainer().registerConfig(ModConfig.Type.SERVER, SERVER_SPEC, Origins.MOD_ID + "-server.toml");
+        context.getActiveContainer().registerConfig(ModConfig.Type.CLIENT, CLIENT_SPEC, Origins.MOD_ID + "-client.toml");
     }
 
     public static SyncConfigS2C createSyncPayload() {
         return new SyncConfigS2C(
-            COMMON.syncPowersOnLogin.get(),
-            COMMON.maxTrackedPowers.get()
+            SERVER.allowOrbReuse.get(),
+            CLIENT.showOriginReminder.get()
         );
     }
 
-    public static final class Common {
-        public final ModConfigSpec.BooleanValue syncPowersOnLogin;
-        public final ModConfigSpec.IntValue maxTrackedPowers;
+    public static void applySync(SyncConfigS2C payload) {
+        SERVER.allowOrbReuse.set(payload.allowOrbReuse());
+        CLIENT.showOriginReminder.set(payload.showOriginReminder());
+    }
 
-        private Common(ModConfigSpec.Builder builder) {
-            builder.push("networking");
-            syncPowersOnLogin = builder
-                .comment("If true, Origins requests a full power sync from the server whenever a player joins.")
-                .define("syncPowersOnLogin", true);
-            builder.pop();
+    public static final class Server {
+        public final ModConfigSpec.BooleanValue allowOrbReuse;
 
+        private Server(ModConfigSpec.Builder builder) {
             builder.push("gameplay");
-            maxTrackedPowers = builder
-                .comment("Hard limit for the number of simultaneous passive powers tracked on a player.")
-                .defineInRange("maxTrackedPowers", 32, 1, 128);
+            allowOrbReuse = builder
+                .comment("Allow the Orb of Origin to be reused without clearing the player's origin.")
+                .define("allowOrbReuse", false);
             builder.pop();
         }
+    }
 
-        private void onReload() {
-            // TODO: consume updated config values.
-        }
+    public static final class Client {
+        public final ModConfigSpec.BooleanValue showOriginReminder;
 
-        private void applySync(SyncConfigS2C payload) {
-            syncPowersOnLogin.set(payload.syncPowersOnLogin());
-            maxTrackedPowers.set(payload.maxTrackedPowers());
+        private Client(ModConfigSpec.Builder builder) {
+            builder.push("ui");
+            showOriginReminder = builder
+                .comment("Show a reminder toast if the player has not selected an origin yet.")
+                .define("showOriginReminder", true);
+            builder.pop();
         }
     }
 }
