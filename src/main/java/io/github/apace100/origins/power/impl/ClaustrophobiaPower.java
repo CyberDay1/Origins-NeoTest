@@ -1,5 +1,7 @@
 package io.github.apace100.origins.power.impl;
 
+import io.github.apace100.origins.config.OriginsConfig;
+import io.github.apace100.origins.config.OriginsConfigValues;
 import io.github.apace100.origins.power.Power;
 import io.github.apace100.origins.power.PowerType;
 import net.minecraft.core.BlockPos;
@@ -14,6 +16,12 @@ public class ClaustrophobiaPower extends Power {
 
     @Override
     public void tick(Player player) {
+        OriginsConfigValues.Elytrian config = OriginsConfig.get().elytrian();
+        if (!config.confinedSpaceChecks()) {
+            clearEffects(player);
+            return;
+        }
+
         BlockPos pos = player.blockPosition();
         boolean cramped = !player.level().isEmptyBlock(pos.above()) && !player.level().isEmptyBlock(pos.above(2));
         if (cramped) {
@@ -23,6 +31,17 @@ public class ClaustrophobiaPower extends Power {
             if (!player.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) || player.getEffect(MobEffects.MOVEMENT_SLOWDOWN).getDuration() <= 20) {
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 0, false, false, true));
             }
+        } else {
+            clearEffects(player);
+        }
+    }
+
+    private void clearEffects(Player player) {
+        if (player.hasEffect(MobEffects.WEAKNESS)) {
+            player.removeEffect(MobEffects.WEAKNESS);
+        }
+        if (player.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
+            player.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
         }
     }
 }

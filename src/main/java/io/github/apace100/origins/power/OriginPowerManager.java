@@ -1,6 +1,8 @@
 package io.github.apace100.origins.power;
 
 import io.github.apace100.origins.Origins;
+import io.github.apace100.origins.config.OriginsConfig;
+import io.github.apace100.origins.config.OriginsConfigValues;
 import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import io.github.apace100.origins.neoforge.capability.PlayerOriginManager;
 import io.github.apace100.origins.power.impl.*;
@@ -97,9 +99,24 @@ public final class OriginPowerManager {
             return;
         }
 
-        if (hasPower(player, ELYTRA_FLIGHT) || hasPower(player, CAT_REFLEXES)) {
+        OriginsConfigValues values = OriginsConfig.get();
+
+        if (hasPower(player, ELYTRA_FLIGHT) && values.elytrian().cancelFallDamage()) {
             event.setDistance(0.0F);
             event.setDamageMultiplier(0.0F);
+            return;
+        }
+
+        if (hasPower(player, CAT_REFLEXES)) {
+            double reduction = Math.max(0.0D, Math.min(1.0D, values.feline().fallDamageReduction()));
+            if (reduction >= 1.0D) {
+                event.setDistance(0.0F);
+                event.setDamageMultiplier(0.0F);
+            } else if (reduction > 0.0D) {
+                float scale = (float)(1.0D - reduction);
+                event.setDistance(event.getDistance() * scale);
+                event.setDamageMultiplier(event.getDamageMultiplier() * scale);
+            }
         }
     }
 
@@ -117,7 +134,8 @@ public final class OriginPowerManager {
         if (event.getSource().is(DamageTypes.IN_WALL)
             && hasPower(player, PHASE)) {
             PlayerOrigin origin = PlayerOriginManager.get(player);
-            if (origin != null && origin.isPhantomized() && player.isShiftKeyDown()) {
+            OriginsConfigValues.Phantom phantom = OriginsConfig.get().phantom();
+            if (phantom.allowWallPhasing() && origin != null && origin.isPhantomized() && player.isShiftKeyDown()) {
                 event.setNewDamage(0.0F);
             }
         }

@@ -1,6 +1,8 @@
 package io.github.apace100.origins.power.impl;
 
 import io.github.apace100.origins.Origins;
+import io.github.apace100.origins.config.OriginsConfig;
+import io.github.apace100.origins.config.OriginsConfigValues;
 import io.github.apace100.origins.power.Power;
 import io.github.apace100.origins.power.PowerType;
 import net.minecraft.resources.ResourceLocation;
@@ -16,11 +18,25 @@ public class CatlikeReflexesPower extends Power {
 
     @Override
     public void tick(Player player) {
-        player.resetFallDistance();
+        OriginsConfigValues.Feline config = OriginsConfig.get().feline();
+        if (config.fallDamageReduction() >= 1.0D) {
+            player.resetFallDistance();
+        }
 
         AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if (speed != null && speed.getModifier(MODIFIER_ID) == null) {
-            speed.addTransientModifier(new AttributeModifier(MODIFIER_ID, 0.1D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        if (speed != null) {
+            double bonus = Math.max(0.0D, config.moveSpeedMultiplier() - 1.0D);
+            AttributeModifier current = speed.getModifier(MODIFIER_ID);
+            if (bonus <= 0.0D) {
+                if (current != null) {
+                    speed.removeModifier(MODIFIER_ID);
+                }
+            } else if (current == null || current.amount() != bonus) {
+                if (current != null) {
+                    speed.removeModifier(MODIFIER_ID);
+                }
+                speed.addTransientModifier(new AttributeModifier(MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            }
         }
     }
 

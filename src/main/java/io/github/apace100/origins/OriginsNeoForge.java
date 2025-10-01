@@ -2,6 +2,7 @@ package io.github.apace100.origins;
 
 import io.github.apace100.origins.common.commands.ModCommands;
 import io.github.apace100.origins.common.config.ModConfigs;
+import io.github.apace100.origins.config.OriginsConfig;
 import io.github.apace100.origins.common.network.ModNetworking;
 import io.github.apace100.origins.common.registry.ModActions;
 import io.github.apace100.origins.common.registry.ModConditions;
@@ -36,6 +37,8 @@ public final class OriginsNeoForge {
         OriginPowerManager.init();
 
         ModConfigs.register(ModLoadingContext.get());
+        OriginsConfig.register(ModLoadingContext.get());
+        OriginsConfig.registerListeners(modBus);
 
         NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) ->
             event.addListener(new OriginsDataLoader()));
