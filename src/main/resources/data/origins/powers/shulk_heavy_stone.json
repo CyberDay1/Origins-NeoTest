@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Heavy Stone" },
+  "description": { "text": "Your dense skin makes swimming and using shields harder." },
+  "actions": []
+}

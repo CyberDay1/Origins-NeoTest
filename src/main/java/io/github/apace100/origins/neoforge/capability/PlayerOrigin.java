@@ -1,5 +1,8 @@
 package io.github.apace100.origins.neoforge.capability;
 
+import io.github.apace100.origins.Origins;
+import io.github.apace100.origins.common.registry.ConfiguredPowers;
+import io.github.apace100.origins.common.registry.OriginRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -72,8 +75,10 @@ public class PlayerOrigin {
         originId = null;
         if (tag.contains(NBT_ORIGIN, Tag.TAG_STRING)) {
             ResourceLocation parsed = ResourceLocation.tryParse(tag.getString(NBT_ORIGIN));
-            if (parsed != null) {
+            if (parsed != null && OriginRegistry.get(parsed).isPresent()) {
                 originId = parsed;
+            } else if (parsed != null) {
+                Origins.LOGGER.warn("Dropping unknown origin {} from player capability data", parsed);
             }
         }
 
@@ -82,8 +87,10 @@ public class PlayerOrigin {
             ListTag list = tag.getList(NBT_POWERS, Tag.TAG_STRING);
             for (int i = 0; i < list.size(); i++) {
                 ResourceLocation parsedPower = ResourceLocation.tryParse(list.getString(i));
-                if (parsedPower != null) {
+                if (parsedPower != null && ConfiguredPowers.get(parsedPower).isPresent()) {
                     powers.add(parsedPower);
+                } else if (parsedPower != null) {
+                    Origins.LOGGER.warn("Skipping unknown power {} from player capability data", parsedPower);
                 }
             }
         }

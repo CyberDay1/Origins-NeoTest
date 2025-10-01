@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Stone Skin" },
+  "description": { "text": "Your natural armor protects you without the need for gear." },
+  "actions": []
+}

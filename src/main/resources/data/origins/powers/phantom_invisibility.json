@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Translucent" },
+  "description": { "text": "You become invisible while in phantom form." },
+  "actions": []
+}

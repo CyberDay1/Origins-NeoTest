@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Nether Spawn" },
+  "description": { "text": "You spawn in the Nether and feel at home there." },
+  "actions": []
+}

@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Featherweight" },
+  "description": { "text": "You fall gently, taking little to no fall damage." },
+  "actions": []
+}

@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Nine Lives" },
+  "description": { "text": "Creepers are scared of you and will flee instead of exploding." },
+  "actions": []
+}

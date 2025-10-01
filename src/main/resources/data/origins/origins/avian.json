@@ -1,0 +1,11 @@
+{
+  "name": { "text": "Avian" },
+  "description": { "text": "Lightweight and free-spirited, Avians glide through life." },
+  "powers": [
+    "origins:slow_falling",
+    "origins:fresh_air",
+    "origins:tailwind"
+  ],
+  "icon": "minecraft:feather",
+  "impact": 1
+}

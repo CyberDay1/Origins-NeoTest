@@ -1,0 +1,11 @@
+{
+  "name": { "text": "Enderian" },
+  "description": { "text": "Enderfolk who blink through space but dislike water and pumpkins." },
+  "powers": [
+    "origins:throw_pearl",
+    "origins:water_vulnerability",
+    "origins:pumpkin_hate"
+  ],
+  "icon": "minecraft:ender_pearl",
+  "impact": 2
+}

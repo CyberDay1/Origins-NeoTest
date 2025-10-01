@@ -1,0 +1,11 @@
+{
+  "name": { "text": "Feline" },
+  "description": { "text": "Catlike agility and skittish energy define the Feline." },
+  "powers": [
+    "origins:cat_fall_immunity",
+    "origins:scare_creepers",
+    "origins:weak_arms"
+  ],
+  "icon": "minecraft:cod",
+  "impact": 1
+}

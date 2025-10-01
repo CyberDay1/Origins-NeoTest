@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Catlike Reflexes" },
+  "description": { "text": "You land on your feet, negating fall damage." },
+  "actions": []
+}

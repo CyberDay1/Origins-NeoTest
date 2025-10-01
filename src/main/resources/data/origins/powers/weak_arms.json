@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Weak Arms" },
+  "description": { "text": "You cannot mine natural stone without the use of a tool." },
+  "actions": []
+}

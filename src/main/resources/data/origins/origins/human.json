@@ -1,0 +1,7 @@
+{
+  "name": { "text": "Human" },
+  "description": { "text": "A regular inhabitant of the Overworld without any unique traits." },
+  "powers": [],
+  "icon": "minecraft:player_head",
+  "impact": 0
+}

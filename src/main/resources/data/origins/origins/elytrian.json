@@ -1,0 +1,11 @@
+{
+  "name": { "text": "Elytrian" },
+  "description": { "text": "Born with the gift of wings, Elytrians excel in the skies but struggle in tight spaces." },
+  "powers": [
+    "origins:elytra_flight",
+    "origins:launch_into_air",
+    "origins:claustrophobia"
+  ],
+  "icon": "minecraft:elytra",
+  "impact": 3
+}

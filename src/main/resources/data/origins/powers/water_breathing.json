@@ -1,0 +1,6 @@
+{
+  "type": "origins:placeholder",
+  "name": { "text": "Aquatic" },
+  "description": { "text": "You can breathe indefinitely while underwater." },
+  "actions": []
+}
