@@ -3,13 +3,18 @@ package io.github.apace100.origins.neoforge.capability;
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.network.ModNetworking;
 import io.github.apace100.origins.common.network.SyncOriginS2C;
+import io.github.apace100.origins.common.origin.Origin;
+import io.github.apace100.origins.common.registry.OriginRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class PlayerOriginManager {
     private static final String ORIGIN_DATA_KEY = Origins.MOD_ID + "_origin";
@@ -21,15 +26,24 @@ public final class PlayerOriginManager {
         return player.getCapability(OriginCapabilities.PLAYER_ORIGIN);
     }
 
-    public static void set(ServerPlayer player, ResourceLocation originId) {
+    public static boolean set(ServerPlayer player, ResourceLocation originId) {
         PlayerOrigin origin = get(player);
         if (origin == null) {
-            return;
+            return false;
+        }
+
+        Optional<Origin> definition = OriginRegistry.get(originId);
+        if (definition.isEmpty()) {
+            Origins.LOGGER.warn("Tried to assign unknown origin {} to player {}", originId, player.getGameProfile().getName());
+            return false;
         }
 
         origin.setOriginId(originId);
+        Set<ResourceLocation> powers = definition.get().powers().stream().collect(Collectors.toSet());
+        origin.setPowers(powers);
         save(player, origin);
         sync(player, origin);
+        return true;
     }
 
     public static void clear(ServerPlayer player) {
@@ -39,6 +53,7 @@ public final class PlayerOriginManager {
         }
 
         origin.setOriginId(null);
+        origin.setPowers(Collections.emptySet());
         save(player, origin);
         sync(player, origin);
     }
@@ -94,6 +109,6 @@ public final class PlayerOriginManager {
 
     private static void sync(ServerPlayer player, PlayerOrigin origin) {
         Optional<ResourceLocation> originId = origin.getOriginIdOptional();
-        ModNetworking.sendToPlayer(player, new SyncOriginS2C(originId));
+        ModNetworking.sendToPlayer(player, new SyncOriginS2C(originId, Set.copyOf(origin.getPowers())));
     }
 }

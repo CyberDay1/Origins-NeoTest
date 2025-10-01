@@ -3,6 +3,7 @@ package io.github.apace100.origins.common.registry;
 import io.github.apace100.origins.Origins;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
+import io.github.apace100.origins.common.item.OrbOfOriginItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -19,7 +20,7 @@ public final class ModItems {
 
     public static final DeferredHolder<Item, Item> ORB_OF_ORIGIN = ITEMS.register(
         "orb_of_origin",
-        () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON))
+        () -> new OrbOfOriginItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON))
     );
 
     private ModItems() {

@@ -2,6 +2,7 @@ package io.github.apace100.origins.common.network;
 
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.config.ModConfigs;
+import io.github.apace100.origins.common.network.ChooseOriginC2S;
 import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import io.github.apace100.origins.neoforge.capability.PlayerOriginManager;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -29,6 +30,7 @@ public final class ModNetworking {
         PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
         registrar.playToClient(SyncConfigS2C.TYPE, SyncConfigS2C.STREAM_CODEC, SyncConfigS2C::handle);
         registrar.playToClient(SyncOriginS2C.TYPE, SyncOriginS2C.STREAM_CODEC, SyncOriginS2C::handle);
+        registrar.playToServer(ChooseOriginC2S.TYPE, ChooseOriginC2S.STREAM_CODEC, ChooseOriginC2S::handle);
     }
 
     @SubscribeEvent

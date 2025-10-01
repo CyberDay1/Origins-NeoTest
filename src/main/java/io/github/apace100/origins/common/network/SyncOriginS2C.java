@@ -12,11 +12,14 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Optional;
+import java.util.Set;
 
-public record SyncOriginS2C(Optional<ResourceLocation> originId) implements CustomPacketPayload {
+public record SyncOriginS2C(Optional<ResourceLocation> originId, Set<ResourceLocation> powers) implements CustomPacketPayload {
     public static final Type<SyncOriginS2C> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "sync_origin"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncOriginS2C> STREAM_CODEC = StreamCodec.composite(
-        ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), SyncOriginS2C::originId, SyncOriginS2C::new
+        ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), SyncOriginS2C::originId,
+        ByteBufCodecs.collection(java.util.HashSet::new, ResourceLocation.STREAM_CODEC), SyncOriginS2C::powers,
+        SyncOriginS2C::new
     );
 
     @Override
@@ -25,7 +28,7 @@ public record SyncOriginS2C(Optional<ResourceLocation> originId) implements Cust
     }
 
     public static SyncOriginS2C from(PlayerOrigin origin) {
-        return new SyncOriginS2C(origin.getOriginIdOptional());
+        return new SyncOriginS2C(origin.getOriginIdOptional(), Set.copyOf(origin.getPowers()));
     }
 
     public static void handle(SyncOriginS2C payload, IPayloadContext context) {
@@ -38,6 +41,7 @@ public record SyncOriginS2C(Optional<ResourceLocation> originId) implements Cust
             PlayerOrigin origin = player.getCapability(OriginCapabilities.PLAYER_ORIGIN);
             if (origin != null) {
                 origin.setOriginId(payload.originId().orElse(null));
+                origin.setPowers(Set.copyOf(payload.powers()));
             }
         });
     }

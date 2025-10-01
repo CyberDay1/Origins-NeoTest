@@ -1,6 +1,7 @@
 package io.github.apace100.origins.neoforge;
 
 import io.github.apace100.origins.Origins;
+import io.github.apace100.origins.client.OriginsClient;
 import io.github.apace100.origins.common.config.ModConfigs;
 import io.github.apace100.origins.common.network.ModNetworking;
 import io.github.apace100.origins.common.registry.ModActions;
@@ -16,6 +17,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.api.distmarker.Dist;
 
 @Mod(Origins.MOD_ID)
 public final class OriginsNeoForge {
@@ -33,6 +36,8 @@ public final class OriginsNeoForge {
         ModDataGen.register(modEventBus);
 
         modEventBus.addListener(this::registerCapabilities);
+
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> OriginsClient::init);
 
     }
 
