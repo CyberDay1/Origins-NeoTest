@@ -1,0 +1,8 @@
+{
+  "type": "origins:active_self",
+  "entity_action": {
+    "type": "origins:particle",
+    "particle": "minecraft:smoke",
+    "count": 5
+  }
+}
