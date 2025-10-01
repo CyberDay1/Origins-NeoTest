@@ -12,24 +12,27 @@ java {
 }
 
 repositories {
-    mavenLocal()
     maven { url = 'https://maven.neoforged.net/releases' }
     mavenCentral()
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${property('neoForgeVersion')}"
+    implementation "net.neoforged:neoforge:${property('neoforgeVersion')}"
     implementation 'com.google.guava:guava:31.1-jre'
+}
+
+tasks.processResources {
+    inputs.properties(
+        'neoforge.mod.id': project.findProperty('mod_id') ?: 'origins',
+        'neoforge.mod.version': project.findProperty('mod_version') ?: '0.1.0',
+        'neoforge.mod.mc': project.findProperty('minecraftVersion') ?: '1.21.1'
+    )
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand(inputs.properties)
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 21
-}
-
-processResources {
-    inputs.property 'mod_version', project.property('mod_version')
-    filesMatching('META-INF/neoforge.mods.toml') {
-        expand([mod_version: project.property('mod_version')])
-    }
 }
