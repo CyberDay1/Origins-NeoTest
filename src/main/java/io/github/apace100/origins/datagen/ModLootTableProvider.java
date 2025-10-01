@@ -1,6 +1,6 @@
 package io.github.apace100.origins.datagen;
 
-import io.github.apace100.origins.common.registry.ModBlocks;
+import io.github.apace100.origins.registry.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
