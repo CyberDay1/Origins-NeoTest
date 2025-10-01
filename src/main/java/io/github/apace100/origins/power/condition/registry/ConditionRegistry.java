@@ -22,6 +22,8 @@ import io.github.apace100.origins.power.condition.impl.ItemTagCondition;
 import io.github.apace100.origins.power.condition.impl.InvertedCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
 import io.github.apace100.origins.power.condition.impl.PassengerCondition;
+import io.github.apace100.origins.power.condition.impl.PreventBlockUseCondition;
+import io.github.apace100.origins.power.condition.impl.ProjectileCondition;
 import io.github.apace100.origins.power.condition.impl.RecentDamageCondition;
 import io.github.apace100.origins.power.condition.impl.SneakingCondition;
 import io.github.apace100.origins.power.condition.impl.TimeOfDayCondition;
@@ -81,6 +83,8 @@ public final class ConditionRegistry {
         register(LightLevelCondition.TYPE, LightLevelCondition::fromJson);
         register(WeatherCondition.TYPE, WeatherCondition::fromJson);
         register(YLevelCondition.TYPE, YLevelCondition::fromJson);
+        register(PreventBlockUseCondition.TYPE, PreventBlockUseCondition::fromJson);
+        register(ProjectileCondition.TYPE, ProjectileCondition::fromJson);
     }
 
     /**
