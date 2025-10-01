@@ -11,6 +11,15 @@ public class PhasePower extends Power {
 
     @Override
     public void tick(Player player) {
-        // TODO: Let Phantoms switch between physical and ghost form
+        if (player.level().isClientSide) {
+            return;
+        }
+
+        if (player.isShiftKeyDown()) {
+            player.noPhysics = true;
+            player.resetFallDistance();
+        } else if (player.noPhysics) {
+            player.noPhysics = false;
+        }
     }
 }

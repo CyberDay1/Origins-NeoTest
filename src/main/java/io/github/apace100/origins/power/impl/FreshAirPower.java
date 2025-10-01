@@ -11,6 +11,6 @@ public class FreshAirPower extends Power {
 
     @Override
     public void tick(Player player) {
-        // TODO: Prevent Avians from sleeping underground
+        // Behaviour enforced via OriginPowerManager sleep event.
     }
 }

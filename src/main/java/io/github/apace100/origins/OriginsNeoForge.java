@@ -10,6 +10,7 @@ import io.github.apace100.origins.datagen.ModDataGen;
 import io.github.apace100.origins.neoforge.datapack.OriginsDataLoader;
 import io.github.apace100.origins.registry.ModBlocks;
 import io.github.apace100.origins.registry.ModItems;
+import io.github.apace100.origins.power.OriginPowerManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
@@ -31,6 +32,8 @@ public final class OriginsNeoForge {
         ModNetworking.register(modBus);
         ModCommands.register(modBus);
         ModDataGen.register(modBus);
+
+        OriginPowerManager.init();
 
         ModConfigs.register(ModLoadingContext.get());
 
