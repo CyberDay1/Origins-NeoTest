@@ -20,10 +20,15 @@ import io.github.apace100.origins.power.action.impl.ItemAction;
 import io.github.apace100.origins.power.action.impl.LightningAction;
 import io.github.apace100.origins.power.action.impl.ModifyAttributeAction;
 import io.github.apace100.origins.power.action.impl.ModifyDamageTakenAction;
+import io.github.apace100.origins.power.action.impl.ModifyFoodAction;
+import io.github.apace100.origins.power.action.impl.ModifyProjectileAction;
 import io.github.apace100.origins.power.action.impl.KnockbackAction;
 import io.github.apace100.origins.power.action.impl.ParticleAction;
 import io.github.apace100.origins.power.action.impl.PlaySoundAction;
+import io.github.apace100.origins.power.action.impl.PreventBlockUseAction;
+import io.github.apace100.origins.power.action.impl.PreventFoodAction;
 import io.github.apace100.origins.power.action.impl.PreventItemUseAction;
+import io.github.apace100.origins.power.action.impl.PreventProjectileAction;
 import io.github.apace100.origins.power.action.impl.ReplaceEquippedItemAction;
 import io.github.apace100.origins.power.action.impl.ResetAttributeAction;
 import io.github.apace100.origins.power.action.impl.SetBlockAction;
@@ -77,12 +82,17 @@ public final class ActionRegistry {
         register(ModifyAttributeAction.TYPE, ModifyAttributeAction::fromJson);
         register(ResetAttributeAction.TYPE, ResetAttributeAction::fromJson);
         register(ConsumeItemAction.TYPE, ConsumeItemAction::fromJson);
+        register(ModifyFoodAction.TYPE, ModifyFoodAction::fromJson);
+        register(PreventFoodAction.TYPE, PreventFoodAction::fromJson);
         register(ReplaceEquippedItemAction.TYPE, ReplaceEquippedItemAction::fromJson);
         register(DamageItemAction.TYPE, DamageItemAction::fromJson);
         register(ModifyDamageTakenAction.TYPE, ModifyDamageTakenAction::fromJson);
         register(HealAction.TYPE, HealAction::fromJson);
         register(KnockbackAction.TYPE, KnockbackAction::fromJson);
         register(PreventItemUseAction.TYPE, PreventItemUseAction::fromJson);
+        register(PreventBlockUseAction.TYPE, PreventBlockUseAction::fromJson);
+        register(ModifyProjectileAction.TYPE, ModifyProjectileAction::fromJson);
+        register(PreventProjectileAction.TYPE, PreventProjectileAction::fromJson);
     }
 
     /**
