@@ -14,6 +14,9 @@ import io.github.apace100.origins.power.condition.impl.EquippedItemCondition;
 import io.github.apace100.origins.power.condition.impl.FluidCondition;
 import io.github.apace100.origins.power.condition.impl.FoodCondition;
 import io.github.apace100.origins.power.condition.impl.HealthCondition;
+import io.github.apace100.origins.power.condition.impl.ItemDurabilityCondition;
+import io.github.apace100.origins.power.condition.impl.ItemEnchantmentCondition;
+import io.github.apace100.origins.power.condition.impl.ItemTagCondition;
 import io.github.apace100.origins.power.condition.impl.InvertedCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
 import io.github.apace100.origins.power.condition.impl.PassengerCondition;
@@ -65,6 +68,9 @@ public final class ConditionRegistry {
         register(InvertedCondition.TYPE, InvertedCondition::fromJson);
         register(AttributeCondition.TYPE, AttributeCondition::fromJson);
         register(EffectActiveCondition.TYPE, EffectActiveCondition::fromJson);
+        register(ItemEnchantmentCondition.TYPE, ItemEnchantmentCondition::fromJson);
+        register(ItemDurabilityCondition.TYPE, ItemDurabilityCondition::fromJson);
+        register(ItemTagCondition.TYPE, ItemTagCondition::fromJson);
     }
 
     /**

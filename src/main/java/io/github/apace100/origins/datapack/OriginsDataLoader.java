@@ -22,17 +22,24 @@ import io.github.apace100.origins.power.action.Action;
 import io.github.apace100.origins.power.action.impl.ApplyEffectAction;
 import io.github.apace100.origins.power.action.impl.ClearAllEffectsAction;
 import io.github.apace100.origins.power.action.impl.ClearEffectAction;
+import io.github.apace100.origins.power.action.impl.ConsumeItemAction;
+import io.github.apace100.origins.power.action.impl.DamageItemAction;
+import io.github.apace100.origins.power.action.impl.GiveItemAction;
 import io.github.apace100.origins.power.action.impl.ModifyAttributeAction;
+import io.github.apace100.origins.power.action.impl.ReplaceEquippedItemAction;
 import io.github.apace100.origins.power.action.impl.ResetAttributeAction;
 import io.github.apace100.origins.power.action.registry.ActionRegistry;
 import io.github.apace100.origins.power.condition.Condition;
-import io.github.apace100.origins.power.condition.impl.AttributeCondition;
 import io.github.apace100.origins.power.condition.impl.AllOfCondition;
 import io.github.apace100.origins.power.condition.impl.AnyOfCondition;
+import io.github.apace100.origins.power.condition.impl.AttributeCondition;
+import io.github.apace100.origins.power.condition.impl.EffectActiveCondition;
 import io.github.apace100.origins.power.condition.impl.EntityCondition;
 import io.github.apace100.origins.power.condition.impl.HealthCondition;
-import io.github.apace100.origins.power.condition.impl.EffectActiveCondition;
 import io.github.apace100.origins.power.condition.impl.InvertedCondition;
+import io.github.apace100.origins.power.condition.impl.ItemDurabilityCondition;
+import io.github.apace100.origins.power.condition.impl.ItemEnchantmentCondition;
+import io.github.apace100.origins.power.condition.impl.ItemTagCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
 import io.github.apace100.origins.power.condition.impl.PassengerCondition;
 import io.github.apace100.origins.power.condition.impl.SneakingCondition;
@@ -125,11 +132,13 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         ActionRegistry.setAll(actions);
         int effectActionCount = countEffectActions(actions);
         int attributeActionCount = countAttributeActions(actions);
+        int itemActionCount = countItemActions(actions);
 
         Map<ResourceLocation, Condition<?>> conditions = decodeConditions(pendingConditionJson);
         ConditionRegistry.setAll(conditions);
         int effectConditionCount = countEffectConditions(conditions);
         int attributeConditionCount = countAttributeConditions(conditions);
+        int itemConditionCount = countItemConditions(conditions);
 
         Map<ResourceLocation, ConfiguredPower> powers = decodePowers(pendingPowerJson);
         ConfiguredPowers.setAll(powers);
@@ -145,15 +154,19 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int compositeConditionCount = countCompositeConditions(conditions);
         int totalSkipped = skippedOrigins + skippedPowers + skippedActions + skippedConditions;
         LAST_STATS = new ReloadStats(origins.size(), powers.size(), actions.size(), conditions.size(), effectActionCount,
-            attributeActionCount, effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
-            totalSkipped, unknownTypes);
+            attributeActionCount, itemActionCount, effectConditionCount, attributeConditionCount, entityConditionCount,
+            compositeConditionCount, itemConditionCount, totalSkipped, unknownTypes);
 
         if (totalSkipped > 0) {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions, and {} conditions ({} entity / {} composite) from datapacks ({} entries skipped)",
-                origins.size(), powers.size(), actions.size(), conditions.size(), entityConditionCount, compositeConditionCount, totalSkipped);
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item) from datapacks ({} entries skipped)",
+                origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
+                conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
+                itemConditionCount, totalSkipped);
         } else {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions, and {} conditions ({} entity / {} composite) from datapacks",
-                origins.size(), powers.size(), actions.size(), conditions.size(), entityConditionCount, compositeConditionCount);
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item) from datapacks",
+                origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
+                conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
+                itemConditionCount);
         }
     }
 
@@ -222,6 +235,15 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             .count();
     }
 
+    private static int countItemActions(Map<ResourceLocation, Action<?>> actions) {
+        return (int) actions.values().stream()
+            .filter(action -> action instanceof GiveItemAction
+                || action instanceof ConsumeItemAction
+                || action instanceof ReplaceEquippedItemAction
+                || action instanceof DamageItemAction)
+            .count();
+    }
+
     private static int countEffectConditions(Map<ResourceLocation, Condition<?>> conditions) {
         return (int) conditions.values().stream()
             .filter(condition -> condition instanceof EffectActiveCondition)
@@ -240,6 +262,14 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
     private static int countCompositeConditions(Map<ResourceLocation, Condition<?>> conditions) {
         return (int) conditions.values().stream().filter(OriginsDataLoader::isCompositeCondition).count();
+    }
+
+    private static int countItemConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof ItemEnchantmentCondition
+                || condition instanceof ItemDurabilityCondition
+                || condition instanceof ItemTagCondition)
+            .count();
     }
 
     private static boolean isEntityCondition(Condition<?> condition) {
@@ -528,15 +558,17 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int conditionsLoaded,
         int effectActionsLoaded,
         int attributeActionsLoaded,
+        int itemActionsLoaded,
         int effectConditionsLoaded,
         int attributeConditionsLoaded,
         int entityConditionsLoaded,
         int compositeConditionsLoaded,
+        int itemConditionsLoaded,
         int skippedEntries,
         List<ResourceLocation> unknownTypes
     ) {
         static ReloadStats empty() {
-            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, List.of());
+            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, List.of());
         }
     }
 
