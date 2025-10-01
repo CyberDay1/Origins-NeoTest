@@ -21,6 +21,14 @@ import io.github.apace100.origins.common.registry.OriginRegistry;
 import io.github.apace100.origins.power.action.Action;
 import io.github.apace100.origins.power.action.registry.ActionRegistry;
 import io.github.apace100.origins.power.condition.Condition;
+import io.github.apace100.origins.power.condition.impl.AllOfCondition;
+import io.github.apace100.origins.power.condition.impl.AnyOfCondition;
+import io.github.apace100.origins.power.condition.impl.EntityCondition;
+import io.github.apace100.origins.power.condition.impl.HealthCondition;
+import io.github.apace100.origins.power.condition.impl.InvertedCondition;
+import io.github.apace100.origins.power.condition.impl.OnFireCondition;
+import io.github.apace100.origins.power.condition.impl.PassengerCondition;
+import io.github.apace100.origins.power.condition.impl.SneakingCondition;
 import io.github.apace100.origins.power.condition.registry.ConditionRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -122,15 +130,18 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             .flatMap(Set::stream)
             .sorted(Comparator.comparing(ResourceLocation::toString))
             .toList();
+        int entityConditionCount = countEntityConditions(conditions);
+        int compositeConditionCount = countCompositeConditions(conditions);
         int totalSkipped = skippedOrigins + skippedPowers + skippedActions + skippedConditions;
-        LAST_STATS = new ReloadStats(origins.size(), powers.size(), actions.size(), conditions.size(), totalSkipped, unknownTypes);
+        LAST_STATS = new ReloadStats(origins.size(), powers.size(), actions.size(), conditions.size(), entityConditionCount,
+            compositeConditionCount, totalSkipped, unknownTypes);
 
         if (totalSkipped > 0) {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions, and {} conditions from datapacks ({} entries skipped)",
-                origins.size(), powers.size(), actions.size(), conditions.size(), totalSkipped);
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions, and {} conditions ({} entity / {} composite) from datapacks ({} entries skipped)",
+                origins.size(), powers.size(), actions.size(), conditions.size(), entityConditionCount, compositeConditionCount, totalSkipped);
         } else {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions, and {} conditions from datapacks",
-                origins.size(), powers.size(), actions.size(), conditions.size());
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions, and {} conditions ({} entity / {} composite) from datapacks",
+                origins.size(), powers.size(), actions.size(), conditions.size(), entityConditionCount, compositeConditionCount);
         }
     }
 
@@ -182,6 +193,28 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         }
 
         return condition;
+    }
+
+    private static int countEntityConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream().filter(OriginsDataLoader::isEntityCondition).count();
+    }
+
+    private static int countCompositeConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream().filter(OriginsDataLoader::isCompositeCondition).count();
+    }
+
+    private static boolean isEntityCondition(Condition<?> condition) {
+        return condition instanceof EntityCondition
+            || condition instanceof HealthCondition
+            || condition instanceof OnFireCondition
+            || condition instanceof SneakingCondition
+            || condition instanceof PassengerCondition;
+    }
+
+    private static boolean isCompositeCondition(Condition<?> condition) {
+        return condition instanceof AllOfCondition
+            || condition instanceof AnyOfCondition
+            || condition instanceof InvertedCondition;
     }
 
     private Map<ResourceLocation, ConfiguredPower> decodePowers(Map<ResourceLocation, JsonElement> powerJson) {
@@ -454,11 +487,13 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int powersLoaded,
         int actionsLoaded,
         int conditionsLoaded,
+        int entityConditionsLoaded,
+        int compositeConditionsLoaded,
         int skippedEntries,
         List<ResourceLocation> unknownTypes
     ) {
         static ReloadStats empty() {
-            return new ReloadStats(0, 0, 0, 0, 0, List.of());
+            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, List.of());
         }
     }
 

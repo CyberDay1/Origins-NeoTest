@@ -18,8 +18,9 @@ public final class DataValidationLogger extends SimplePreparableReloadListener<V
     @Override
     protected void apply(Void value, ResourceManager resourceManager, ProfilerFiller profiler) {
         ReloadStats stats = OriginsDataLoader.getLastReloadStats();
-        Origins.LOGGER.info("[Origins] Datapack reload summary: {} origins, {} powers, {} actions, {} conditions",
-            stats.originsLoaded(), stats.powersLoaded(), stats.actionsLoaded(), stats.conditionsLoaded());
+        Origins.LOGGER.info("[Origins] Datapack reload summary: {} origins, {} powers, {} actions, {} conditions ({} entity / {} composite)",
+            stats.originsLoaded(), stats.powersLoaded(), stats.actionsLoaded(), stats.conditionsLoaded(),
+            stats.entityConditionsLoaded(), stats.compositeConditionsLoaded());
         if (stats.skippedEntries() > 0) {
             Origins.LOGGER.info("[Origins] Datapack skipped {} entries during reload", stats.skippedEntries());
         }
