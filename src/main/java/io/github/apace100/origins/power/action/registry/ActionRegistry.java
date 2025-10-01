@@ -2,8 +2,11 @@ package io.github.apace100.origins.power.action.registry;
 
 import com.google.gson.JsonObject;
 import io.github.apace100.origins.power.action.Action;
+import io.github.apace100.origins.power.action.impl.ApplyEffectAction;
 import io.github.apace100.origins.power.action.impl.BiEntityAction;
 import io.github.apace100.origins.power.action.impl.BlockAction;
+import io.github.apace100.origins.power.action.impl.ClearAllEffectsAction;
+import io.github.apace100.origins.power.action.impl.ClearEffectAction;
 import io.github.apace100.origins.power.action.impl.DamageEntityAction;
 import io.github.apace100.origins.power.action.impl.EntityAction;
 import io.github.apace100.origins.power.action.impl.ExecuteCommandAction;
@@ -12,8 +15,10 @@ import io.github.apace100.origins.power.action.impl.GiveItemAction;
 import io.github.apace100.origins.power.action.impl.GrantAdvancementAction;
 import io.github.apace100.origins.power.action.impl.ItemAction;
 import io.github.apace100.origins.power.action.impl.LightningAction;
+import io.github.apace100.origins.power.action.impl.ModifyAttributeAction;
 import io.github.apace100.origins.power.action.impl.ParticleAction;
 import io.github.apace100.origins.power.action.impl.PlaySoundAction;
+import io.github.apace100.origins.power.action.impl.ResetAttributeAction;
 import io.github.apace100.origins.power.action.impl.SetBlockAction;
 import io.github.apace100.origins.power.action.impl.SpawnEntityAction;
 import io.github.apace100.origins.power.action.impl.WorldAction;
@@ -59,6 +64,11 @@ public final class ActionRegistry {
         register(ParticleAction.TYPE, ParticleAction::fromJson);
         register(LightningAction.TYPE, LightningAction::fromJson);
         register(ExplosionAction.TYPE, ExplosionAction::fromJson);
+        register(ApplyEffectAction.TYPE, ApplyEffectAction::fromJson);
+        register(ClearEffectAction.TYPE, ClearEffectAction::fromJson);
+        register(ClearAllEffectsAction.TYPE, ClearAllEffectsAction::fromJson);
+        register(ModifyAttributeAction.TYPE, ModifyAttributeAction::fromJson);
+        register(ResetAttributeAction.TYPE, ResetAttributeAction::fromJson);
     }
 
     /**
