@@ -3,6 +3,8 @@ package io.github.apace100.origins.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.client.config.OriginsClientConfig;
+import io.github.apace100.origins.neoforge.capability.OriginCapabilities;
+import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.player.LocalPlayer;
@@ -53,6 +55,10 @@ public final class OriginsClient {
                 Minecraft minecraft = Minecraft.getInstance();
                 LocalPlayer player = minecraft.player;
                 if (player != null) {
+                    PlayerOrigin origin = player.getCapability(OriginCapabilities.PLAYER_ORIGIN);
+                    if (origin == null || origin.getOriginIdOptional().isPresent()) {
+                        return;
+                    }
                     OriginsClientHooks.openOriginScreen(player.getMainHandItem());
                 }
             }
