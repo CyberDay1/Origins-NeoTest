@@ -29,6 +29,15 @@ public class PlayerOrigin {
         this.originId = id;
     }
 
+    public boolean hasOrigin() {
+        return originId != null;
+    }
+
+    public void clear() {
+        this.originId = null;
+        this.powers.clear();
+    }
+
     public Set<ResourceLocation> getPowers() {
         return powers;
     }

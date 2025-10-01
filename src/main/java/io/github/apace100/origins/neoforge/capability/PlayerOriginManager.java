@@ -1,6 +1,7 @@
 package io.github.apace100.origins.neoforge.capability;
 
 import io.github.apace100.origins.Origins;
+import io.github.apace100.origins.common.config.ModConfigs;
 import io.github.apace100.origins.common.network.ModNetworking;
 import io.github.apace100.origins.common.network.SyncOriginS2C;
 import io.github.apace100.origins.common.origin.Origin;
@@ -11,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +29,10 @@ public final class PlayerOriginManager {
     public static boolean set(ServerPlayer player, ResourceLocation originId) {
         PlayerOrigin origin = get(player);
         if (origin == null) {
+            return false;
+        }
+
+        if (!ModConfigs.SERVER.allowOrbReuse.get() && origin.getOriginIdOptional().isPresent()) {
             return false;
         }
 
@@ -52,8 +56,7 @@ public final class PlayerOriginManager {
             return;
         }
 
-        origin.setOriginId(null);
-        origin.setPowers(Collections.emptySet());
+        origin.clear();
         save(player, origin);
         sync(player, origin);
     }

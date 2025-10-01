@@ -23,7 +23,7 @@ public final class ConfiguredConditionLoader extends CodecJsonReloadListener<Con
 
     @SuppressWarnings("unchecked")
     private Codec<Condition<Void>> findCodec(ResourceLocation typeId) {
-        for (DeferredHolder<Codec<?>, Codec<?>> holder : ModConditions.CONDITIONS.getEntries()) {
+        for (DeferredHolder<Codec<?>, ? extends Codec<?>> holder : ModConditions.CONDITIONS.getEntries()) {
             if (holder.getId().equals(typeId)) {
                 return (Codec<Condition<Void>>) holder.get();
             }

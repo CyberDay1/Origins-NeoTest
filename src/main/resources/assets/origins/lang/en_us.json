@@ -1,4 +1,18 @@
 {
   "item.origins.orb_of_origin": "Orb of Origin",
-  "block.origins.origin_stone": "Origin Stone"
+  "block.origins.origin_stone": "Origin Stone",
+  "commands.origins.list": "Current origin: %s (%s)",
+  "commands.origins.list.empty": "No origin selected.",
+  "commands.origins.set": "Set origin for %s to %s",
+  "commands.origins.clear": "Cleared origin for %s",
+  "commands.origins.error.unknown": "Unknown origin: %s",
+  "commands.origins.error.unavailable": "You already have an origin assigned.",
+  "screen.origins.select_origin": "Choose Your Origin",
+  "screen.origins.origin": "Origin",
+  "screen.origins.confirm": "Confirm",
+  "screen.origins.reset": "Reset Origin",
+  "screen.origins.none": "No Origin",
+  "screen.origins.no_selection": "No origin selected",
+  "key.categories.origins": "Origins",
+  "key.origins.open_selection": "Open Origin Selection"
 }
