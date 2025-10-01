@@ -2,12 +2,14 @@ package io.github.apace100.origins.power.condition.registry;
 
 import com.google.gson.JsonObject;
 import io.github.apace100.origins.power.condition.Condition;
-import io.github.apace100.origins.power.condition.impl.BiomeCondition;
 import io.github.apace100.origins.power.condition.impl.AllOfCondition;
 import io.github.apace100.origins.power.condition.impl.AnyOfCondition;
+import io.github.apace100.origins.power.condition.impl.AttributeCondition;
+import io.github.apace100.origins.power.condition.impl.BiomeCondition;
 import io.github.apace100.origins.power.condition.impl.BlockStateCondition;
 import io.github.apace100.origins.power.condition.impl.DamageSourceCondition;
 import io.github.apace100.origins.power.condition.impl.DimensionCondition;
+import io.github.apace100.origins.power.condition.impl.EffectActiveCondition;
 import io.github.apace100.origins.power.condition.impl.EquippedItemCondition;
 import io.github.apace100.origins.power.condition.impl.FluidCondition;
 import io.github.apace100.origins.power.condition.impl.FoodCondition;
@@ -61,6 +63,8 @@ public final class ConditionRegistry {
         register(AllOfCondition.TYPE, AllOfCondition::fromJson);
         register(AnyOfCondition.TYPE, AnyOfCondition::fromJson);
         register(InvertedCondition.TYPE, InvertedCondition::fromJson);
+        register(AttributeCondition.TYPE, AttributeCondition::fromJson);
+        register(EffectActiveCondition.TYPE, EffectActiveCondition::fromJson);
     }
 
     /**
