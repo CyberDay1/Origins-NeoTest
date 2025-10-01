@@ -3,6 +3,7 @@ package io.github.apace100.origins.common.network;
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.common.config.ModConfigs;
 import io.github.apace100.origins.common.network.ChooseOriginC2S;
+import io.github.apace100.origins.common.network.TogglePhantomizeC2S;
 import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import io.github.apace100.origins.neoforge.capability.PlayerOriginManager;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -17,7 +18,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @EventBusSubscriber(modid = Origins.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public final class ModNetworking {
-    private static final String PROTOCOL_VERSION = "1";
+    private static final String PROTOCOL_VERSION = "2";
 
     private ModNetworking() {
     }
@@ -31,6 +32,7 @@ public final class ModNetworking {
         registrar.playToClient(SyncConfigS2C.TYPE, SyncConfigS2C.STREAM_CODEC, SyncConfigS2C::handle);
         registrar.playToClient(SyncOriginS2C.TYPE, SyncOriginS2C.STREAM_CODEC, SyncOriginS2C::handle);
         registrar.playToServer(ChooseOriginC2S.TYPE, ChooseOriginC2S.STREAM_CODEC, ChooseOriginC2S::handle);
+        registrar.playToServer(TogglePhantomizeC2S.TYPE, TogglePhantomizeC2S.STREAM_CODEC, TogglePhantomizeC2S::handle);
     }
 
     @SubscribeEvent

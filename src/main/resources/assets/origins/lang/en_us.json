@@ -18,11 +18,16 @@
   "screen.origins.random_origin.impact": "Impact: ???",
   "screen.origins.impact": "Impact: %s",
   "screen.origins.empty": "No origins are currently available.",
+  "screen.origins.selection_confirmed": "Origin set to %s",
+  "screen.origins.origin_cleared": "Origin cleared.",
   "origin.impact.none": "None",
   "origin.impact.low": "Low",
   "origin.impact.medium": "Medium",
   "origin.impact.high": "High",
   "origin.impact.very_high": "Very High",
   "key.categories.origins": "Origins",
-  "key.origins.open_selection": "Open Origin Selection"
+  "key.origins.open_selection": "Open Origin Selection",
+  "key.origins.toggle_phantom": "Toggle Phantom Form",
+  "power.origins.phantomize.out_of_hunger": "You are too hungry to remain phantomized.",
+  "power.origins.avian.sleep_restriction": "Avians refuse to sleep above Y=86."
 }

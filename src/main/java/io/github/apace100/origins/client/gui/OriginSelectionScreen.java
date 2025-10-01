@@ -5,6 +5,8 @@ import io.github.apace100.origins.common.network.ModNetworking;
 import io.github.apace100.origins.common.origin.Origin;
 import io.github.apace100.origins.common.origin.OriginImpact;
 import io.github.apace100.origins.common.registry.OriginRegistry;
+import io.github.apace100.origins.neoforge.capability.OriginCapabilities;
+import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,6 +16,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +29,6 @@ import java.util.Optional;
 
 public class OriginSelectionScreen extends Screen implements AltOriginScreen {
     private static final Component TITLE = Component.translatable("screen.origins.select_origin");
-    private static final Component CONFIRM = Component.translatable("screen.origins.confirm");
     private static final Component RESET = Component.translatable("screen.origins.reset");
     private static final Component NO_SELECTION = Component.translatable("screen.origins.no_selection");
     private static final Component RANDOM_NAME = Component.translatable("screen.origins.random_origin");
@@ -44,7 +46,6 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
     private final List<OriginIconButton> iconButtons = new ArrayList<>();
     private final RandomSource random = RandomSource.create();
 
-    private Button confirmButton;
     private Button resetButton;
     private Button nextPageButton;
     private Button previousPageButton;
@@ -57,9 +58,7 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
     private int pages = 1;
     private boolean includeRandom;
 
-    private int selectedIndex = -1;
-    private Origin selectedOrigin;
-    private boolean randomSelected;
+    private ResourceLocation currentOriginId;
     private ItemStack detailIcon = ItemStack.EMPTY;
     private Component detailTitle = NO_SELECTION;
     private Component detailImpact;
@@ -78,6 +77,14 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
         origins.sort(Comparator.comparing(origin -> origin.name().getString()));
         includeRandom = !origins.isEmpty();
 
+        currentOriginId = null;
+        if (minecraft != null && minecraft.player != null) {
+            PlayerOrigin originCapability = minecraft.player.getCapability(OriginCapabilities.PLAYER_ORIGIN);
+            if (originCapability != null) {
+                currentOriginId = originCapability.getOriginIdOptional().orElse(null);
+            }
+        }
+
         int totalEntries = getTotalEntries();
         pages = Math.max(1, (int) Math.ceil(totalEntries / (float) COUNT_PER_PAGE));
         currentPage = Math.min(currentPage, pages - 1);
@@ -94,13 +101,9 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
             .bounds(calculatedLeft + CHOICES_WIDTH - 20, calculatedTop + CHOICES_HEIGHT + 5, 20, 20)
             .build());
 
-        confirmButton = addRenderableWidget(Button.builder(CONFIRM, button -> confirmSelection())
-            .bounds(detailLeft + DETAILS_WIDTH - 88, detailTop + CHOICES_HEIGHT - 24, 80, 20)
+        resetButton = addRenderableWidget(Button.builder(RESET, button -> clearOrigin())
+            .bounds(detailLeft + 8, detailTop + CHOICES_HEIGHT - 24, 80, 20)
             .build());
-        resetButton = addRenderableWidget(Button.builder(RESET, button -> {
-            ModNetworking.sendToServer(new ChooseOriginC2S(Optional.empty()));
-            onClose();
-        }).bounds(detailLeft + 8, detailTop + CHOICES_HEIGHT - 24, 80, 20).build());
 
         rebuildIconButtons();
         updatePageButtons();
@@ -117,6 +120,7 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
         }
         rebuildIconButtons();
         updatePageButtons();
+        clearSelection();
     }
 
     private void updatePageButtons() {
@@ -157,80 +161,68 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
         return includeRandom ? origins.size() + 1 : origins.size();
     }
 
-    private void selectOrigin(int index) {
-        if (index < 0 || index >= origins.size()) {
-            return;
-        }
-        selectedIndex = index;
-        selectedOrigin = origins.get(index);
-        randomSelected = false;
-        updateDetailForSelection();
-    }
-
-    private void selectRandom() {
-        if (!includeRandom) {
-            return;
-        }
-        selectedIndex = -1;
-        selectedOrigin = null;
-        randomSelected = true;
-        updateDetailForSelection();
-    }
-
     private void clearSelection() {
-        selectedIndex = -1;
-        selectedOrigin = null;
-        randomSelected = false;
-        detailTitle = NO_SELECTION;
-        detailImpact = null;
-        detailIcon = heldStack.isEmpty() ? ItemStack.EMPTY : heldStack.copy();
-        descriptionLines = List.of();
-        if (confirmButton != null) {
-            confirmButton.active = false;
+        if (currentOriginId != null) {
+            origins.stream()
+                .filter(origin -> origin.id().equals(currentOriginId))
+                .findFirst()
+                .ifPresentOrElse(origin -> updateDetail(origin, false), () -> updateDetail(null, false));
+        } else {
+            updateDetail(null, false);
         }
     }
 
-    private void updateDetailForSelection() {
-        if (randomSelected) {
+    private void updateDetail(Origin origin, boolean randomEntry) {
+        if (randomEntry) {
             detailTitle = RANDOM_NAME;
             detailImpact = RANDOM_IMPACT;
             detailIcon = RANDOM_ICON.copy();
             descriptionLines = this.font.split(RANDOM_DESCRIPTION, DETAILS_WIDTH - 16);
-        } else if (selectedOrigin != null) {
-            detailTitle = selectedOrigin.name().copy();
-            OriginImpact impact = selectedOrigin.impact();
+        } else if (origin != null) {
+            detailTitle = origin.name().copy();
+            OriginImpact impact = origin.impact();
             detailImpact = Component.translatable("screen.origins.impact", impact.displayName());
-            detailIcon = selectedOrigin.icon().copy();
-            descriptionLines = this.font.split(selectedOrigin.description(), DETAILS_WIDTH - 16);
+            detailIcon = origin.icon().copy();
+            descriptionLines = this.font.split(origin.description(), DETAILS_WIDTH - 16);
         } else {
             detailTitle = NO_SELECTION;
             detailImpact = null;
             detailIcon = heldStack.isEmpty() ? ItemStack.EMPTY : heldStack.copy();
             descriptionLines = List.of();
         }
-
-        if (confirmButton != null) {
-            confirmButton.active = randomSelected || selectedOrigin != null;
-        }
     }
 
-    private void confirmSelection() {
-        if (minecraft == null) {
+    private void updateDetail(Origin origin) {
+        updateDetail(origin, false);
+    }
+
+    private void updateRandomDetail() {
+        updateDetail(null, true);
+    }
+
+    private void chooseOrigin(Origin origin) {
+        sendSelection(Optional.of(origin.id()), Component.translatable("screen.origins.selection_confirmed", origin.name()));
+    }
+
+    private void chooseRandomOrigin() {
+        if (origins.isEmpty()) {
+            return;
+        }
+        Origin origin = pickRandomOrigin();
+        sendSelection(Optional.of(origin.id()), Component.translatable("screen.origins.selection_confirmed", origin.name()));
+    }
+
+    private void clearOrigin() {
+        sendSelection(Optional.empty(), Component.translatable("screen.origins.origin_cleared"));
+    }
+
+    private void sendSelection(Optional<ResourceLocation> originId, Component feedback) {
+        if (minecraft == null || minecraft.player == null) {
             return;
         }
 
-        if (randomSelected) {
-            if (origins.isEmpty()) {
-                return;
-            }
-            Origin origin = pickRandomOrigin();
-            ModNetworking.sendToServer(new ChooseOriginC2S(Optional.of(origin.id())));
-        } else if (selectedOrigin != null) {
-            ModNetworking.sendToServer(new ChooseOriginC2S(Optional.of(selectedOrigin.id())));
-        } else {
-            return;
-        }
-
+        ModNetworking.sendToServer(new ChooseOriginC2S(originId));
+        minecraft.player.displayClientMessage(feedback, true);
         onClose();
     }
 
@@ -315,12 +307,16 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
 
     @Override
     public boolean isOriginSelected(int index) {
-        return selectedIndex == index && !randomSelected;
+        if (currentOriginId == null || index < 0 || index >= origins.size()) {
+            return false;
+        }
+        Origin origin = origins.get(index);
+        return origin.id().equals(currentOriginId);
     }
 
     @Override
     public boolean isRandomOriginSelected() {
-        return randomSelected;
+        return currentOriginId == null;
     }
 
     @Override
@@ -349,18 +345,24 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
         protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             if (randomEntry) {
                 renderRandomOrigin(graphics, mouseX, mouseY, partialTick, getX(), getY(), isRandomOriginSelected());
+                if (isMouseOver(mouseX, mouseY) || OriginSelectionScreen.this.getFocused() == this) {
+                    updateRandomDetail();
+                }
             } else if (origin != null) {
                 renderOriginWidget(graphics, mouseX, mouseY, partialTick, getX(), getY(), isOriginSelected(index), origin.impact().textureKey(), origin.name().copy());
                 graphics.renderItem(origin.icon().copy(), getX() + 5, getY() + 5);
+                if (isMouseOver(mouseX, mouseY) || OriginSelectionScreen.this.getFocused() == this) {
+                    updateDetail(origin);
+                }
             }
         }
 
         @Override
         public void onClick(double mouseX, double mouseY) {
             if (randomEntry) {
-                selectRandom();
+                chooseRandomOrigin();
             } else if (origin != null) {
-                selectOrigin(index);
+                chooseOrigin(origin);
             }
         }
 

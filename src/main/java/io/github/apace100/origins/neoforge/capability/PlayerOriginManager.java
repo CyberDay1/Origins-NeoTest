@@ -6,10 +6,12 @@ import io.github.apace100.origins.common.network.ModNetworking;
 import io.github.apace100.origins.common.network.SyncOriginS2C;
 import io.github.apace100.origins.common.origin.Origin;
 import io.github.apace100.origins.common.registry.OriginRegistry;
+import io.github.apace100.origins.power.OriginPowerManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
@@ -45,6 +47,7 @@ public final class PlayerOriginManager {
         origin.setOriginId(originId);
         Set<ResourceLocation> powers = definition.get().powers().stream().collect(Collectors.toSet());
         origin.setPowers(powers);
+        origin.setPhantomized(false);
         save(player, origin);
         sync(player, origin);
         return true;
@@ -100,18 +103,40 @@ public final class PlayerOriginManager {
             newOrigin.copyFrom(originalOrigin);
         }
 
+        newOrigin.setPhantomized(false);
+
         provider.set(clone, newOrigin);
         if (!clone.level().isClientSide) {
             save(clone, newOrigin);
         }
 
         if (clone instanceof ServerPlayer serverPlayer) {
+            serverPlayer.removeEffect(MobEffects.INVISIBILITY);
             sync(serverPlayer, newOrigin);
         }
     }
 
+    public static void setPhantomized(ServerPlayer player, boolean phantomized) {
+        PlayerOrigin origin = get(player);
+        if (origin == null) {
+            return;
+        }
+
+        if (!origin.hasPower(OriginPowerManager.PHASE) && phantomized) {
+            return;
+        }
+
+        if (origin.isPhantomized() == phantomized) {
+            return;
+        }
+
+        origin.setPhantomized(phantomized);
+        save(player, origin);
+        sync(player, origin);
+    }
+
     private static void sync(ServerPlayer player, PlayerOrigin origin) {
         Optional<ResourceLocation> originId = origin.getOriginIdOptional();
-        ModNetworking.sendToPlayer(player, new SyncOriginS2C(originId, Set.copyOf(origin.getPowers())));
+        ModNetworking.sendToPlayer(player, new SyncOriginS2C(originId, Set.copyOf(origin.getPowers()), origin.isPhantomized()));
     }
 }
