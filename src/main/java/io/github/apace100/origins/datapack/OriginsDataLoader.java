@@ -33,17 +33,27 @@ import io.github.apace100.origins.power.condition.Condition;
 import io.github.apace100.origins.power.condition.impl.AllOfCondition;
 import io.github.apace100.origins.power.condition.impl.AnyOfCondition;
 import io.github.apace100.origins.power.condition.impl.AttributeCondition;
+import io.github.apace100.origins.power.condition.impl.AttackerCondition;
+import io.github.apace100.origins.power.condition.impl.BiomeCondition;
+import io.github.apace100.origins.power.condition.impl.DamageSourceCondition;
+import io.github.apace100.origins.power.condition.impl.DimensionCondition;
 import io.github.apace100.origins.power.condition.impl.EffectActiveCondition;
 import io.github.apace100.origins.power.condition.impl.EntityCondition;
+import io.github.apace100.origins.power.condition.impl.FluidCondition;
 import io.github.apace100.origins.power.condition.impl.HealthCondition;
 import io.github.apace100.origins.power.condition.impl.InvertedCondition;
 import io.github.apace100.origins.power.condition.impl.ItemDurabilityCondition;
 import io.github.apace100.origins.power.condition.impl.ItemEnchantmentCondition;
 import io.github.apace100.origins.power.condition.impl.ItemTagCondition;
+import io.github.apace100.origins.power.condition.impl.LightLevelCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
 import io.github.apace100.origins.power.condition.impl.PassengerCondition;
+import io.github.apace100.origins.power.condition.impl.RecentDamageCondition;
 import io.github.apace100.origins.power.condition.impl.SneakingCondition;
 import io.github.apace100.origins.power.condition.registry.ConditionRegistry;
+import io.github.apace100.origins.power.condition.impl.TimeOfDayCondition;
+import io.github.apace100.origins.power.condition.impl.WeatherCondition;
+import io.github.apace100.origins.power.condition.impl.YLevelCondition;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -139,6 +149,8 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int effectConditionCount = countEffectConditions(conditions);
         int attributeConditionCount = countAttributeConditions(conditions);
         int itemConditionCount = countItemConditions(conditions);
+        int combatConditionCount = countCombatConditions(conditions);
+        int environmentConditionCount = countEnvironmentConditions(conditions);
 
         Map<ResourceLocation, ConfiguredPower> powers = decodePowers(pendingPowerJson);
         ConfiguredPowers.setAll(powers);
@@ -155,18 +167,19 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int totalSkipped = skippedOrigins + skippedPowers + skippedActions + skippedConditions;
         LAST_STATS = new ReloadStats(origins.size(), powers.size(), actions.size(), conditions.size(), effectActionCount,
             attributeActionCount, itemActionCount, effectConditionCount, attributeConditionCount, entityConditionCount,
-            compositeConditionCount, itemConditionCount, totalSkipped, unknownTypes);
+            compositeConditionCount, itemConditionCount, combatConditionCount, environmentConditionCount, totalSkipped,
+            unknownTypes);
 
         if (totalSkipped > 0) {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item) from datapacks ({} entries skipped)",
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} combat / {} environment) from datapacks ({} entries skipped)",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
                 conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
-                itemConditionCount, totalSkipped);
+                itemConditionCount, combatConditionCount, environmentConditionCount, totalSkipped);
         } else {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item) from datapacks",
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} combat / {} environment) from datapacks",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
                 conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
-                itemConditionCount);
+                itemConditionCount, combatConditionCount, environmentConditionCount);
         }
     }
 
@@ -272,12 +285,34 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             .count();
     }
 
+    private static int countCombatConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof DamageSourceCondition
+                || condition instanceof AttackerCondition
+                || condition instanceof RecentDamageCondition)
+            .count();
+    }
+
+    private static int countEnvironmentConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof TimeOfDayCondition
+                || condition instanceof LightLevelCondition
+                || condition instanceof WeatherCondition
+                || condition instanceof BiomeCondition
+                || condition instanceof DimensionCondition
+                || condition instanceof FluidCondition
+                || condition instanceof YLevelCondition)
+            .count();
+    }
+
     private static boolean isEntityCondition(Condition<?> condition) {
         return condition instanceof EntityCondition
             || condition instanceof HealthCondition
             || condition instanceof OnFireCondition
             || condition instanceof SneakingCondition
-            || condition instanceof PassengerCondition;
+            || condition instanceof PassengerCondition
+            || condition instanceof RecentDamageCondition
+            || condition instanceof YLevelCondition;
     }
 
     private static boolean isCompositeCondition(Condition<?> condition) {
@@ -564,11 +599,13 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int entityConditionsLoaded,
         int compositeConditionsLoaded,
         int itemConditionsLoaded,
+        int combatConditionsLoaded,
+        int environmentConditionsLoaded,
         int skippedEntries,
         List<ResourceLocation> unknownTypes
     ) {
         static ReloadStats empty() {
-            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, List.of());
+            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, List.of());
         }
     }
 

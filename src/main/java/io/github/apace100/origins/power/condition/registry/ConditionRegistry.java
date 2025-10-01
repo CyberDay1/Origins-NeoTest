@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import io.github.apace100.origins.power.condition.Condition;
 import io.github.apace100.origins.power.condition.impl.AllOfCondition;
 import io.github.apace100.origins.power.condition.impl.AnyOfCondition;
+import io.github.apace100.origins.power.condition.impl.AttackerCondition;
 import io.github.apace100.origins.power.condition.impl.AttributeCondition;
 import io.github.apace100.origins.power.condition.impl.BiomeCondition;
 import io.github.apace100.origins.power.condition.impl.BlockStateCondition;
@@ -14,15 +15,19 @@ import io.github.apace100.origins.power.condition.impl.EquippedItemCondition;
 import io.github.apace100.origins.power.condition.impl.FluidCondition;
 import io.github.apace100.origins.power.condition.impl.FoodCondition;
 import io.github.apace100.origins.power.condition.impl.HealthCondition;
+import io.github.apace100.origins.power.condition.impl.LightLevelCondition;
 import io.github.apace100.origins.power.condition.impl.ItemDurabilityCondition;
 import io.github.apace100.origins.power.condition.impl.ItemEnchantmentCondition;
 import io.github.apace100.origins.power.condition.impl.ItemTagCondition;
 import io.github.apace100.origins.power.condition.impl.InvertedCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
 import io.github.apace100.origins.power.condition.impl.PassengerCondition;
+import io.github.apace100.origins.power.condition.impl.RecentDamageCondition;
 import io.github.apace100.origins.power.condition.impl.SneakingCondition;
 import io.github.apace100.origins.power.condition.impl.TimeOfDayCondition;
 import io.github.apace100.origins.power.condition.impl.EntityCondition;
+import io.github.apace100.origins.power.condition.impl.WeatherCondition;
+import io.github.apace100.origins.power.condition.impl.YLevelCondition;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collections;
@@ -71,6 +76,11 @@ public final class ConditionRegistry {
         register(ItemEnchantmentCondition.TYPE, ItemEnchantmentCondition::fromJson);
         register(ItemDurabilityCondition.TYPE, ItemDurabilityCondition::fromJson);
         register(ItemTagCondition.TYPE, ItemTagCondition::fromJson);
+        register(AttackerCondition.TYPE, AttackerCondition::fromJson);
+        register(RecentDamageCondition.TYPE, RecentDamageCondition::fromJson);
+        register(LightLevelCondition.TYPE, LightLevelCondition::fromJson);
+        register(WeatherCondition.TYPE, WeatherCondition::fromJson);
+        register(YLevelCondition.TYPE, YLevelCondition::fromJson);
     }
 
     /**
