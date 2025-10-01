@@ -3,12 +3,19 @@ package io.github.apace100.origins.power.condition.registry;
 import com.google.gson.JsonObject;
 import io.github.apace100.origins.power.condition.Condition;
 import io.github.apace100.origins.power.condition.impl.BiomeCondition;
+import io.github.apace100.origins.power.condition.impl.AllOfCondition;
+import io.github.apace100.origins.power.condition.impl.AnyOfCondition;
 import io.github.apace100.origins.power.condition.impl.BlockStateCondition;
 import io.github.apace100.origins.power.condition.impl.DamageSourceCondition;
 import io.github.apace100.origins.power.condition.impl.DimensionCondition;
 import io.github.apace100.origins.power.condition.impl.EquippedItemCondition;
 import io.github.apace100.origins.power.condition.impl.FluidCondition;
 import io.github.apace100.origins.power.condition.impl.FoodCondition;
+import io.github.apace100.origins.power.condition.impl.HealthCondition;
+import io.github.apace100.origins.power.condition.impl.InvertedCondition;
+import io.github.apace100.origins.power.condition.impl.OnFireCondition;
+import io.github.apace100.origins.power.condition.impl.PassengerCondition;
+import io.github.apace100.origins.power.condition.impl.SneakingCondition;
 import io.github.apace100.origins.power.condition.impl.TimeOfDayCondition;
 import io.github.apace100.origins.power.condition.impl.EntityCondition;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +54,13 @@ public final class ConditionRegistry {
         register(FluidCondition.TYPE, FluidCondition::fromJson);
         register(FoodCondition.TYPE, FoodCondition::fromJson);
         register(EntityCondition.TYPE, EntityCondition::fromJson);
+        register(HealthCondition.TYPE, HealthCondition::fromJson);
+        register(OnFireCondition.TYPE, OnFireCondition::fromJson);
+        register(SneakingCondition.TYPE, SneakingCondition::fromJson);
+        register(PassengerCondition.TYPE, PassengerCondition::fromJson);
+        register(AllOfCondition.TYPE, AllOfCondition::fromJson);
+        register(AnyOfCondition.TYPE, AnyOfCondition::fromJson);
+        register(InvertedCondition.TYPE, InvertedCondition::fromJson);
     }
 
     /**
