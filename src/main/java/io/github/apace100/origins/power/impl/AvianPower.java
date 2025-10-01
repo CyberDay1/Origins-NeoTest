@@ -1,5 +1,7 @@
 package io.github.apace100.origins.power.impl;
 
+import io.github.apace100.origins.config.OriginsConfig;
+import io.github.apace100.origins.config.OriginsConfigValues;
 import io.github.apace100.origins.power.OriginPowerManager;
 import io.github.apace100.origins.power.Power;
 import io.github.apace100.origins.power.PowerType;
@@ -21,8 +23,14 @@ public class AvianPower extends Power {
 
     @Override
     public void tick(Player player) {
-        if (!player.hasEffect(MobEffects.SLOW_FALLING) || player.getEffect(MobEffects.SLOW_FALLING).getDuration() <= 40) {
-            player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 220, 0, false, false, true));
+        OriginsConfigValues.Avian config = OriginsConfig.get().avian();
+
+        if (config.slowFallingEnabled()) {
+            if (!player.hasEffect(MobEffects.SLOW_FALLING) || player.getEffect(MobEffects.SLOW_FALLING).getDuration() <= 40) {
+                player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 220, 0, false, false, true));
+            }
+        } else if (player.hasEffect(MobEffects.SLOW_FALLING)) {
+            player.removeEffect(MobEffects.SLOW_FALLING);
         }
     }
 
@@ -37,7 +45,8 @@ public class AvianPower extends Power {
         }
 
         BlockPos pos = event.getPos();
-        if (pos != null && pos.getY() > 86) {
+        OriginsConfigValues.Avian config = OriginsConfig.get().avian();
+        if (pos != null && pos.getY() > config.sleepMaxY()) {
             player.displayClientMessage(SLEEP_BLOCKED_MESSAGE, true);
             event.setProblem(Player.BedSleepingProblem.NOT_POSSIBLE_HERE);
         }

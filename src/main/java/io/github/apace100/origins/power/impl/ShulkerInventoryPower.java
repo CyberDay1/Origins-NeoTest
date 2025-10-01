@@ -1,5 +1,6 @@
 package io.github.apace100.origins.power.impl;
 
+import io.github.apace100.origins.config.OriginsConfig;
 import io.github.apace100.origins.power.Power;
 import io.github.apace100.origins.power.PowerType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -13,6 +14,10 @@ public class ShulkerInventoryPower extends Power {
 
     @Override
     public void tick(Player player) {
+        if (OriginsConfig.get().shulk().chestArmorAllowed()) {
+            return;
+        }
+
         ItemStack chestItem = player.getItemBySlot(EquipmentSlot.CHEST);
         if (!chestItem.isEmpty()) {
             ItemStack toStore = chestItem.copy();

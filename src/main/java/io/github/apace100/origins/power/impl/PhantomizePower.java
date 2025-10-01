@@ -1,5 +1,7 @@
 package io.github.apace100.origins.power.impl;
 
+import io.github.apace100.origins.config.OriginsConfig;
+import io.github.apace100.origins.config.OriginsConfigValues;
 import io.github.apace100.origins.neoforge.capability.PlayerOrigin;
 import io.github.apace100.origins.neoforge.capability.PlayerOriginManager;
 import io.github.apace100.origins.power.Power;
@@ -11,7 +13,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 
 public class PhantomizePower extends Power {
-    private static final int HUNGER_INTERVAL = 80;
     private static final Component OUT_OF_HUNGER_MESSAGE = Component.translatable("power.origins.phantomize.out_of_hunger");
 
     public PhantomizePower(PowerType<?> type) {
@@ -32,9 +33,11 @@ public class PhantomizePower extends Power {
             return;
         }
 
+        OriginsConfigValues.Phantom config = OriginsConfig.get().phantom();
+
         applyInvisibility(player);
-        handleMovement(player);
-        drainHungerIfNeeded(player);
+        handleMovement(player, config.allowWallPhasing());
+        drainHungerIfNeeded(player, config);
     }
 
     private void applyInvisibility(Player player) {
@@ -46,8 +49,8 @@ public class PhantomizePower extends Power {
         }
     }
 
-    private void handleMovement(Player player) {
-        if (player.isShiftKeyDown() && !player.isSpectator()) {
+    private void handleMovement(Player player, boolean allowWallPhasing) {
+        if (allowWallPhasing && player.isShiftKeyDown() && !player.isSpectator()) {
             player.noPhysics = true;
             player.resetFallDistance();
         } else if (player.noPhysics && !player.isSpectator()) {
@@ -55,18 +58,24 @@ public class PhantomizePower extends Power {
         }
     }
 
-    private void drainHungerIfNeeded(Player player) {
+    private void drainHungerIfNeeded(Player player, OriginsConfigValues.Phantom config) {
         if (!(player instanceof ServerPlayer serverPlayer) || player.isCreative() || player.isSpectator()) {
             return;
         }
 
-        if (serverPlayer.tickCount % HUNGER_INTERVAL != 0) {
+        int interval = Math.max(1, config.hungerDrainIntervalTicks());
+        if (serverPlayer.tickCount % interval != 0) {
+            return;
+        }
+
+        int drainAmount = Math.max(0, config.hungerDrainPerInterval());
+        if (drainAmount <= 0) {
             return;
         }
 
         int currentFood = serverPlayer.getFoodData().getFoodLevel();
         if (currentFood > 0) {
-            serverPlayer.getFoodData().setFoodLevel(currentFood - 1);
+            serverPlayer.getFoodData().setFoodLevel(Math.max(0, currentFood - drainAmount));
         } else {
             serverPlayer.displayClientMessage(OUT_OF_HUNGER_MESSAGE, true);
             PlayerOriginManager.setPhantomized(serverPlayer, false);

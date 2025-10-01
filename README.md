@@ -27,6 +27,29 @@ During the build the `neoforge.mods.toml` file located in `src/main/resources` i
 automatically expanded with the values defined in `gradle.properties`. This ensures the
 published jar always advertises the correct mod id, version, and dependency ranges.
 
+## Configuring built-in origins
+
+When the game is launched a common NeoForge configuration file named
+`origins-common.toml` is generated alongside the existing client and server configs.
+The file exposes the following options for the bundled powers:
+
+| Category | Option | Description | Default |
+|----------|--------|-------------|---------|
+| `phantom` | `hungerDrainIntervalTicks` | Number of ticks between hunger drain while phantomized. | `80` |
+| `phantom` | `hungerDrainPerInterval` | Hunger points removed every interval. | `1` |
+| `phantom` | `allowWallPhasing` | Allow sneaking while phantomized to phase through blocks. | `true` |
+| `avian` | `sleepMaxY` | Highest Y level Avians may sleep at. | `86` |
+| `avian` | `slowFallingEnabled` | Toggle the passive slow falling effect. | `true` |
+| `enderian` | `waterDamagePerSecond` | Damage per second applied while touching water. | `2.0` |
+| `blazeborn` | `waterDamagePerSecond` | Damage per second applied while touching water. | `2.0` |
+| `merling` | `swimSpeedMultiplier` | Swim speed multiplier while underwater. | `1.35` |
+| `merling` | `underwaterVisionEnabled` | Enable the underwater night vision effect. | `true` |
+| `feline` | `fallDamageReduction` | Fraction of fall damage prevented (1.0 = no damage). | `1.0` |
+| `feline` | `moveSpeedMultiplier` | Base movement speed multiplier. | `1.10` |
+| `elytrian` | `cancelFallDamage` | Cancel Elytrian fall damage entirely. | `true` |
+| `elytrian` | `confinedSpaceChecks` | Apply Elytrian weakness/slowness in cramped spaces. | `false` |
+| `shulk` | `chestArmorAllowed` | Allow Shulk players to wear chest armor. | `false` |
+
 ## Updating Minecraft or NeoForge versions
 
 The default Minecraft and NeoForge versions are controlled by the `minecraftVersion` and
