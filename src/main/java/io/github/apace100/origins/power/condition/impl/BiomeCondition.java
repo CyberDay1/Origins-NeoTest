@@ -6,6 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.power.condition.Condition;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.biome.Biome;
@@ -16,23 +18,22 @@ import net.minecraft.world.level.biome.Biome;
 public final class BiomeCondition implements Condition<Holder<Biome>> {
     public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "biome");
     private static final Codec<BiomeCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ResourceLocation.CODEC.fieldOf("biome").forGetter(BiomeCondition::biomeId)
+        ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(BiomeCondition::biomeKey)
     ).apply(instance, BiomeCondition::new));
 
-    private final ResourceLocation biomeId;
+    private final ResourceKey<Biome> biomeKey;
 
-    private BiomeCondition(ResourceLocation biomeId) {
-        this.biomeId = biomeId;
+    private BiomeCondition(ResourceKey<Biome> biomeKey) {
+        this.biomeKey = biomeKey;
     }
 
-    public ResourceLocation biomeId() {
-        return biomeId;
+    public ResourceKey<Biome> biomeKey() {
+        return biomeKey;
     }
 
     @Override
     public boolean test(Holder<Biome> biome) {
-        // TODO: Match against configured biome ID once registry access is available.
-        return false;
+        return biome != null && biome.is(biomeKey);
     }
 
     public static BiomeCondition fromJson(ResourceLocation id, JsonObject json) {
@@ -43,7 +44,7 @@ public final class BiomeCondition implements Condition<Holder<Biome>> {
         }
         try {
             ResourceLocation biomeId = ResourceLocation.parse(raw);
-            return new BiomeCondition(biomeId);
+            return new BiomeCondition(ResourceKey.create(Registries.BIOME, biomeId));
         } catch (IllegalArgumentException exception) {
             Origins.LOGGER.warn("Biome condition '{}' has invalid biome id '{}': {}", id, raw, exception.getMessage());
             return null;

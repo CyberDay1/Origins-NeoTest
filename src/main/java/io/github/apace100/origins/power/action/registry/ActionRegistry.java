@@ -4,8 +4,12 @@ import com.google.gson.JsonObject;
 import io.github.apace100.origins.power.action.Action;
 import io.github.apace100.origins.power.action.impl.BiEntityAction;
 import io.github.apace100.origins.power.action.impl.BlockAction;
+import io.github.apace100.origins.power.action.impl.DamageEntityAction;
 import io.github.apace100.origins.power.action.impl.EntityAction;
+import io.github.apace100.origins.power.action.impl.GiveItemAction;
 import io.github.apace100.origins.power.action.impl.ItemAction;
+import io.github.apace100.origins.power.action.impl.SetBlockAction;
+import io.github.apace100.origins.power.action.impl.SpawnEntityAction;
 import io.github.apace100.origins.power.action.impl.WorldAction;
 import net.minecraft.resources.ResourceLocation;
 
@@ -39,6 +43,10 @@ public final class ActionRegistry {
         register(EntityAction.TYPE, EntityAction::fromJson);
         register(BiEntityAction.TYPE, BiEntityAction::fromJson);
         register(WorldAction.TYPE, WorldAction::fromJson);
+        register(GiveItemAction.TYPE, GiveItemAction::fromJson);
+        register(SetBlockAction.TYPE, SetBlockAction::fromJson);
+        register(SpawnEntityAction.TYPE, SpawnEntityAction::fromJson);
+        register(DamageEntityAction.TYPE, DamageEntityAction::fromJson);
     }
 
     /**
