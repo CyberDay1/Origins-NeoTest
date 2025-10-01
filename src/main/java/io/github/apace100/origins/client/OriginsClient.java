@@ -52,7 +52,7 @@ public final class OriginsClient {
                 LocalPlayer player = minecraft.player;
                 if (player != null) {
                     PlayerOrigin origin = player.getCapability(OriginCapabilities.PLAYER_ORIGIN);
-                    if (origin == null || origin.getOriginIdOptional().isPresent()) {
+                    if (origin == null || origin.hasChosen()) {
                         return;
                     }
                     OriginsClientHooks.openOriginScreen(player.getMainHandItem());
