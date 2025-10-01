@@ -33,6 +33,11 @@ public class PlayerOrigin {
         return powers;
     }
 
+    public void setPowers(Set<ResourceLocation> newPowers) {
+        powers.clear();
+        powers.addAll(newPowers);
+    }
+
     public CompoundTag saveNBT() {
         CompoundTag tag = new CompoundTag();
         if (originId != null) {

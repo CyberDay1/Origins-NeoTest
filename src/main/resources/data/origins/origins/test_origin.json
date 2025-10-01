@@ -1,0 +1,11 @@
+{
+  "name": {
+    "text": "Test Origin"
+  },
+  "description": {
+    "text": "A placeholder origin used for integration testing."
+  },
+  "powers": [
+    "origins:test/test_power"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "type": "origins:placeholder",
+  "name": {
+    "text": "Test Power"
+  },
+  "description": {
+    "text": "A datapack power for validation."
+  },
+  "actions": [
+    "origins:test/noop"
+  ],
+  "condition": "origins:test/always_true"
+}
