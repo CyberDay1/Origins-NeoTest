@@ -16,5 +16,10 @@ public class OriginsLanguageProvider extends LanguageProvider {
         add(ModItems.ORB_OF_ORIGIN.get(), "Orb of Origin");
         add("command.origins.set", "Set origin");
         add("command.origins.clear", "Cleared origin");
+        add("screen.origins.selection_confirmed", "Origin set to %s");
+        add("screen.origins.origin_cleared", "Origin cleared.");
+        add("key.origins.toggle_phantom", "Toggle Phantom Form");
+        add("power.origins.phantomize.out_of_hunger", "You are too hungry to remain phantomized.");
+        add("power.origins.avian.sleep_restriction", "Avians refuse to sleep above Y=86.");
     }
 }

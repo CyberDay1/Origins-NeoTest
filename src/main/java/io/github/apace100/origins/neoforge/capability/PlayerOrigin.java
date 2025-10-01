@@ -16,9 +16,11 @@ import java.util.Set;
 public class PlayerOrigin {
     private static final String NBT_ORIGIN = "Origin";
     private static final String NBT_POWERS = "Powers";
+    private static final String NBT_PHANTOMIZED = "Phantomized";
 
     private ResourceLocation originId; // e.g. origins:elytrian
     private final Set<ResourceLocation> powers = new HashSet<>();
+    private boolean phantomized;
 
     public ResourceLocation getOriginId() {
         return originId;
@@ -43,15 +45,28 @@ public class PlayerOrigin {
     public void clear() {
         this.originId = null;
         this.powers.clear();
+        this.phantomized = false;
     }
 
     public Set<ResourceLocation> getPowers() {
         return powers;
     }
 
+    public boolean hasPower(ResourceLocation powerId) {
+        return powers.contains(powerId);
+    }
+
     public void setPowers(Set<ResourceLocation> newPowers) {
         powers.clear();
         powers.addAll(newPowers);
+    }
+
+    public boolean isPhantomized() {
+        return phantomized;
+    }
+
+    public void setPhantomized(boolean phantomized) {
+        this.phantomized = phantomized;
     }
 
     public CompoundTag saveNBT() {
@@ -66,6 +81,10 @@ public class PlayerOrigin {
                 list.add(StringTag.valueOf(powerId.toString()));
             }
             tag.put(NBT_POWERS, list);
+        }
+
+        if (phantomized) {
+            tag.putBoolean(NBT_PHANTOMIZED, true);
         }
 
         return tag;
@@ -94,12 +113,15 @@ public class PlayerOrigin {
                 }
             }
         }
+
+        phantomized = tag.getBoolean(NBT_PHANTOMIZED);
     }
 
     public void copyFrom(PlayerOrigin other) {
         this.originId = other.originId;
         this.powers.clear();
         this.powers.addAll(other.powers);
+        this.phantomized = other.phantomized;
     }
 
     public CompoundTag save() {
