@@ -19,6 +19,8 @@ import io.github.apace100.origins.common.registry.ConfiguredPowers;
 import io.github.apace100.origins.common.registry.ModPowers;
 import io.github.apace100.origins.common.registry.OriginRegistry;
 import io.github.apace100.origins.power.action.Action;
+import io.github.apace100.origins.power.action.impl.AddXpAction;
+import io.github.apace100.origins.power.action.impl.AddXpLevelAction;
 import io.github.apace100.origins.power.action.impl.ApplyEffectAction;
 import io.github.apace100.origins.power.action.impl.ClearAllEffectsAction;
 import io.github.apace100.origins.power.action.impl.ClearEffectAction;
@@ -29,6 +31,7 @@ import io.github.apace100.origins.power.action.impl.GiveItemAction;
 import io.github.apace100.origins.power.action.impl.ModifyAttributeAction;
 import io.github.apace100.origins.power.action.impl.ModifyDamageDealtAction;
 import io.github.apace100.origins.power.action.impl.ModifyDamageTakenAction;
+import io.github.apace100.origins.power.action.impl.ModifyProjectileDamageAction;
 import io.github.apace100.origins.power.action.impl.ModifyFoodAction;
 import io.github.apace100.origins.power.action.impl.ModifyProjectileAction;
 import io.github.apace100.origins.power.action.impl.PreventBlockUseAction;
@@ -37,10 +40,12 @@ import io.github.apace100.origins.power.action.impl.PreventItemDropAction;
 import io.github.apace100.origins.power.action.impl.PreventItemPickupAction;
 import io.github.apace100.origins.power.action.impl.PreventItemUseAction;
 import io.github.apace100.origins.power.action.impl.PreventProjectileAction;
+import io.github.apace100.origins.power.action.impl.RedirectProjectileAction;
 import io.github.apace100.origins.power.action.impl.ReplaceEquippedItemAction;
 import io.github.apace100.origins.power.action.impl.ResetAttributeAction;
 import io.github.apace100.origins.power.action.impl.RestrictBlockUseAction;
 import io.github.apace100.origins.power.action.impl.RestrictItemUseAction;
+import io.github.apace100.origins.power.action.impl.SetXpLevelAction;
 import io.github.apace100.origins.power.action.registry.ActionRegistry;
 import io.github.apace100.origins.power.condition.Condition;
 import io.github.apace100.origins.power.condition.impl.AllOfCondition;
@@ -61,6 +66,8 @@ import io.github.apace100.origins.power.condition.impl.ItemEnchantmentCondition;
 import io.github.apace100.origins.power.condition.impl.ItemRestrictedCondition;
 import io.github.apace100.origins.power.condition.impl.ItemTagCondition;
 import io.github.apace100.origins.power.condition.impl.LightLevelCondition;
+import io.github.apace100.origins.power.condition.impl.NotCondition;
+import io.github.apace100.origins.power.condition.impl.OrCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
 import io.github.apace100.origins.power.condition.impl.PassengerCondition;
 import io.github.apace100.origins.power.condition.impl.PreventBlockUseCondition;
@@ -69,6 +76,7 @@ import io.github.apace100.origins.power.condition.impl.RecentDamageCondition;
 import io.github.apace100.origins.power.condition.impl.SneakingCondition;
 import io.github.apace100.origins.power.condition.registry.ConditionRegistry;
 import io.github.apace100.origins.power.condition.impl.TimeOfDayCondition;
+import io.github.apace100.origins.power.condition.impl.XorCondition;
 import io.github.apace100.origins.power.condition.impl.WeatherCondition;
 import io.github.apace100.origins.power.condition.impl.YLevelCondition;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -163,6 +171,7 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int foodActionCount = countFoodActions(actions);
         int blockActionCount = countBlockActions(actions);
         int projectileActionCount = countProjectileActions(actions);
+        int experienceActionCount = countExperienceActions(actions);
         int damageActionCount = countDamageActions(actions);
         int restrictionActionCount = countRestrictionActions(actions);
 
@@ -191,22 +200,22 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int compositeConditionCount = countCompositeConditions(conditions);
         int totalSkipped = skippedOrigins + skippedPowers + skippedActions + skippedConditions;
         LAST_STATS = new ReloadStats(origins.size(), powers.size(), actions.size(), conditions.size(), effectActionCount,
-            attributeActionCount, itemActionCount, foodActionCount, blockActionCount, projectileActionCount, damageActionCount,
-            restrictionActionCount,
+            attributeActionCount, itemActionCount, foodActionCount, blockActionCount, projectileActionCount,
+            experienceActionCount, damageActionCount, restrictionActionCount,
             effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount, itemConditionCount,
             blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, restrictionConditionCount, totalSkipped,
             unknownTypes);
 
         if (totalSkipped > 0) {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} damage / {} restriction), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} restriction) from datapacks ({} entries skipped)",
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} experience / {} damage / {} restriction), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} restriction) from datapacks ({} entries skipped)",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
-                foodActionCount, blockActionCount, projectileActionCount, damageActionCount, restrictionActionCount,
+                foodActionCount, blockActionCount, projectileActionCount, experienceActionCount, damageActionCount, restrictionActionCount,
                 conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
                 itemConditionCount, blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, restrictionConditionCount, totalSkipped);
         } else {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} damage / {} restriction), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} restriction) from datapacks",
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} experience / {} damage / {} restriction), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} restriction) from datapacks",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
-                foodActionCount, blockActionCount, projectileActionCount, damageActionCount, restrictionActionCount,
+                foodActionCount, blockActionCount, projectileActionCount, experienceActionCount, damageActionCount, restrictionActionCount,
                 conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
                 itemConditionCount, blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, restrictionConditionCount);
         }
@@ -304,7 +313,18 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
     private static int countProjectileActions(Map<ResourceLocation, Action<?>> actions) {
         return (int) actions.values().stream()
-            .filter(action -> action instanceof ModifyProjectileAction || action instanceof PreventProjectileAction)
+            .filter(action -> action instanceof ModifyProjectileAction
+                || action instanceof ModifyProjectileDamageAction
+                || action instanceof RedirectProjectileAction
+                || action instanceof PreventProjectileAction)
+            .count();
+    }
+
+    private static int countExperienceActions(Map<ResourceLocation, Action<?>> actions) {
+        return (int) actions.values().stream()
+            .filter(action -> action instanceof AddXpAction
+                || action instanceof SetXpLevelAction
+                || action instanceof AddXpLevelAction)
             .count();
     }
 
@@ -413,7 +433,10 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
     private static boolean isCompositeCondition(Condition<?> condition) {
         return condition instanceof AllOfCondition
             || condition instanceof AnyOfCondition
-            || condition instanceof InvertedCondition;
+            || condition instanceof InvertedCondition
+            || condition instanceof OrCondition
+            || condition instanceof NotCondition
+            || condition instanceof XorCondition;
     }
 
     private Map<ResourceLocation, ConfiguredPower> decodePowers(Map<ResourceLocation, JsonElement> powerJson) {
@@ -692,6 +715,7 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int foodActionsLoaded,
         int blockActionsLoaded,
         int projectileActionsLoaded,
+        int experienceActionsLoaded,
         int damageActionsLoaded,
         int restrictionActionsLoaded,
         int effectConditionsLoaded,
@@ -708,7 +732,7 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         List<ResourceLocation> unknownTypes
     ) {
         static ReloadStats empty() {
-            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, List.of());
+            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, List.of());
         }
     }
 

@@ -2,6 +2,8 @@ package io.github.apace100.origins.power.action.registry;
 
 import com.google.gson.JsonObject;
 import io.github.apace100.origins.power.action.Action;
+import io.github.apace100.origins.power.action.impl.AddXpAction;
+import io.github.apace100.origins.power.action.impl.AddXpLevelAction;
 import io.github.apace100.origins.power.action.impl.ApplyEffectAction;
 import io.github.apace100.origins.power.action.impl.BiEntityAction;
 import io.github.apace100.origins.power.action.impl.BlockAction;
@@ -22,6 +24,7 @@ import io.github.apace100.origins.power.action.impl.LightningAction;
 import io.github.apace100.origins.power.action.impl.ModifyAttributeAction;
 import io.github.apace100.origins.power.action.impl.ModifyDamageDealtAction;
 import io.github.apace100.origins.power.action.impl.ModifyDamageTakenAction;
+import io.github.apace100.origins.power.action.impl.ModifyProjectileDamageAction;
 import io.github.apace100.origins.power.action.impl.ModifyFoodAction;
 import io.github.apace100.origins.power.action.impl.ModifyProjectileAction;
 import io.github.apace100.origins.power.action.impl.KnockbackAction;
@@ -33,10 +36,12 @@ import io.github.apace100.origins.power.action.impl.PreventItemPickupAction;
 import io.github.apace100.origins.power.action.impl.PreventFoodAction;
 import io.github.apace100.origins.power.action.impl.PreventItemUseAction;
 import io.github.apace100.origins.power.action.impl.PreventProjectileAction;
+import io.github.apace100.origins.power.action.impl.RedirectProjectileAction;
 import io.github.apace100.origins.power.action.impl.ReplaceEquippedItemAction;
 import io.github.apace100.origins.power.action.impl.RestrictBlockUseAction;
 import io.github.apace100.origins.power.action.impl.RestrictItemUseAction;
 import io.github.apace100.origins.power.action.impl.ResetAttributeAction;
+import io.github.apace100.origins.power.action.impl.SetXpLevelAction;
 import io.github.apace100.origins.power.action.impl.SetBlockAction;
 import io.github.apace100.origins.power.action.impl.SpawnEntityAction;
 import io.github.apace100.origins.power.action.impl.WorldAction;
@@ -104,7 +109,12 @@ public final class ActionRegistry {
         register(RestrictItemUseAction.TYPE, RestrictItemUseAction::fromJson);
         register(RestrictBlockUseAction.TYPE, RestrictBlockUseAction::fromJson);
         register(ModifyProjectileAction.TYPE, ModifyProjectileAction::fromJson);
+        register(ModifyProjectileDamageAction.TYPE, ModifyProjectileDamageAction::fromJson);
+        register(RedirectProjectileAction.TYPE, RedirectProjectileAction::fromJson);
         register(PreventProjectileAction.TYPE, PreventProjectileAction::fromJson);
+        register(AddXpAction.TYPE, AddXpAction::fromJson);
+        register(SetXpLevelAction.TYPE, SetXpLevelAction::fromJson);
+        register(AddXpLevelAction.TYPE, AddXpLevelAction::fromJson);
     }
 
     /**
