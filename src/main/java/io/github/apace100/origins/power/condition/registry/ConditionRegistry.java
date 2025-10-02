@@ -8,6 +8,7 @@ import io.github.apace100.origins.power.condition.impl.AttackerCondition;
 import io.github.apace100.origins.power.condition.impl.AttributeCondition;
 import io.github.apace100.origins.power.condition.impl.BiomeCondition;
 import io.github.apace100.origins.power.condition.impl.BlockStateCondition;
+import io.github.apace100.origins.power.condition.impl.BlockRestrictedCondition;
 import io.github.apace100.origins.power.condition.impl.DamageSourceCondition;
 import io.github.apace100.origins.power.condition.impl.DimensionCondition;
 import io.github.apace100.origins.power.condition.impl.EffectActiveCondition;
@@ -18,6 +19,7 @@ import io.github.apace100.origins.power.condition.impl.HealthCondition;
 import io.github.apace100.origins.power.condition.impl.LightLevelCondition;
 import io.github.apace100.origins.power.condition.impl.ItemDurabilityCondition;
 import io.github.apace100.origins.power.condition.impl.ItemEnchantmentCondition;
+import io.github.apace100.origins.power.condition.impl.ItemRestrictedCondition;
 import io.github.apace100.origins.power.condition.impl.ItemTagCondition;
 import io.github.apace100.origins.power.condition.impl.InvertedCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
@@ -77,6 +79,7 @@ public final class ConditionRegistry {
         register(EffectActiveCondition.TYPE, EffectActiveCondition::fromJson);
         register(ItemEnchantmentCondition.TYPE, ItemEnchantmentCondition::fromJson);
         register(ItemDurabilityCondition.TYPE, ItemDurabilityCondition::fromJson);
+        register(ItemRestrictedCondition.TYPE, ItemRestrictedCondition::fromJson);
         register(ItemTagCondition.TYPE, ItemTagCondition::fromJson);
         register(AttackerCondition.TYPE, AttackerCondition::fromJson);
         register(RecentDamageCondition.TYPE, RecentDamageCondition::fromJson);
@@ -84,6 +87,7 @@ public final class ConditionRegistry {
         register(WeatherCondition.TYPE, WeatherCondition::fromJson);
         register(YLevelCondition.TYPE, YLevelCondition::fromJson);
         register(PreventBlockUseCondition.TYPE, PreventBlockUseCondition::fromJson);
+        register(BlockRestrictedCondition.TYPE, BlockRestrictedCondition::fromJson);
         register(ProjectileCondition.TYPE, ProjectileCondition::fromJson);
     }
 

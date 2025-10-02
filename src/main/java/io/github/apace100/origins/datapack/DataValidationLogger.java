@@ -18,12 +18,12 @@ public final class DataValidationLogger extends SimplePreparableReloadListener<V
     @Override
     protected void apply(Void value, ResourceManager resourceManager, ProfilerFiller profiler) {
         ReloadStats stats = OriginsDataLoader.getLastReloadStats();
-        Origins.LOGGER.info("[Origins] Datapack reload summary: {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile), {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment)",
+        Origins.LOGGER.info("[Origins] Datapack reload summary: {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} damage / {} restriction), {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} restriction)",
             stats.originsLoaded(), stats.powersLoaded(), stats.actionsLoaded(), stats.effectActionsLoaded(), stats.attributeActionsLoaded(), stats.itemActionsLoaded(),
-            stats.foodActionsLoaded(), stats.blockActionsLoaded(), stats.projectileActionsLoaded(),
+            stats.foodActionsLoaded(), stats.blockActionsLoaded(), stats.projectileActionsLoaded(), stats.damageActionsLoaded(), stats.restrictionActionsLoaded(),
             stats.conditionsLoaded(), stats.effectConditionsLoaded(), stats.attributeConditionsLoaded(), stats.entityConditionsLoaded(),
             stats.compositeConditionsLoaded(), stats.itemConditionsLoaded(), stats.blockConditionsLoaded(), stats.projectileConditionsLoaded(),
-            stats.combatConditionsLoaded(), stats.environmentConditionsLoaded());
+            stats.combatConditionsLoaded(), stats.environmentConditionsLoaded(), stats.restrictionConditionsLoaded());
         if (stats.skippedEntries() > 0) {
             Origins.LOGGER.info("[Origins] Datapack skipped {} entries during reload", stats.skippedEntries());
         }
