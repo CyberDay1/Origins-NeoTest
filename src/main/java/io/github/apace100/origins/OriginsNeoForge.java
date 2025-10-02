@@ -13,6 +13,7 @@ import io.github.apace100.origins.datapack.OriginsDataLoader;
 import io.github.apace100.origins.registry.ModBlocks;
 import io.github.apace100.origins.registry.ModItems;
 import io.github.apace100.origins.power.OriginPowerManager;
+import io.github.apace100.origins.power.action.impl.CombatActionHandler;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
@@ -36,6 +37,7 @@ public final class OriginsNeoForge {
         ModDataGen.register(modBus);
 
         OriginPowerManager.init();
+        CombatActionHandler.init();
 
         ModConfigs.register(ModLoadingContext.get());
         OriginsConfig.register(ModLoadingContext.get());

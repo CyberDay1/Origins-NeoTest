@@ -23,16 +23,24 @@ import io.github.apace100.origins.power.action.impl.ApplyEffectAction;
 import io.github.apace100.origins.power.action.impl.ClearAllEffectsAction;
 import io.github.apace100.origins.power.action.impl.ClearEffectAction;
 import io.github.apace100.origins.power.action.impl.ConsumeItemAction;
+import io.github.apace100.origins.power.action.impl.CriticalHitAction;
 import io.github.apace100.origins.power.action.impl.DamageItemAction;
 import io.github.apace100.origins.power.action.impl.GiveItemAction;
 import io.github.apace100.origins.power.action.impl.ModifyAttributeAction;
+import io.github.apace100.origins.power.action.impl.ModifyDamageDealtAction;
+import io.github.apace100.origins.power.action.impl.ModifyDamageTakenAction;
 import io.github.apace100.origins.power.action.impl.ModifyFoodAction;
 import io.github.apace100.origins.power.action.impl.ModifyProjectileAction;
 import io.github.apace100.origins.power.action.impl.PreventBlockUseAction;
 import io.github.apace100.origins.power.action.impl.PreventFoodAction;
+import io.github.apace100.origins.power.action.impl.PreventItemDropAction;
+import io.github.apace100.origins.power.action.impl.PreventItemPickupAction;
+import io.github.apace100.origins.power.action.impl.PreventItemUseAction;
 import io.github.apace100.origins.power.action.impl.PreventProjectileAction;
 import io.github.apace100.origins.power.action.impl.ReplaceEquippedItemAction;
 import io.github.apace100.origins.power.action.impl.ResetAttributeAction;
+import io.github.apace100.origins.power.action.impl.RestrictBlockUseAction;
+import io.github.apace100.origins.power.action.impl.RestrictItemUseAction;
 import io.github.apace100.origins.power.action.registry.ActionRegistry;
 import io.github.apace100.origins.power.condition.Condition;
 import io.github.apace100.origins.power.condition.impl.AllOfCondition;
@@ -40,6 +48,7 @@ import io.github.apace100.origins.power.condition.impl.AnyOfCondition;
 import io.github.apace100.origins.power.condition.impl.AttributeCondition;
 import io.github.apace100.origins.power.condition.impl.AttackerCondition;
 import io.github.apace100.origins.power.condition.impl.BiomeCondition;
+import io.github.apace100.origins.power.condition.impl.BlockRestrictedCondition;
 import io.github.apace100.origins.power.condition.impl.DamageSourceCondition;
 import io.github.apace100.origins.power.condition.impl.DimensionCondition;
 import io.github.apace100.origins.power.condition.impl.EffectActiveCondition;
@@ -49,6 +58,7 @@ import io.github.apace100.origins.power.condition.impl.HealthCondition;
 import io.github.apace100.origins.power.condition.impl.InvertedCondition;
 import io.github.apace100.origins.power.condition.impl.ItemDurabilityCondition;
 import io.github.apace100.origins.power.condition.impl.ItemEnchantmentCondition;
+import io.github.apace100.origins.power.condition.impl.ItemRestrictedCondition;
 import io.github.apace100.origins.power.condition.impl.ItemTagCondition;
 import io.github.apace100.origins.power.condition.impl.LightLevelCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
@@ -153,6 +163,8 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int foodActionCount = countFoodActions(actions);
         int blockActionCount = countBlockActions(actions);
         int projectileActionCount = countProjectileActions(actions);
+        int damageActionCount = countDamageActions(actions);
+        int restrictionActionCount = countRestrictionActions(actions);
 
         Map<ResourceLocation, Condition<?>> conditions = decodeConditions(pendingConditionJson);
         ConditionRegistry.setAll(conditions);
@@ -163,6 +175,7 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int projectileConditionCount = countProjectileConditions(conditions);
         int combatConditionCount = countCombatConditions(conditions);
         int environmentConditionCount = countEnvironmentConditions(conditions);
+        int restrictionConditionCount = countRestrictionConditions(conditions);
 
         Map<ResourceLocation, ConfiguredPower> powers = decodePowers(pendingPowerJson);
         ConfiguredPowers.setAll(powers);
@@ -178,23 +191,24 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int compositeConditionCount = countCompositeConditions(conditions);
         int totalSkipped = skippedOrigins + skippedPowers + skippedActions + skippedConditions;
         LAST_STATS = new ReloadStats(origins.size(), powers.size(), actions.size(), conditions.size(), effectActionCount,
-            attributeActionCount, itemActionCount, foodActionCount, blockActionCount, projectileActionCount,
+            attributeActionCount, itemActionCount, foodActionCount, blockActionCount, projectileActionCount, damageActionCount,
+            restrictionActionCount,
             effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount, itemConditionCount,
-            blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, totalSkipped,
+            blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, restrictionConditionCount, totalSkipped,
             unknownTypes);
 
         if (totalSkipped > 0) {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment) from datapacks ({} entries skipped)",
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} damage / {} restriction), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} restriction) from datapacks ({} entries skipped)",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
-                foodActionCount, blockActionCount, projectileActionCount,
+                foodActionCount, blockActionCount, projectileActionCount, damageActionCount, restrictionActionCount,
                 conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
-                itemConditionCount, blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, totalSkipped);
+                itemConditionCount, blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, restrictionConditionCount, totalSkipped);
         } else {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment) from datapacks",
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} damage / {} restriction), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} restriction) from datapacks",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
-                foodActionCount, blockActionCount, projectileActionCount,
+                foodActionCount, blockActionCount, projectileActionCount, damageActionCount, restrictionActionCount,
                 conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
-                itemConditionCount, blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount);
+                itemConditionCount, blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, restrictionConditionCount);
         }
     }
 
@@ -268,7 +282,10 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             .filter(action -> action instanceof GiveItemAction
                 || action instanceof ConsumeItemAction
                 || action instanceof ReplaceEquippedItemAction
-                || action instanceof DamageItemAction)
+                || action instanceof DamageItemAction
+                || action instanceof PreventItemPickupAction
+                || action instanceof PreventItemDropAction
+                || action instanceof RestrictItemUseAction)
             .count();
     }
 
@@ -280,13 +297,35 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
     private static int countBlockActions(Map<ResourceLocation, Action<?>> actions) {
         return (int) actions.values().stream()
-            .filter(action -> action instanceof PreventBlockUseAction)
+            .filter(action -> action instanceof PreventBlockUseAction
+                || action instanceof RestrictBlockUseAction)
             .count();
     }
 
     private static int countProjectileActions(Map<ResourceLocation, Action<?>> actions) {
         return (int) actions.values().stream()
             .filter(action -> action instanceof ModifyProjectileAction || action instanceof PreventProjectileAction)
+            .count();
+    }
+
+    private static int countDamageActions(Map<ResourceLocation, Action<?>> actions) {
+        return (int) actions.values().stream()
+            .filter(action -> action instanceof ModifyDamageTakenAction
+                || action instanceof ModifyDamageDealtAction
+                || action instanceof CriticalHitAction)
+            .count();
+    }
+
+    private static int countRestrictionActions(Map<ResourceLocation, Action<?>> actions) {
+        return (int) actions.values().stream()
+            .filter(action -> action instanceof PreventFoodAction
+                || action instanceof PreventItemUseAction
+                || action instanceof PreventBlockUseAction
+                || action instanceof PreventProjectileAction
+                || action instanceof PreventItemPickupAction
+                || action instanceof PreventItemDropAction
+                || action instanceof RestrictItemUseAction
+                || action instanceof RestrictBlockUseAction)
             .count();
     }
 
@@ -314,13 +353,15 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         return (int) conditions.values().stream()
             .filter(condition -> condition instanceof ItemEnchantmentCondition
                 || condition instanceof ItemDurabilityCondition
-                || condition instanceof ItemTagCondition)
+                || condition instanceof ItemTagCondition
+                || condition instanceof ItemRestrictedCondition)
             .count();
     }
 
     private static int countBlockConditions(Map<ResourceLocation, Condition<?>> conditions) {
         return (int) conditions.values().stream()
-            .filter(condition -> condition instanceof PreventBlockUseCondition)
+            .filter(condition -> condition instanceof PreventBlockUseCondition
+                || condition instanceof BlockRestrictedCondition)
             .count();
     }
 
@@ -347,6 +388,14 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
                 || condition instanceof DimensionCondition
                 || condition instanceof FluidCondition
                 || condition instanceof YLevelCondition)
+            .count();
+    }
+
+    private static int countRestrictionConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof PreventBlockUseCondition
+                || condition instanceof ItemRestrictedCondition
+                || condition instanceof BlockRestrictedCondition)
             .count();
     }
 
@@ -643,6 +692,8 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int foodActionsLoaded,
         int blockActionsLoaded,
         int projectileActionsLoaded,
+        int damageActionsLoaded,
+        int restrictionActionsLoaded,
         int effectConditionsLoaded,
         int attributeConditionsLoaded,
         int entityConditionsLoaded,
@@ -652,11 +703,12 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int projectileConditionsLoaded,
         int combatConditionsLoaded,
         int environmentConditionsLoaded,
+        int restrictionConditionsLoaded,
         int skippedEntries,
         List<ResourceLocation> unknownTypes
     ) {
         static ReloadStats empty() {
-            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, List.of());
+            return new ReloadStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, List.of());
         }
     }
 
