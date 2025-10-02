@@ -30,6 +30,7 @@ import io.github.apace100.origins.power.condition.impl.PreventBlockUseCondition;
 import io.github.apace100.origins.power.condition.impl.ProjectileCondition;
 import io.github.apace100.origins.power.condition.impl.RecentDamageCondition;
 import io.github.apace100.origins.power.condition.impl.SneakingCondition;
+import io.github.apace100.origins.power.condition.impl.SleepCondition;
 import io.github.apace100.origins.power.condition.impl.TimeOfDayCondition;
 import io.github.apace100.origins.power.condition.impl.XorCondition;
 import io.github.apace100.origins.power.condition.impl.EntityCondition;
@@ -95,6 +96,7 @@ public final class ConditionRegistry {
         register(PreventBlockUseCondition.TYPE, PreventBlockUseCondition::fromJson);
         register(BlockRestrictedCondition.TYPE, BlockRestrictedCondition::fromJson);
         register(ProjectileCondition.TYPE, ProjectileCondition::fromJson);
+        register(SleepCondition.TYPE, SleepCondition::fromJson);
     }
 
     /**
