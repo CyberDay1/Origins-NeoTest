@@ -8,7 +8,8 @@ public record OriginsConfigValues(
     Merling merling,
     Feline feline,
     Elytrian elytrian,
-    Shulk shulk
+    Shulk shulk,
+    boolean debugAudit
 ) {
     public record Phantom(int hungerDrainIntervalTicks, int hungerDrainPerInterval, boolean allowWallPhasing) {}
 

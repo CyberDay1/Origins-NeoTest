@@ -18,6 +18,7 @@ import io.github.apace100.origins.common.registry.ConfiguredConditions;
 import io.github.apace100.origins.common.registry.ConfiguredPowers;
 import io.github.apace100.origins.common.registry.ModPowers;
 import io.github.apace100.origins.common.registry.OriginRegistry;
+import io.github.apace100.origins.config.OriginsConfig;
 import io.github.apace100.origins.power.action.Action;
 import io.github.apace100.origins.power.action.impl.AddXpAction;
 import io.github.apace100.origins.power.action.impl.AddXpLevelAction;
@@ -110,8 +111,10 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -125,6 +128,11 @@ import java.util.stream.Stream;
  */
 public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().setLenient().create();
+    private static final String ORIGINS_DIRECTORY = "origins/origins";
+    private static final String POWERS_DIRECTORY = "origins/powers";
+    private static final String ACTIONS_DIRECTORY = "origins/actions";
+    private static final String CONDITIONS_DIRECTORY = "origins/conditions";
+
     private static final Codec<OriginData> ORIGIN_CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ComponentSerialization.CODEC.fieldOf("name").forGetter(OriginData::name),
         ComponentSerialization.CODEC.fieldOf("description").forGetter(OriginData::description),
@@ -132,9 +140,9 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(OriginData::icon),
         Codec.INT.optionalFieldOf("impact").forGetter(OriginData::impact)
     ).apply(instance, OriginData::new));
-    private static final JsonGatherer POWER_GATHERER = new JsonGatherer("origins/powers");
-    private static final JsonGatherer ACTION_GATHERER = new JsonGatherer("origins/actions");
-    private static final JsonGatherer CONDITION_GATHERER = new JsonGatherer("origins/conditions");
+    private static final JsonGatherer POWER_GATHERER = new JsonGatherer(POWERS_DIRECTORY);
+    private static final JsonGatherer ACTION_GATHERER = new JsonGatherer(ACTIONS_DIRECTORY);
+    private static final JsonGatherer CONDITION_GATHERER = new JsonGatherer(CONDITIONS_DIRECTORY);
     private static final Map<ResourceLocation, ResourceLocation> POWER_ALIASES = Map.of(
         ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytra"),
         ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytra_flight"),
@@ -143,6 +151,7 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
     );
 
     private static volatile ReloadStats LAST_STATS = ReloadStats.empty();
+    private static volatile ParityReport LAST_PARITY_REPORT = ParityReport.empty();
 
     private Map<ResourceLocation, JsonElement> pendingActionJson = Map.of();
     private Map<ResourceLocation, JsonElement> pendingConditionJson = Map.of();
@@ -154,9 +163,10 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
     private final Set<ResourceLocation> unknownActionTypes = new HashSet<>();
     private final Set<ResourceLocation> unknownConditionTypes = new HashSet<>();
     private final Set<ResourceLocation> unknownPowerTypes = new HashSet<>();
+    private final ParityAuditCollector parityAudit = new ParityAuditCollector();
 
     public OriginsDataLoader() {
-        super(GSON, "origins/origins");
+        super(GSON, ORIGINS_DIRECTORY);
     }
 
     @Override
@@ -168,6 +178,7 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         unknownActionTypes.clear();
         unknownConditionTypes.clear();
         unknownPowerTypes.clear();
+        parityAudit.reset(OriginsConfig.debugAuditEnabled());
         pendingActionJson = ACTION_GATHERER.gather(resourceManager, profiler);
         pendingConditionJson = CONDITION_GATHERER.gather(resourceManager, profiler);
         pendingPowerJson = POWER_GATHERER.gather(resourceManager, profiler);
@@ -237,6 +248,16 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             dimensionWhitelistConditionCount, biomeWhitelistConditionCount, totalSkipped,
             unknownTypes);
 
+        LAST_PARITY_REPORT = parityAudit.buildReport(
+            ActionRegistry.implementedTypes(),
+            ConditionRegistry.implementedTypes(),
+            implementedPowerTypes()
+        );
+
+        if (parityAudit.enabled()) {
+            parityAudit.logSummary(LAST_PARITY_REPORT);
+        }
+
         if (totalSkipped > 0) {
             Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} experience / {} damage / {} fall / {} loot / {} recipe / {} sleep / {} restriction / {} inventory / {} spawn), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} sleep / {} restriction / {} spawn / {} dimension / {} biome / {} dimension whitelist / {} biome whitelist) from datapacks ({} entries skipped)",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
@@ -273,10 +294,23 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             return Optional.empty();
         }
 
+        if (!ActionRegistry.isImplemented(typeId)) {
+            unknownActionTypes.add(typeId);
+            parityAudit.recordUnknownActionType(typeId, id, ACTIONS_DIRECTORY);
+            if (parityAudit.enabled()) {
+                Origins.LOGGER.warn("[Origins][Parity] Unknown action type '{}' encountered in {}", typeId,
+                    datapackPath(ACTIONS_DIRECTORY, id));
+            } else {
+                Origins.LOGGER.warn("Unknown action type '{}' for data file '{}'", typeId, id);
+            }
+            skippedActions++;
+            return Optional.empty();
+        }
+
         Optional<Action<?>> action = ActionRegistry.create(typeId, id, json);
         if (action.isEmpty()) {
-            Origins.LOGGER.warn("Unknown action type '{}' for data file '{}'", typeId, id);
-            unknownActionTypes.add(typeId);
+            Origins.LOGGER.warn("Failed to instantiate action '{}' of type '{}' from {}", id, typeId,
+                datapackPath(ACTIONS_DIRECTORY, id));
             skippedActions++;
             return Optional.empty();
         }
@@ -298,10 +332,23 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             return Optional.empty();
         }
 
+        if (!ConditionRegistry.isImplemented(typeId)) {
+            unknownConditionTypes.add(typeId);
+            parityAudit.recordUnknownConditionType(typeId, id, CONDITIONS_DIRECTORY);
+            if (parityAudit.enabled()) {
+                Origins.LOGGER.warn("[Origins][Parity] Unknown condition type '{}' encountered in {}", typeId,
+                    datapackPath(CONDITIONS_DIRECTORY, id));
+            } else {
+                Origins.LOGGER.warn("Unknown condition type '{}' for data file '{}'", typeId, id);
+            }
+            skippedConditions++;
+            return Optional.empty();
+        }
+
         Optional<Condition<?>> condition = ConditionRegistry.create(typeId, id, json);
         if (condition.isEmpty()) {
-            Origins.LOGGER.warn("Unknown condition type '{}' for data file '{}'", typeId, id);
-            unknownConditionTypes.add(typeId);
+            Origins.LOGGER.warn("Failed to instantiate condition '{}' of type '{}' from {}", id, typeId,
+                datapackPath(CONDITIONS_DIRECTORY, id));
             skippedConditions++;
             return Optional.empty();
         }
@@ -577,7 +624,13 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
         Codec<? extends ConfiguredPower> codec = resolveCodec(normalized.type());
         if (codec == null) {
-            Origins.LOGGER.warn("Unknown power type '{}' for data file '{}'", normalized.type(), id);
+            parityAudit.recordUnknownPowerType(normalized.type(), id, POWERS_DIRECTORY);
+            if (parityAudit.enabled()) {
+                Origins.LOGGER.warn("[Origins][Parity] Unknown power type '{}' encountered in {}", normalized.type(),
+                    datapackPath(POWERS_DIRECTORY, id));
+            } else {
+                Origins.LOGGER.warn("Unknown power type '{}' for data file '{}'", normalized.type(), id);
+            }
             unknownPowerTypes.add(normalized.type());
             skippedPowers++;
             return Optional.empty();
@@ -622,13 +675,25 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         List<ResourceLocation> actions = power.actions().stream().filter(actionId -> {
             boolean present = ConfiguredActions.get(actionId).isPresent();
             if (!present) {
-                Origins.LOGGER.warn("Power {} references unknown action {}", id, actionId);
+                parityAudit.recordMissingActionReference(actionId, id);
+                if (parityAudit.enabled()) {
+                    Origins.LOGGER.warn("[Origins][Parity] Power {} references missing action {} (source: {})", id,
+                        actionId, datapackPath(POWERS_DIRECTORY, id));
+                } else {
+                    Origins.LOGGER.warn("Power {} references unknown action {}", id, actionId);
+                }
             }
             return present;
         }).toList();
 
         if (ConfiguredConditions.get(power.condition()).isEmpty()) {
-            Origins.LOGGER.warn("Power {} references unknown condition {}", id, power.condition());
+            parityAudit.recordMissingConditionReference(power.condition(), id);
+            if (parityAudit.enabled()) {
+                Origins.LOGGER.warn("[Origins][Parity] Power {} references missing condition {} (source: {})", id,
+                    power.condition(), datapackPath(POWERS_DIRECTORY, id));
+            } else {
+                Origins.LOGGER.warn("Power {} references unknown condition {}", id, power.condition());
+            }
         }
 
         return new ConfiguredPower(power.type(), power.name(), power.description(), actions, power.condition());
@@ -663,7 +728,13 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         List<ResourceLocation> powers = origin.powers().stream().filter(powerId -> {
             boolean present = ConfiguredPowers.get(powerId).isPresent();
             if (!present) {
-                Origins.LOGGER.warn("Origin {} references unknown power {}", id, powerId);
+                parityAudit.recordMissingPowerReference(powerId, id);
+                if (parityAudit.enabled()) {
+                    Origins.LOGGER.warn("[Origins][Parity] Origin {} references missing power {} (source: {})", id,
+                        powerId, datapackPath(ORIGINS_DIRECTORY, id));
+                } else {
+                    Origins.LOGGER.warn("Origin {} references unknown power {}", id, powerId);
+                }
             }
             return present;
         }).collect(Collectors.toList());
@@ -725,6 +796,20 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
 
     public static ReloadStats getLastReloadStats() {
         return LAST_STATS;
+    }
+
+    public static ParityReport getLastParityReport() {
+        return LAST_PARITY_REPORT;
+    }
+
+    private Set<ResourceLocation> implementedPowerTypes() {
+        return ModPowers.POWERS.getEntries().stream()
+            .map(DeferredHolder::getId)
+            .collect(Collectors.toCollection(HashSet::new));
+    }
+
+    private static String datapackPath(String directory, ResourceLocation id) {
+        return "data/%s/%s/%s.json".formatted(id.getNamespace(), directory, id.getPath());
     }
 
     private NormalizedPowerJson normalizePowerJson(ResourceLocation powerId, JsonObject original) {
@@ -872,6 +957,227 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
                 0, 0, 0, 0, 0, 0,
                 List.<ResourceLocation>of()
             );
+        }
+    }
+
+    public record ParityReport(
+        List<ResourceLocation> implementedActionTypes,
+        List<ResourceLocation> implementedConditionTypes,
+        List<ResourceLocation> implementedPowerTypes,
+        List<MissingEntry> missingActions,
+        List<MissingEntry> missingConditions,
+        List<MissingEntry> missingPowers
+    ) {
+        public static ParityReport empty() {
+            return new ParityReport(List.of(), List.of(), List.of(), List.of(), List.of(), List.of());
+        }
+
+        public boolean hasFindings() {
+            return !missingActions.isEmpty() || !missingConditions.isEmpty() || !missingPowers.isEmpty();
+        }
+
+        public int missingActionOccurrences() {
+            return countOccurrences(missingActions);
+        }
+
+        public int missingConditionOccurrences() {
+            return countOccurrences(missingConditions);
+        }
+
+        public int missingPowerOccurrences() {
+            return countOccurrences(missingPowers);
+        }
+
+        public JsonObject toJson() {
+            JsonObject root = new JsonObject();
+
+            JsonObject implemented = new JsonObject();
+            implemented.add("actions", toIdArray(implementedActionTypes));
+            implemented.add("conditions", toIdArray(implementedConditionTypes));
+            implemented.add("powers", toIdArray(implementedPowerTypes));
+            root.add("implemented", implemented);
+
+            JsonObject missing = new JsonObject();
+            missing.add("actions", toMissingEntriesJson(missingActions));
+            missing.add("conditions", toMissingEntriesJson(missingConditions));
+            missing.add("powers", toMissingEntriesJson(missingPowers));
+            root.add("missing", missing);
+
+            JsonObject summary = new JsonObject();
+            summary.addProperty("implementedActionTypes", implementedActionTypes.size());
+            summary.addProperty("implementedConditionTypes", implementedConditionTypes.size());
+            summary.addProperty("implementedPowerTypes", implementedPowerTypes.size());
+            summary.addProperty("missingActionIds", missingActions.size());
+            summary.addProperty("missingConditionIds", missingConditions.size());
+            summary.addProperty("missingPowerIds", missingPowers.size());
+            summary.addProperty("missingActionOccurrences", missingActionOccurrences());
+            summary.addProperty("missingConditionOccurrences", missingConditionOccurrences());
+            summary.addProperty("missingPowerOccurrences", missingPowerOccurrences());
+            summary.addProperty("hasFindings", hasFindings());
+            root.add("summary", summary);
+
+            return root;
+        }
+
+        private static JsonArray toIdArray(List<ResourceLocation> ids) {
+            JsonArray array = new JsonArray();
+            ids.stream()
+                .map(ResourceLocation::toString)
+                .forEach(array::add);
+            return array;
+        }
+
+        private static JsonObject toMissingEntriesJson(List<MissingEntry> entries) {
+            JsonObject object = new JsonObject();
+            object.addProperty("count", entries.size());
+            object.addProperty("occurrences", countOccurrences(entries));
+            JsonArray entryArray = new JsonArray();
+            for (MissingEntry entry : entries) {
+                JsonObject entryJson = new JsonObject();
+                entryJson.addProperty("id", entry.id().toString());
+                JsonArray occurrences = new JsonArray();
+                for (MissingOccurrence occurrence : entry.occurrences()) {
+                    JsonObject occurrenceJson = new JsonObject();
+                    occurrenceJson.addProperty("context", occurrence.context());
+                    occurrenceJson.addProperty("source", occurrence.sourceId().toString());
+                    if (!occurrence.sourcePath().isEmpty()) {
+                        occurrenceJson.addProperty("path", occurrence.sourcePath());
+                    }
+                    if (!occurrence.note().isEmpty()) {
+                        occurrenceJson.addProperty("detail", occurrence.note());
+                    }
+                    occurrences.add(occurrenceJson);
+                }
+                entryJson.add("occurrences", occurrences);
+                entryArray.add(entryJson);
+            }
+            object.add("entries", entryArray);
+            return object;
+        }
+
+        private static int countOccurrences(List<MissingEntry> entries) {
+            return entries.stream()
+                .mapToInt(entry -> entry.occurrences().size())
+                .sum();
+        }
+    }
+
+    public record MissingEntry(ResourceLocation id, List<MissingOccurrence> occurrences) {
+    }
+
+    public record MissingOccurrence(String context, ResourceLocation sourceId, String sourcePath, String note) {
+        static MissingOccurrence definition(ResourceLocation sourceId, String sourcePath, String note) {
+            return new MissingOccurrence("definition", sourceId, sourcePath, note);
+        }
+
+        static MissingOccurrence reference(ResourceLocation sourceId, String sourcePath, String note) {
+            return new MissingOccurrence("reference", sourceId, sourcePath, note);
+        }
+    }
+
+    private static final class ParityAuditCollector {
+        private final Map<ResourceLocation, List<MissingOccurrence>> missingActions = new LinkedHashMap<>();
+        private final Map<ResourceLocation, List<MissingOccurrence>> missingConditions = new LinkedHashMap<>();
+        private final Map<ResourceLocation, List<MissingOccurrence>> missingPowers = new LinkedHashMap<>();
+        private boolean enabled;
+
+        void reset(boolean enabled) {
+            this.enabled = enabled;
+            missingActions.clear();
+            missingConditions.clear();
+            missingPowers.clear();
+        }
+
+        boolean enabled() {
+            return enabled;
+        }
+
+        void recordUnknownActionType(ResourceLocation typeId, ResourceLocation fileId, String directory) {
+            record(missingActions, typeId, MissingOccurrence.definition(
+                fileId,
+                datapackPath(directory, fileId),
+                "Action definition skipped because the type is not implemented."
+            ));
+        }
+
+        void recordUnknownConditionType(ResourceLocation typeId, ResourceLocation fileId, String directory) {
+            record(missingConditions, typeId, MissingOccurrence.definition(
+                fileId,
+                datapackPath(directory, fileId),
+                "Condition definition skipped because the type is not implemented."
+            ));
+        }
+
+        void recordUnknownPowerType(ResourceLocation typeId, ResourceLocation fileId, String directory) {
+            record(missingPowers, typeId, MissingOccurrence.definition(
+                fileId,
+                datapackPath(directory, fileId),
+                "Power definition skipped because the type is not implemented."
+            ));
+        }
+
+        void recordMissingActionReference(ResourceLocation actionId, ResourceLocation powerId) {
+            record(missingActions, actionId, MissingOccurrence.reference(
+                powerId,
+                datapackPath(POWERS_DIRECTORY, powerId),
+                "Referenced from power action list."
+            ));
+        }
+
+        void recordMissingConditionReference(ResourceLocation conditionId, ResourceLocation powerId) {
+            record(missingConditions, conditionId, MissingOccurrence.reference(
+                powerId,
+                datapackPath(POWERS_DIRECTORY, powerId),
+                "Referenced from power condition field."
+            ));
+        }
+
+        void recordMissingPowerReference(ResourceLocation powerId, ResourceLocation originId) {
+            record(missingPowers, powerId, MissingOccurrence.reference(
+                originId,
+                datapackPath(ORIGINS_DIRECTORY, originId),
+                "Referenced from origin power list."
+            ));
+        }
+
+        ParityReport buildReport(Collection<ResourceLocation> implementedActionTypes,
+                                 Collection<ResourceLocation> implementedConditionTypes,
+                                 Collection<ResourceLocation> implementedPowerTypes) {
+            return new ParityReport(
+                sortIds(implementedActionTypes),
+                sortIds(implementedConditionTypes),
+                sortIds(implementedPowerTypes),
+                buildEntries(missingActions),
+                buildEntries(missingConditions),
+                buildEntries(missingPowers)
+            );
+        }
+
+        void logSummary(ParityReport report) {
+            Origins.LOGGER.info(
+                "[Origins][Parity] Action types implemented: {} ({} missing across {} occurrences); condition types implemented: {} ({} missing across {} occurrences); power types implemented: {} ({} missing across {} occurrences)",
+                report.implementedActionTypes().size(), report.missingActions().size(), report.missingActionOccurrences(),
+                report.implementedConditionTypes().size(), report.missingConditions().size(), report.missingConditionOccurrences(),
+                report.implementedPowerTypes().size(), report.missingPowers().size(), report.missingPowerOccurrences()
+            );
+        }
+
+        private void record(Map<ResourceLocation, List<MissingOccurrence>> map, ResourceLocation id,
+                            MissingOccurrence occurrence) {
+            map.computeIfAbsent(id, key -> new ArrayList<>()).add(occurrence);
+        }
+
+        private List<ResourceLocation> sortIds(Collection<ResourceLocation> ids) {
+            return ids.stream()
+                .sorted(Comparator.comparing(ResourceLocation::toString))
+                .toList();
+        }
+
+        private List<MissingEntry> buildEntries(Map<ResourceLocation, List<MissingOccurrence>> map) {
+            return map.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(Comparator.comparing(ResourceLocation::toString)))
+                .map(entry -> new MissingEntry(entry.getKey(), List.copyOf(entry.getValue())))
+                .toList();
         }
     }
 

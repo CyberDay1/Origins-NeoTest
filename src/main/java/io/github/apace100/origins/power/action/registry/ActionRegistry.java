@@ -62,6 +62,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -159,6 +160,11 @@ public final class ActionRegistry {
         return Optional.ofNullable(action);
     }
 
+    public static boolean isImplemented(ResourceLocation id) {
+        bootstrap();
+        return FACTORIES.containsKey(id);
+    }
+
     /**
      * Replaces the loaded datapack actions with the supplied map.
      */
@@ -179,5 +185,10 @@ public final class ActionRegistry {
      */
     public static Map<ResourceLocation, Action<?>> entries() {
         return Collections.unmodifiableMap(ACTIONS);
+    }
+
+    public static Set<ResourceLocation> implementedTypes() {
+        bootstrap();
+        return Collections.unmodifiableSet(FACTORIES.keySet());
     }
 }
