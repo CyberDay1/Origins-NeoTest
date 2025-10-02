@@ -31,6 +31,8 @@ published jar always advertises the correct mod id, version, and dependency rang
 
 When the game is launched a common NeoForge configuration file named
 `origins-common.toml` is generated alongside the existing client and server configs.
+In addition to the per-origin balance tweaks listed below, the root of the file exposes
+the `debugAudit` toggle which enables verbose datapack parity logging.
 The file exposes the following options for the bundled powers:
 
 | Category | Option | Description | Default |
@@ -49,6 +51,21 @@ The file exposes the following options for the bundled powers:
 | `elytrian` | `cancelFallDamage` | Cancel Elytrian fall damage entirely. | `true` |
 | `elytrian` | `confinedSpaceChecks` | Apply Elytrian weakness/slowness in cramped spaces. | `false` |
 | `shulk` | `chestArmorAllowed` | Allow Shulk players to wear chest armor. | `false` |
+
+## Datapack parity auditing
+
+The port ships with a parity audit flow that compares the Fabric Origins/Apoli datapacks
+against the NeoForge implementation. To generate a report:
+
+1. Copy the official Origins and Apoli datapacks into the instance's `datapacks/`
+   directory.
+2. Open `config/origins-common.toml` and set `debugAudit = true` to surface detailed
+   warnings during reload.
+3. Run `/reload` or invoke `/origins debug parity` in-game/console to build a
+   `debug/parity_report.json` file containing implemented identifiers, missing
+   action/condition/power IDs, and the datapack files or origins that reference them.
+4. Inspect the generated JSON to identify parity gaps and follow the console logs for a
+   summary of implemented versus missing categories.
 
 ## Updating Minecraft or NeoForge versions
 

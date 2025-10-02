@@ -10,6 +10,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 public final class OriginsConfig {
     public static final ModConfigSpec COMMON_SPEC;
 
+    private static final ModConfigSpec.BooleanValue DEBUG_AUDIT;
     private static final PhantomCategory PHANTOM;
     private static final AvianCategory AVIAN;
     private static final ElementalCategory ENDERIAN;
@@ -23,6 +24,10 @@ public final class OriginsConfig {
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+
+        DEBUG_AUDIT = builder
+            .comment("Enable detailed parity auditing logs during datapack reloads.")
+            .define("debugAudit", false);
 
         builder.comment("Configuration for built-in Origins powers").push("powers");
         PHANTOM = new PhantomCategory(builder);
@@ -92,8 +97,13 @@ public final class OriginsConfig {
                 ELYTRIAN.cancelFallDamage.get(),
                 ELYTRIAN.confinedSpaceChecks.get()
             ),
-            new OriginsConfigValues.Shulk(SHULK.chestArmorAllowed.get())
+            new OriginsConfigValues.Shulk(SHULK.chestArmorAllowed.get()),
+            DEBUG_AUDIT.get()
         );
+    }
+
+    public static boolean debugAuditEnabled() {
+        return cachedValues.debugAudit();
     }
 
     private static final class PhantomCategory {

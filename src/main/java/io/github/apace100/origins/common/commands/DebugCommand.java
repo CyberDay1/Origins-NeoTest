@@ -14,6 +14,7 @@ import io.github.apace100.origins.common.registry.ConfiguredPowers;
 import io.github.apace100.origins.common.registry.OriginRegistry;
 import io.github.apace100.origins.common.config.ModConfigs;
 import io.github.apace100.origins.config.OriginsConfig;
+import io.github.apace100.origins.datapack.OriginsDataLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -31,6 +32,8 @@ public final class DebugCommand {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final SimpleCommandExceptionType WRITE_ERROR =
         new SimpleCommandExceptionType(Component.literal("Failed to write origins_debug.json"));
+    private static final SimpleCommandExceptionType PARITY_WRITE_ERROR =
+        new SimpleCommandExceptionType(Component.literal("Failed to write debug/parity_report.json"));
 
     private DebugCommand() {
     }
@@ -38,7 +41,8 @@ public final class DebugCommand {
     public static void register(LiteralArgumentBuilder<CommandSourceStack> root) {
         root.then(Commands.literal("debug")
             .requires(source -> source.hasPermission(2))
-            .then(Commands.literal("dump").executes(DebugCommand::dump)));
+            .then(Commands.literal("dump").executes(DebugCommand::dump))
+            .then(Commands.literal("parity").executes(DebugCommand::parity)));
     }
 
     private static int dump(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -78,6 +82,33 @@ public final class DebugCommand {
         }
 
         source.sendSuccess(() -> Component.literal("Origins debug dump written to " + output.toAbsolutePath()), false);
+        return 1;
+    }
+
+    private static int parity(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        OriginsDataLoader.ParityReport report = OriginsDataLoader.getLastParityReport();
+        JsonObject json = report.toJson();
+        Path output = source.getServer().getFile("debug/parity_report.json");
+
+        String payload = GSON.toJson(json);
+
+        try {
+            Path parent = output.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
+            Files.writeString(output, payload, StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        } catch (IOException exception) {
+            Origins.LOGGER.error("Failed to write parity audit report", exception);
+            throw PARITY_WRITE_ERROR.create();
+        }
+
+        Origins.LOGGER.info("[Origins][Parity] Generated parity report with {} action gaps, {} condition gaps, {} power gaps",
+            report.missingActions().size(), report.missingConditions().size(), report.missingPowers().size());
+        source.sendSuccess(() -> Component.literal("Parity audit report written to " + output.toAbsolutePath()), false);
+        source.sendSuccess(() -> Component.literal(payload), false);
         return 1;
     }
 }

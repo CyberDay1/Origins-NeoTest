@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -125,6 +126,11 @@ public final class ConditionRegistry {
         return Optional.ofNullable(condition);
     }
 
+    public static boolean isImplemented(ResourceLocation id) {
+        bootstrap();
+        return FACTORIES.containsKey(id);
+    }
+
     /**
      * Replaces the loaded datapack conditions with the supplied map.
      */
@@ -145,5 +151,10 @@ public final class ConditionRegistry {
      */
     public static Map<ResourceLocation, Condition<?>> entries() {
         return Collections.unmodifiableMap(CONDITIONS);
+    }
+
+    public static Set<ResourceLocation> implementedTypes() {
+        bootstrap();
+        return Collections.unmodifiableSet(FACTORIES.keySet());
     }
 }
