@@ -5,7 +5,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 
-@EventBusSubscriber(modid = Origins.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = Origins.MOD_ID)
 public final class OriginsDataReloaders {
     private static final ConfiguredActionLoader ACTION_LOADER = new ConfiguredActionLoader();
     private static final ConfiguredConditionLoader CONDITION_LOADER = new ConfiguredConditionLoader();
