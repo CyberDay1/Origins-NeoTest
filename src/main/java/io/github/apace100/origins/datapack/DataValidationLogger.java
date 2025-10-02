@@ -18,12 +18,13 @@ public final class DataValidationLogger extends SimplePreparableReloadListener<V
     @Override
     protected void apply(Void value, ResourceManager resourceManager, ProfilerFiller profiler) {
         ReloadStats stats = OriginsDataLoader.getLastReloadStats();
-        Origins.LOGGER.info("[Origins] Datapack reload summary: {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} damage / {} restriction), {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} restriction)",
+        Origins.LOGGER.info("[Origins] Datapack reload summary: {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} experience / {} damage / {} fall / {} loot / {} recipe / {} sleep / {} restriction), {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} sleep / {} restriction)",
             stats.originsLoaded(), stats.powersLoaded(), stats.actionsLoaded(), stats.effectActionsLoaded(), stats.attributeActionsLoaded(), stats.itemActionsLoaded(),
-            stats.foodActionsLoaded(), stats.blockActionsLoaded(), stats.projectileActionsLoaded(), stats.damageActionsLoaded(), stats.restrictionActionsLoaded(),
+            stats.foodActionsLoaded(), stats.blockActionsLoaded(), stats.projectileActionsLoaded(), stats.experienceActionsLoaded(), stats.damageActionsLoaded(), stats.fallActionsLoaded(),
+            stats.lootActionsLoaded(), stats.recipeActionsLoaded(), stats.sleepActionsLoaded(), stats.restrictionActionsLoaded(),
             stats.conditionsLoaded(), stats.effectConditionsLoaded(), stats.attributeConditionsLoaded(), stats.entityConditionsLoaded(),
             stats.compositeConditionsLoaded(), stats.itemConditionsLoaded(), stats.blockConditionsLoaded(), stats.projectileConditionsLoaded(),
-            stats.combatConditionsLoaded(), stats.environmentConditionsLoaded(), stats.restrictionConditionsLoaded());
+            stats.combatConditionsLoaded(), stats.environmentConditionsLoaded(), stats.sleepConditionsLoaded(), stats.restrictionConditionsLoaded());
         if (stats.skippedEntries() > 0) {
             Origins.LOGGER.info("[Origins] Datapack skipped {} entries during reload", stats.skippedEntries());
         }
