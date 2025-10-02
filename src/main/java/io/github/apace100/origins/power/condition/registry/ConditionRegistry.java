@@ -11,6 +11,7 @@ import io.github.apace100.origins.power.condition.impl.BlockStateCondition;
 import io.github.apace100.origins.power.condition.impl.BlockRestrictedCondition;
 import io.github.apace100.origins.power.condition.impl.DamageSourceCondition;
 import io.github.apace100.origins.power.condition.impl.DimensionCondition;
+import io.github.apace100.origins.power.condition.impl.DimensionWhitelistCondition;
 import io.github.apace100.origins.power.condition.impl.EffectActiveCondition;
 import io.github.apace100.origins.power.condition.impl.EquippedItemCondition;
 import io.github.apace100.origins.power.condition.impl.FluidCondition;
@@ -26,6 +27,7 @@ import io.github.apace100.origins.power.condition.impl.NotCondition;
 import io.github.apace100.origins.power.condition.impl.OrCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
 import io.github.apace100.origins.power.condition.impl.PassengerCondition;
+import io.github.apace100.origins.power.condition.impl.PreventEntitySpawnCondition;
 import io.github.apace100.origins.power.condition.impl.PreventBlockUseCondition;
 import io.github.apace100.origins.power.condition.impl.ProjectileCondition;
 import io.github.apace100.origins.power.condition.impl.RecentDamageCondition;
@@ -36,6 +38,7 @@ import io.github.apace100.origins.power.condition.impl.XorCondition;
 import io.github.apace100.origins.power.condition.impl.EntityCondition;
 import io.github.apace100.origins.power.condition.impl.WeatherCondition;
 import io.github.apace100.origins.power.condition.impl.YLevelCondition;
+import io.github.apace100.origins.power.condition.impl.BiomeWhitelistCondition;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collections;
@@ -65,6 +68,7 @@ public final class ConditionRegistry {
         BOOTSTRAPPED = true;
         register(BiomeCondition.TYPE, BiomeCondition::fromJson);
         register(DimensionCondition.TYPE, DimensionCondition::fromJson);
+        register(DimensionWhitelistCondition.TYPE, DimensionWhitelistCondition::fromJson);
         register(TimeOfDayCondition.TYPE, TimeOfDayCondition::fromJson);
         register(DamageSourceCondition.TYPE, DamageSourceCondition::fromJson);
         register(BlockStateCondition.TYPE, BlockStateCondition::fromJson);
@@ -94,9 +98,11 @@ public final class ConditionRegistry {
         register(WeatherCondition.TYPE, WeatherCondition::fromJson);
         register(YLevelCondition.TYPE, YLevelCondition::fromJson);
         register(PreventBlockUseCondition.TYPE, PreventBlockUseCondition::fromJson);
+        register(PreventEntitySpawnCondition.TYPE, PreventEntitySpawnCondition::fromJson);
         register(BlockRestrictedCondition.TYPE, BlockRestrictedCondition::fromJson);
         register(ProjectileCondition.TYPE, ProjectileCondition::fromJson);
         register(SleepCondition.TYPE, SleepCondition::fromJson);
+        register(BiomeWhitelistCondition.TYPE, BiomeWhitelistCondition::fromJson);
     }
 
     /**
