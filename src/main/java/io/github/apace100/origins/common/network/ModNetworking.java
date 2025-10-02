@@ -16,7 +16,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@EventBusSubscriber(modid = Origins.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = Origins.MOD_ID)
 public final class ModNetworking {
     private static final String PROTOCOL_VERSION = "2";
 

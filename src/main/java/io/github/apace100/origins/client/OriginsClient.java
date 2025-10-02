@@ -28,7 +28,7 @@ public final class OriginsClient {
         OriginsClientConfig.register();
     }
 
-    @EventBusSubscriber(modid = Origins.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = Origins.MOD_ID, value = Dist.CLIENT)
     public static final class ModEvents {
         private ModEvents() {
         }
@@ -50,7 +50,7 @@ public final class OriginsClient {
         }
     }
 
-    @EventBusSubscriber(modid = Origins.MOD_ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = Origins.MOD_ID, value = Dist.CLIENT)
     public static final class ForgeEvents {
         private ForgeEvents() {
         }
