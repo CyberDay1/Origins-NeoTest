@@ -23,6 +23,7 @@ import io.github.apace100.origins.power.action.impl.AddXpAction;
 import io.github.apace100.origins.power.action.impl.AddXpLevelAction;
 import io.github.apace100.origins.power.action.impl.ApplyEffectAction;
 import io.github.apace100.origins.power.action.impl.ClearAllEffectsAction;
+import io.github.apace100.origins.power.action.impl.ClearInventoryAction;
 import io.github.apace100.origins.power.action.impl.ClearEffectAction;
 import io.github.apace100.origins.power.action.impl.ConsumeItemAction;
 import io.github.apace100.origins.power.action.impl.CriticalHitAction;
@@ -36,8 +37,10 @@ import io.github.apace100.origins.power.action.impl.ModifyFallingAction;
 import io.github.apace100.origins.power.action.impl.ModifyFoodAction;
 import io.github.apace100.origins.power.action.impl.ModifyProjectileAction;
 import io.github.apace100.origins.power.action.impl.ModifyProjectileDamageAction;
+import io.github.apace100.origins.power.action.impl.ModifyInventoryAction;
 import io.github.apace100.origins.power.action.impl.NoFallDamageAction;
 import io.github.apace100.origins.power.action.impl.PreventBlockUseAction;
+import io.github.apace100.origins.power.action.impl.PreventEntitySpawnAction;
 import io.github.apace100.origins.power.action.impl.PreventFoodAction;
 import io.github.apace100.origins.power.action.impl.PreventItemDropAction;
 import io.github.apace100.origins.power.action.impl.PreventItemPickupAction;
@@ -53,6 +56,8 @@ import io.github.apace100.origins.power.action.impl.RestrictBlockUseAction;
 import io.github.apace100.origins.power.action.impl.RestrictItemUseAction;
 import io.github.apace100.origins.power.action.impl.UnlockRecipeAction;
 import io.github.apace100.origins.power.action.impl.SetXpLevelAction;
+import io.github.apace100.origins.power.action.impl.SwapInventoryAction;
+import io.github.apace100.origins.power.action.impl.SpawnEntityAction;
 import io.github.apace100.origins.power.action.registry.ActionRegistry;
 import io.github.apace100.origins.power.condition.Condition;
 import io.github.apace100.origins.power.condition.impl.AllOfCondition;
@@ -63,6 +68,7 @@ import io.github.apace100.origins.power.condition.impl.BiomeCondition;
 import io.github.apace100.origins.power.condition.impl.BlockRestrictedCondition;
 import io.github.apace100.origins.power.condition.impl.DamageSourceCondition;
 import io.github.apace100.origins.power.condition.impl.DimensionCondition;
+import io.github.apace100.origins.power.condition.impl.DimensionWhitelistCondition;
 import io.github.apace100.origins.power.condition.impl.EffectActiveCondition;
 import io.github.apace100.origins.power.condition.impl.EntityCondition;
 import io.github.apace100.origins.power.condition.impl.FluidCondition;
@@ -78,6 +84,7 @@ import io.github.apace100.origins.power.condition.impl.OrCondition;
 import io.github.apace100.origins.power.condition.impl.OnFireCondition;
 import io.github.apace100.origins.power.condition.impl.PassengerCondition;
 import io.github.apace100.origins.power.condition.impl.PreventBlockUseCondition;
+import io.github.apace100.origins.power.condition.impl.PreventEntitySpawnCondition;
 import io.github.apace100.origins.power.condition.impl.ProjectileCondition;
 import io.github.apace100.origins.power.condition.impl.RecentDamageCondition;
 import io.github.apace100.origins.power.condition.impl.SleepCondition;
@@ -87,6 +94,7 @@ import io.github.apace100.origins.power.condition.impl.TimeOfDayCondition;
 import io.github.apace100.origins.power.condition.impl.XorCondition;
 import io.github.apace100.origins.power.condition.impl.WeatherCondition;
 import io.github.apace100.origins.power.condition.impl.YLevelCondition;
+import io.github.apace100.origins.power.condition.impl.BiomeWhitelistCondition;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -186,6 +194,8 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int recipeActionCount = countRecipeActions(actions);
         int sleepActionCount = countSleepActions(actions);
         int restrictionActionCount = countRestrictionActions(actions);
+        int inventoryActionCount = countInventoryActions(actions);
+        int spawnActionCount = countSpawnActions(actions);
 
         Map<ResourceLocation, Condition<?>> conditions = decodeConditions(pendingConditionJson);
         ConditionRegistry.setAll(conditions);
@@ -198,6 +208,11 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int environmentConditionCount = countEnvironmentConditions(conditions);
         int sleepConditionCount = countSleepConditions(conditions);
         int restrictionConditionCount = countRestrictionConditions(conditions);
+        int spawnConditionCount = countSpawnConditions(conditions);
+        int dimensionConditionCount = countDimensionConditions(conditions);
+        int biomeConditionCount = countBiomeConditions(conditions);
+        int dimensionWhitelistConditionCount = countDimensionWhitelistConditions(conditions);
+        int biomeWhitelistConditionCount = countBiomeWhitelistConditions(conditions);
 
         Map<ResourceLocation, ConfiguredPower> powers = decodePowers(pendingPowerJson);
         ConfiguredPowers.setAll(powers);
@@ -215,28 +230,32 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         LAST_STATS = new ReloadStats(origins.size(), powers.size(), actions.size(), conditions.size(), effectActionCount,
             attributeActionCount, itemActionCount, foodActionCount, blockActionCount, projectileActionCount,
             experienceActionCount, damageActionCount, fallActionCount, lootActionCount, recipeActionCount, sleepActionCount,
-            restrictionActionCount,
+            restrictionActionCount, inventoryActionCount, spawnActionCount,
             effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount, itemConditionCount,
             blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount, sleepConditionCount,
-            restrictionConditionCount, totalSkipped,
+            restrictionConditionCount, spawnConditionCount, dimensionConditionCount, biomeConditionCount,
+            dimensionWhitelistConditionCount, biomeWhitelistConditionCount, totalSkipped,
             unknownTypes);
 
         if (totalSkipped > 0) {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} experience / {} damage / {} fall / {} loot / {} recipe / {} sleep / {} restriction), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} sleep / {} restriction) from datapacks ({} entries skipped)",
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} experience / {} damage / {} fall / {} loot / {} recipe / {} sleep / {} restriction / {} inventory / {} spawn), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} sleep / {} restriction / {} spawn / {} dimension / {} biome / {} dimension whitelist / {} biome whitelist) from datapacks ({} entries skipped)",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
                 foodActionCount, blockActionCount, projectileActionCount, experienceActionCount, damageActionCount, fallActionCount,
-                lootActionCount, recipeActionCount, sleepActionCount, restrictionActionCount,
+                lootActionCount, recipeActionCount, sleepActionCount, restrictionActionCount, inventoryActionCount,
+                spawnActionCount,
                 conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
                 itemConditionCount, blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount,
-                sleepConditionCount, restrictionConditionCount, totalSkipped);
+                sleepConditionCount, restrictionConditionCount, spawnConditionCount, dimensionConditionCount, biomeConditionCount,
+                dimensionWhitelistConditionCount, biomeWhitelistConditionCount, totalSkipped);
         } else {
-            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} experience / {} damage / {} fall / {} loot / {} recipe / {} sleep / {} restriction), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} sleep / {} restriction) from datapacks",
+            Origins.LOGGER.info("Loaded {} origins, {} powers, {} actions ({} effect / {} attribute / {} item / {} food / {} block / {} projectile / {} experience / {} damage / {} fall / {} loot / {} recipe / {} sleep / {} restriction / {} inventory / {} spawn), and {} conditions ({} effect / {} attribute / {} entity / {} composite / {} item / {} block / {} projectile / {} combat / {} environment / {} sleep / {} restriction / {} spawn / {} dimension / {} biome / {} dimension whitelist / {} biome whitelist) from datapacks",
                 origins.size(), powers.size(), actions.size(), effectActionCount, attributeActionCount, itemActionCount,
                 foodActionCount, blockActionCount, projectileActionCount, experienceActionCount, damageActionCount, fallActionCount,
-                lootActionCount, recipeActionCount, sleepActionCount, restrictionActionCount,
+                lootActionCount, recipeActionCount, sleepActionCount, restrictionActionCount, inventoryActionCount, spawnActionCount,
                 conditions.size(), effectConditionCount, attributeConditionCount, entityConditionCount, compositeConditionCount,
                 itemConditionCount, blockConditionCount, projectileConditionCount, combatConditionCount, environmentConditionCount,
-                sleepConditionCount, restrictionConditionCount);
+                sleepConditionCount, restrictionConditionCount, spawnConditionCount, dimensionConditionCount, biomeConditionCount,
+                dimensionWhitelistConditionCount, biomeWhitelistConditionCount);
         }
     }
 
@@ -397,6 +416,21 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
             .count();
     }
 
+    private static int countInventoryActions(Map<ResourceLocation, Action<?>> actions) {
+        return (int) actions.values().stream()
+            .filter(action -> action instanceof ModifyInventoryAction
+                || action instanceof ClearInventoryAction
+                || action instanceof SwapInventoryAction)
+            .count();
+    }
+
+    private static int countSpawnActions(Map<ResourceLocation, Action<?>> actions) {
+        return (int) actions.values().stream()
+            .filter(action -> action instanceof PreventEntitySpawnAction
+                || action instanceof SpawnEntityAction)
+            .count();
+    }
+
     private static int countEffectConditions(Map<ResourceLocation, Condition<?>> conditions) {
         return (int) conditions.values().stream()
             .filter(condition -> condition instanceof EffectActiveCondition)
@@ -453,7 +487,9 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
                 || condition instanceof LightLevelCondition
                 || condition instanceof WeatherCondition
                 || condition instanceof BiomeCondition
+                || condition instanceof BiomeWhitelistCondition
                 || condition instanceof DimensionCondition
+                || condition instanceof DimensionWhitelistCondition
                 || condition instanceof FluidCondition
                 || condition instanceof YLevelCondition)
             .count();
@@ -471,6 +507,36 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
                 || condition instanceof ItemRestrictedCondition
                 || condition instanceof BlockRestrictedCondition
                 || condition instanceof SleepCondition)
+            .count();
+    }
+
+    private static int countSpawnConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof PreventEntitySpawnCondition)
+            .count();
+    }
+
+    private static int countDimensionConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof DimensionCondition)
+            .count();
+    }
+
+    private static int countBiomeConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof BiomeCondition)
+            .count();
+    }
+
+    private static int countDimensionWhitelistConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof DimensionWhitelistCondition)
+            .count();
+    }
+
+    private static int countBiomeWhitelistConditions(Map<ResourceLocation, Condition<?>> conditions) {
+        return (int) conditions.values().stream()
+            .filter(condition -> condition instanceof BiomeWhitelistCondition)
             .count();
     }
 
@@ -777,6 +843,8 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int recipeActionsLoaded,
         int sleepActionsLoaded,
         int restrictionActionsLoaded,
+        int inventoryActionsLoaded,
+        int spawnActionsLoaded,
         int effectConditionsLoaded,
         int attributeConditionsLoaded,
         int entityConditionsLoaded,
@@ -788,13 +856,21 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
         int environmentConditionsLoaded,
         int sleepConditionsLoaded,
         int restrictionConditionsLoaded,
+        int spawnConditionsLoaded,
+        int dimensionConditionsLoaded,
+        int biomeConditionsLoaded,
+        int dimensionWhitelistConditionsLoaded,
+        int biomeWhitelistConditionsLoaded,
         int skippedEntries,
         List<ResourceLocation> unknownTypes
     ) {
         static ReloadStats empty() {
             return new ReloadStats(
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                List.of()
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                List.<ResourceLocation>of()
             );
         }
     }
