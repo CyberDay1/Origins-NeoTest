@@ -6,7 +6,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
-@EventBusSubscriber(modid = Origins.MOD_ID)
+@EventBusSubscriber(modid = Origins.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public final class CommandEvents {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent e) {

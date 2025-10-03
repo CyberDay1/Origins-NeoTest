@@ -16,15 +16,15 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public final class ModCommands {
     private ModCommands() {
     }
 
-    public static void register(IEventBus modBus) {
-        modBus.addListener(ModCommands::onRegisterCommands);
+    public static void register() {
+        NeoForge.EVENT_BUS.addListener(ModCommands::onRegisterCommands);
     }
 
     private static void onRegisterCommands(RegisterCommandsEvent event) {
