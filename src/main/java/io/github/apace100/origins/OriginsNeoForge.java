@@ -10,6 +10,7 @@ import io.github.apace100.origins.common.registry.ModPowers;
 import io.github.apace100.origins.datagen.ModDataGen;
 import io.github.apace100.origins.datapack.DataValidationLogger;
 import io.github.apace100.origins.datapack.OriginsDataLoader;
+import io.github.apace100.origins.events.CommandEvents;
 import io.github.apace100.origins.registry.ModBlocks;
 import io.github.apace100.origins.registry.ModItems;
 import io.github.apace100.origins.power.OriginPowerManager;
@@ -34,6 +35,7 @@ public final class OriginsNeoForge {
         ModConditions.register(modBus);
         ModNetworking.register(modBus);
         NeoForge.EVENT_BUS.addListener(ModCommands::register);
+        NeoForge.EVENT_BUS.addListener(CommandEvents::registerCommands);
         ModDataGen.register(modBus);
 
         OriginPowerManager.init();
