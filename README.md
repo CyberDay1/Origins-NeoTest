@@ -27,6 +27,14 @@ During the build the `neoforge.mods.toml` file located in `src/main/resources` i
 automatically expanded with the values defined in `gradle.properties`. This ensures the
 published jar always advertises the correct mod id, version, and dependency ranges.
 
+### Event bus subscriber guidelines
+
+When adding event listeners with `@EventBusSubscriber`, prefer the defaults unless a
+gameplay hook requires the global Forge bus. Only use `bus = EventBusSubscriber.Bus.FORGE`
+for gameplay events such as command registration or in-world triggers. All other
+subscribers (registry, datagen, networking, reload listeners, etc.) should omit the `bus`
+parameter so they attach to the mod bus implicitly.
+
 ## Configuring built-in origins
 
 When the game is launched a common NeoForge configuration file named
