@@ -33,7 +33,7 @@ public final class OriginsNeoForge {
         ModActions.register(modBus);
         ModConditions.register(modBus);
         ModNetworking.register(modBus);
-        ModCommands.register();
+        NeoForge.EVENT_BUS.addListener(ModCommands::register);
         ModDataGen.register(modBus);
 
         OriginPowerManager.init();
