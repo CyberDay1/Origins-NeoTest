@@ -22,6 +22,12 @@ jobs:
       - name: Compile with strict lint and warnings
         run: ./gradlew clean build --warning-mode all --console=plain --stacktrace
 
+      - name: Run Mixin Compatibility Validation
+        run: ./gradlew validateMixinCompatLevel
+
+      - name: Run Placeholder Guard
+        run: python3 scripts/assert-no-placeholders.py
+
       - name: Upload Problems Report
         if: always()
         uses: actions/upload-artifact@v4
