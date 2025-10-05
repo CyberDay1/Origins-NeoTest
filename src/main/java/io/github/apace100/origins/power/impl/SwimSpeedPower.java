@@ -18,6 +18,7 @@ public class SwimSpeedPower extends Power {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void tick(Player player) {
         AttributeInstance attribute = player.getAttribute(Attributes.WATER_MOVEMENT_EFFICIENCY);
         if (attribute == null) {

@@ -55,6 +55,7 @@ public final class ItemEnchantmentCondition implements Condition<ItemStack> {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean test(ItemStack stack) {
         if (stack == null || stack.isEmpty()) {
             return false;

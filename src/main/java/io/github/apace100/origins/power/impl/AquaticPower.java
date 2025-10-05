@@ -11,6 +11,7 @@ public class AquaticPower extends Power {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void tick(Player player) {
         if (player.isEyeInFluid(FluidTags.WATER)) {
             player.setAirSupply(player.getMaxAirSupply());

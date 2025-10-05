@@ -358,6 +358,7 @@ public class OriginSelectionScreen extends Screen implements AltOriginScreen {
         }
 
         @Override
+        @SuppressWarnings("deprecation")
         public void onClick(double mouseX, double mouseY) {
             if (randomEntry) {
                 chooseRandomOrigin();

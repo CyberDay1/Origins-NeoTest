@@ -13,6 +13,7 @@ public class ElytraFlightPower extends Power {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void tick(Player player) {
         if (player.isSpectator()) {
             return;
