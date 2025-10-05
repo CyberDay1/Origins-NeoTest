@@ -27,8 +27,8 @@ runs {
     runAudit {
         client()
         workingDirectory project.file("run")
-        property "origins.debugAudit", "true"
-        args "--username", "AuditUser"
+        systemProperty "origins.debugAudit", "true"
+        programArgs "--username", "AuditUser"
     }
 }
 
