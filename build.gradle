@@ -44,4 +44,10 @@ tasks.processResources {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 21
+    options.compilerArgs += [
+        "-Xlint:all",          // enable all recommended warnings
+        "-Werror",             // treat all warnings (including deprecation/unchecked) as errors
+        "-Xlint:-processing",  // disable noisy annotation processing warnings
+        "-Xlint:-serial"       // suppress serialVersionUID noise for data classes
+    ]
 }

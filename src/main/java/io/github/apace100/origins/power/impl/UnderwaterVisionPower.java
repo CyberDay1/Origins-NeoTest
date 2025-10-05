@@ -15,6 +15,7 @@ public class UnderwaterVisionPower extends Power {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void tick(Player player) {
         OriginsConfigValues.Merling config = OriginsConfig.get().merling();
         boolean underwater = player.isEyeInFluid(FluidTags.WATER);

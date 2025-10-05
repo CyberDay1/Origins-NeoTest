@@ -23,6 +23,10 @@ with Gradle **8.13** and a Java **21** toolchain.
 
    The resulting NeoForge mod jar is written to `build/libs/`.
 
+   > **Strict compilation:** The build enables full Java compiler linting and treats
+   > deprecation and unchecked warnings as errors. Resolve any warnings locally before
+   > pushing changes, as CI enforces the same checks.
+
 During the build the `neoforge.mods.toml` file located in `src/main/resources` is
 automatically expanded with the values defined in `gradle.properties`. This ensures the
 published jar always advertises the correct mod id, version, and dependency ranges.
