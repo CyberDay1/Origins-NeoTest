@@ -25,10 +25,10 @@ dependencies {
 
 runs {
     runAudit {
-        workingDirectory project.file('run')
-        taskName 'runAudit'
-        args '--username', 'DevAudit'
-        property 'origins.debugAudit', 'true'
+        client()
+        workingDirectory project.file("run")
+        property "origins.debugAudit", "true"
+        args "--username", "AuditUser"
     }
 }
 
