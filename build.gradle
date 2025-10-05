@@ -31,8 +31,8 @@ runs {
         // JVM system property for Origins auditing
         systemProperty "origins.debugAudit", "true"
 
-        // Minecraft runtime args
-        args "--username", "AuditUser"
+        // Runtime arguments for the Minecraft client (property assignment)
+        programArguments = ["--username", "AuditUser"]
     }
 }
 
