@@ -18,6 +18,20 @@ Thank you for your interest in contributing to Origins NeoTest! This project rel
    These commands ensure that mixin definitions declare `JAVA_21` compatibility and that no temporary placeholder PNGs slip into commits.
 4. Resolve any warnings or validation failures locally. Pull requests that surface compiler warnings, mixin compatibility issues, or placeholder assets will be rejected by continuous integration.
 
+## Refreshing the Fabric datapack snapshot
+
+Auditing parity changes requires the latest Fabric Origins datapack. Drop the newest zip into `external/fabric-origins-zips/` and run the audit configuration:
+
+```powershell
+# Drop latest zip into external/fabric-origins-zips/
+.\gradlew.bat runAudit
+/reload
+/origins debug parity
+/origins debug todo
+```
+
+Only the most recent zip in the folder is extracted. Gradle unpacks the datapack into `run/datapacks/origins-fabric/` automatically before the client launches.
+
 ## Submitting Your Pull Request
 
 - Provide clear descriptions of the changes made and the testing performed.

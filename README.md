@@ -71,29 +71,27 @@ The file exposes the following options for the bundled powers:
 The NeoForge port ships with a dedicated Gradle run configuration that enables the parity
 audit tooling and collects reports for review. Follow this workflow to produce an audit:
 
-1. Download the Fabric Origins and Apoli datapacks and extract them into
-   `run/datapacks/`. See [`datapacks/README.md`](datapacks/README.md) for links and
-   detailed instructions.
+1. Download the latest Fabric Origins datapack zip and drop it into
+   `external/fabric-origins-zips/`. The Gradle task automatically extracts the newest zip
+   in that folder into `run/datapacks/origins-fabric/`.
 2. Launch the audit-enabled dev instance:
 
-   ```bash
-   ./gradlew runAudit
-   ```
-
-   The `runAudit` configuration sets the username to `DevAudit`, enables the
-   `origins.debugAudit` system property, and uses the shared `run/` workspace so datapacks
-   are detected automatically.
-3. Once the game finishes loading, execute the following commands in-game or from the
-   dedicated server console:
-
-   ```bash
+   ```powershell
+   # Drop latest zip into external/fabric-origins-zips/
+   .\gradlew.bat runAudit
    /reload
    /origins debug parity
    /origins debug todo
    ```
 
-   The debug commands create `run/debug/parity_report.json` and
-   `run/debug/parity_todo.json`.
+   The `runAudit` configuration sets the username to `DevAudit`, enables the
+   `origins.debugAudit` system property, and uses the shared `run/` workspace so datapacks
+   are detected automatically.
+   On non-Windows platforms you can use `./gradlew runAudit` and run the debug commands
+   manually once the game starts.
+3. Once the game finishes loading, execute the `/reload`, `/origins debug parity`, and
+   `/origins debug todo` commands in-game or from the dedicated server console. The debug
+   commands create `run/debug/parity_report.json` and `run/debug/parity_todo.json`.
 4. Copy the generated JSON files into the tracked `reports/parity/` directory before
    committing changes:
 
