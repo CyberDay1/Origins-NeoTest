@@ -67,17 +67,34 @@ The file exposes the following options for the bundled powers:
 ## Datapack parity auditing
 
 The port ships with a parity audit flow that compares the Fabric Origins/Apoli datapacks
-against the NeoForge implementation. To generate a report:
+against the NeoForge implementation. Use the following workflow to produce the audit
+artifacts:
 
 1. Copy the official Origins and Apoli datapacks into the instance's `datapacks/`
-   directory.
-2. Open `config/origins-common.toml` and set `debugAudit = true` to surface detailed
-   warnings during reload.
-3. Run `/reload` or invoke `/origins debug parity` in-game/console to build a
-   `debug/parity_report.json` file containing implemented identifiers, missing
-   action/condition/power IDs, and the datapack files or origins that reference them.
-4. Inspect the generated JSON to identify parity gaps and follow the console logs for a
-   summary of implemented versus missing categories.
+   directory (see [`datapacks/README.md`](datapacks/README.md) for download links).
+2. Enable parity logging by either setting `debugAudit = true` under the `[debug]`
+   section of `config/origins-common.toml` or passing `-Dorigins.debug_audit=true` on the
+   JVM command line when launching the dev run configuration.
+3. Run `/reload` once in-game/console so the `OriginsDataLoader` indexes every datapack
+   entry and reports implemented versus missing identifiers to the log.
+4. Generate the detailed parity report with:
+
+   ```bash
+   /origins debug parity
+   ```
+
+   This writes `debug/parity_report.json`, listing every discovered action, condition,
+   and power along with any unimplemented IDs.
+5. Produce the actionable TODO checklist with:
+
+   ```bash
+   /origins debug todo
+   ```
+
+   The command creates `debug/parity_todo.json` which groups missing IDs by datapack
+   context (origin, power, or file) to help prioritise follow-up work.
+6. Inspect both JSON files and cross-reference the missing identifiers against the Fabric
+   Origins/Apoli documentation to schedule implementation tasks.
 
 ## Updating Minecraft or NeoForge versions
 
