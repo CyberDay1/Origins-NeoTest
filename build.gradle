@@ -25,10 +25,14 @@ dependencies {
 
 runs {
     runAudit {
-        client()
+        client() // inherit from the client run config
         workingDirectory project.file("run")
+
+        // JVM system property for Origins auditing
         systemProperty "origins.debugAudit", "true"
-        programArgs "--username", "AuditUser"
+
+        // Minecraft runtime args
+        args "--username", "AuditUser"
     }
 }
 
