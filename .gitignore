@@ -3,6 +3,7 @@ build/
 out/
 runs/
 generated/
+external/fabric-origins-zips/
 
 # IDE
 .idea/

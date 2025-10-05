@@ -1,3 +1,5 @@
+import java.util.zip.ZipFile
+
 plugins {
     id 'java'
     id 'net.neoforged.gradle.userdev' version '7.0.190'
@@ -28,6 +30,33 @@ runs {
         args '--username', 'DevAudit'
         property 'origins.debugAudit', 'true'
     }
+}
+
+tasks.register("extractFabricDatapack") {
+    doLast {
+        def zips = file("${projectDir}/external/fabric-origins-zips").listFiles()?.findAll { it.name.endsWith(".zip") }
+        if (!zips || zips.isEmpty()) {
+            throw new GradleException("No Origins zip found in external/fabric-origins-zips/")
+        }
+        def latestZip = zips.sort { -it.lastModified() }.first()
+        println "Extracting datapack from ${latestZip.name}"
+
+        copy {
+            from(zipTree(latestZip)) {
+                include "*/src/main/resources/**"
+            }
+            into("${projectDir}/run/datapacks/origins-fabric")
+            eachFile { details ->
+                // Drop top-level folder segments like origins-fabric-1.21.x-dev/
+                details.relativePath = new RelativePath(true, details.relativePath.segments.drop(3))
+            }
+            includeEmptyDirs = false
+        }
+    }
+}
+
+tasks.named("runAudit") {
+    dependsOn("extractFabricDatapack")
 }
 
 sourceSets {
