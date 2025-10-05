@@ -73,6 +73,11 @@ public final class OriginsConfig {
     }
 
     private static OriginsConfigValues readValues() {
+        boolean debugAuditOverride = Boolean.getBoolean("origins.debugAudit");
+        boolean debugAudit = DEBUG_AUDIT.get();
+        if (debugAuditOverride) {
+            debugAudit = true;
+        }
         return new OriginsConfigValues(
             new OriginsConfigValues.Phantom(
                 PHANTOM.hungerDrainIntervalTicks.get(),
@@ -98,7 +103,7 @@ public final class OriginsConfig {
                 ELYTRIAN.confinedSpaceChecks.get()
             ),
             new OriginsConfigValues.Shulk(SHULK.chestArmorAllowed.get()),
-            DEBUG_AUDIT.get()
+            debugAudit
         );
     }
 

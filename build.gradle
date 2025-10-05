@@ -21,6 +21,15 @@ dependencies {
     implementation 'com.google.guava:guava:31.1-jre'
 }
 
+runs {
+    runAudit {
+        workingDirectory project.file('run')
+        taskName 'runAudit'
+        args '--username', 'DevAudit'
+        property 'origins.debugAudit', 'true'
+    }
+}
+
 sourceSets {
     main {
         resources {
