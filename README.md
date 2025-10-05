@@ -44,7 +44,9 @@ parameter so they attach to the mod bus implicitly.
 When the game is launched a common NeoForge configuration file named
 `origins-common.toml` is generated alongside the existing client and server configs.
 In addition to the per-origin balance tweaks listed below, the root of the file exposes
-the `debugAudit` toggle which enables verbose datapack parity logging.
+the `debugAudit` toggle which enables verbose datapack parity logging. Any launch
+configuration can force audit mode by setting the JVM system property
+`-Dorigins.debugAudit=true`.
 The file exposes the following options for the bundled powers:
 
 | Category | Option | Description | Default |
@@ -66,35 +68,42 @@ The file exposes the following options for the bundled powers:
 
 ## Datapack parity auditing
 
-The port ships with a parity audit flow that compares the Fabric Origins/Apoli datapacks
-against the NeoForge implementation. Use the following workflow to produce the audit
-artifacts:
+The NeoForge port ships with a dedicated Gradle run configuration that enables the parity
+audit tooling and collects reports for review. Follow this workflow to produce an audit:
 
-1. Copy the official Origins and Apoli datapacks into the instance's `datapacks/`
-   directory (see [`datapacks/README.md`](datapacks/README.md) for download links).
-2. Enable parity logging by either setting `debugAudit = true` under the `[debug]`
-   section of `config/origins-common.toml` or passing `-Dorigins.debug_audit=true` on the
-   JVM command line when launching the dev run configuration.
-3. Run `/reload` once in-game/console so the `OriginsDataLoader` indexes every datapack
-   entry and reports implemented versus missing identifiers to the log.
-4. Generate the detailed parity report with:
+1. Download the Fabric Origins and Apoli datapacks and extract them into
+   `run/datapacks/`. See [`datapacks/README.md`](datapacks/README.md) for links and
+   detailed instructions.
+2. Launch the audit-enabled dev instance:
 
    ```bash
-   /origins debug parity
+   ./gradlew runAudit
    ```
 
-   This writes `debug/parity_report.json`, listing every discovered action, condition,
-   and power along with any unimplemented IDs.
-5. Produce the actionable TODO checklist with:
+   The `runAudit` configuration sets the username to `DevAudit`, enables the
+   `origins.debugAudit` system property, and uses the shared `run/` workspace so datapacks
+   are detected automatically.
+3. Once the game finishes loading, execute the following commands in-game or from the
+   dedicated server console:
 
    ```bash
+   /reload
+   /origins debug parity
    /origins debug todo
    ```
 
-   The command creates `debug/parity_todo.json` which groups missing IDs by datapack
-   context (origin, power, or file) to help prioritise follow-up work.
-6. Inspect both JSON files and cross-reference the missing identifiers against the Fabric
-   Origins/Apoli documentation to schedule implementation tasks.
+   The debug commands create `run/debug/parity_report.json` and
+   `run/debug/parity_todo.json`.
+4. Copy the generated JSON files into the tracked `reports/parity/` directory before
+   committing changes:
+
+   ```bash
+   cp run/debug/parity_report.json reports/parity/
+   cp run/debug/parity_todo.json reports/parity/
+   ```
+
+   Upload the refreshed `parity_todo.json` along with your pull request so reviewers can
+   analyse the outstanding compatibility work.
 
 ## Updating Minecraft or NeoForge versions
 
