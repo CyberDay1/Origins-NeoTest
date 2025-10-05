@@ -55,8 +55,30 @@ tasks.register("extractFabricDatapack") {
     }
 }
 
+tasks.register("archiveParityReports") {
+    doLast {
+        def reportDir = file("${projectDir}/run/debug")
+        def targetDir = file("${projectDir}/reports/parity")
+        targetDir.mkdirs()
+
+        ["parity_report.json", "parity_todo.json"].each { fname ->
+            def f = new File(reportDir, fname)
+            if (f.exists()) {
+                copy {
+                    from(f)
+                    into(targetDir)
+                }
+                println "Archived ${fname} to reports/parity/"
+            } else {
+                println "No ${fname} found in run/debug/"
+            }
+        }
+    }
+}
+
 tasks.named("runAudit") {
     dependsOn("extractFabricDatapack")
+    finalizedBy("archiveParityReports")
 }
 
 sourceSets {
