@@ -92,16 +92,10 @@ audit tooling and collects reports for review. Follow this workflow to produce a
 3. Once the game finishes loading, execute the `/reload`, `/origins debug parity`, and
    `/origins debug todo` commands in-game or from the dedicated server console. The debug
    commands create `run/debug/parity_report.json` and `run/debug/parity_todo.json`.
-4. Copy the generated JSON files into the tracked `reports/parity/` directory before
-   committing changes:
-
-   ```bash
-   cp run/debug/parity_report.json reports/parity/
-   cp run/debug/parity_todo.json reports/parity/
-   ```
-
-   Upload the refreshed `parity_todo.json` along with your pull request so reviewers can
-   analyse the outstanding compatibility work.
+4. The build automatically archives any generated parity reports into
+   `reports/parity/` once `runAudit` exits. Review the refreshed JSON files and commit
+   them alongside your changes so reviewers can analyse the outstanding compatibility
+   work.
 
 ## Updating Minecraft or NeoForge versions
 

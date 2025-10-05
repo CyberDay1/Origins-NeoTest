@@ -32,6 +32,8 @@ Auditing parity changes requires the latest Fabric Origins datapack. Drop the ne
 
 Only the most recent zip in the folder is extracted. Gradle unpacks the datapack into `run/datapacks/origins-fabric/` automatically before the client launches.
 
+When the session ends, the build copies any `parity_report.json` and `parity_todo.json` files from `run/debug/` into `reports/parity/`. Review the archived reports and include them in your pull request so parity progress stays version-controlled.
+
 ## Submitting Your Pull Request
 
 - Provide clear descriptions of the changes made and the testing performed.
