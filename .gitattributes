@@ -1,0 +1,11 @@
+# Normalize line endings
+* text=auto eol=lf
+
+# Treat Gradle wrapper as binary
+gradlew text eol=lf
+gradlew.bat text eol=crlf
+gradle/wrapper/** binary
+
+# Keep JSON and TOML as text
+*.json text
+*.toml text

@@ -1,0 +1,5 @@
+# Require review for critical files
+* @connor-murphy
+
+# CI workflows
+.github/workflows/* @connor-murphy
