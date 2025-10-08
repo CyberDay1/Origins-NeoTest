@@ -5,6 +5,8 @@ plugins {
 val minecraftVersion: String by project
 val neoForgeVersion: String by project
 
+println("Building for Minecraft " + minecraftVersion + " with NeoForge " + neoForgeVersion)
+
 allprojects {
     apply(plugin = "java")
 
