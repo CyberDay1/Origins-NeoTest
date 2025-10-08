@@ -3,3 +3,27 @@ minecraftVersion=${mcVersion}
 neoForgeVersion=${NEOFORGE_VERSION}
 
 org.gradle.jvmargs=-Xmx3G
+
+sodium.version=mc1.21.8-0.7.0-neoforge
+sodium.projectId=AANobbMI
+sodium.versionId=1LjoeVdt
+sodium.filename=sodium-neoforge-0.7.0+mc1.21.8.jar
+sodium.sha1=15bf35eaca18098c68761447155efdf50417d686
+
+iris.version=1.9.5+1.21.8-neoforge
+iris.projectId=YL57xq9U
+iris.versionId=y5EH3qbW
+iris.filename=iris-neoforge-1.9.5+mc1.21.8.jar
+iris.sha1=4fffba92ba3e02803cc6b2324da8a8656a73497d
+
+yacl.version=3.8.0+1.21.9-neoforge
+yacl.projectId=1eAoo2KR
+yacl.versionId=mTfGoKKV
+yacl.filename=yet_another_config_lib_v3-3.8.0+1.21.9-neoforge.jar
+yacl.sha1=e2f28e46dcf7af95eedd57d57d81c7760fbf7f4f
+
+shedaniel.cloth.project=9s6osm5g
+shedaniel.cloth.version=VyyiGG8k
+shedaniel.cloth.filename=cloth-config-20.0.148-neoforge.jar
+shedaniel.cloth.versionNumber=20.0.148+neoforge
+shedaniel.cloth.sha1=af224ec2a03c7ed82e5ff1257644134cdf693e2b
