@@ -27,3 +27,5 @@ The repository is configured for Stonecutter variants 1.21.1 through 1.21.10.
 - Java 21 toolchain recommended.
 - Vars available in templates: ${PACK_FORMAT}, ${LOADER_FILE}.
 
+## NeoForge version overrides
+Each Stonecutter variant can set a specific `NEOFORGE_VERSION`. By default, all are `21.1.1`. To override for a single variant, edit `stonecutter.json` → that version's "vars" → `"NEOFORGE_VERSION"` and rebuild after switching the variant.
