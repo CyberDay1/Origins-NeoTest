@@ -1,25 +1,19 @@
-# Stonecutter target: ${LOADER_FILE}
-modLoader="neoforge"
-loaderVersion="[21,)"
-license="MIT"
-issueTrackerURL=""
+modLoader="javafml"
+loaderVersion="[2,)"
+
+license="INSERT_LICENSE"
+issueTrackerURL="https://example.com/issues"
 
 [[mods]]
-modId="${mod_id}"
-version="${mod_version}"
-displayName="Origins (NeoForge)"
-description="Origins port for NeoForge ${mod_mc}"
+modId="originsneotest"
+version="${file.jarVersion}"
+displayName="Origins Neo Test"
+description='''Describe your mod'''
 
-[[dependencies.${mod_id}]]
+[[dependencies.originsneotest]]
 modId="neoforge"
 mandatory=true
-versionRange="[21,)"
+versionRange="[2,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.${mod_id}]]
-modId="minecraft"
-mandatory=true
-versionRange="[${mod_mc},)"
-ordering="NONE"
-side="BOTH"

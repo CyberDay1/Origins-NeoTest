@@ -1,115 +1,96 @@
 {
+  "$schema": "https://raw.githubusercontent.com/Stonecutter-Tooling/Stonecutter/main/schema/stonecutter.schema.json",
   "default": "1.21.1-neoforge",
-  "versions": [
-    {
-      "project": "1.21.1-neoforge",
-      "version": "1.21.1",
-      "loader": "neoforge",
-      "loaderVersion": "21.1.209",
+  "versions": {
+    "1.21.1-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.1",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.2-neoforge",
-      "version": "1.21.2",
-      "loader": "neoforge",
-      "loaderVersion": "21.2.1-beta",
+    "1.21.2-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.2",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.3-neoforge",
-      "version": "1.21.3",
-      "loader": "neoforge",
-      "loaderVersion": "21.3.93",
+    "1.21.3-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.3",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.4-neoforge",
-      "version": "1.21.4",
-      "loader": "neoforge",
-      "loaderVersion": "21.4.154",
+    "1.21.4-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.4",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.5-neoforge",
-      "version": "1.21.5",
-      "loader": "neoforge",
-      "loaderVersion": "21.5.95",
+    "1.21.5-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.5",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.6-neoforge",
-      "version": "1.21.6",
-      "loader": "neoforge",
-      "loaderVersion": "21.6.9-beta",
+    "1.21.6-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.6",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.7-neoforge",
-      "version": "1.21.7",
-      "loader": "neoforge",
-      "loaderVersion": "21.7.9-beta",
+    "1.21.7-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.7",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.8-neoforge",
-      "version": "1.21.8",
-      "loader": "neoforge",
-      "loaderVersion": "21.8.47",
+    "1.21.8-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.8",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.9-neoforge",
-      "version": "1.21.9",
-      "loader": "neoforge",
-      "loaderVersion": "21.9.9-beta",
+    "1.21.9-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.9",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     },
-    {
-      "project": "1.21.10-neoforge",
-      "version": "1.21.10",
-      "loader": "neoforge",
-      "loaderVersion": "21.10.1-beta",
+    "1.21.10-neoforge": {
+      "branches": [""],
       "mcVersion": "1.21.10",
+      "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
         "LOADER_FILE": "neoforge.mods.toml"
       }
     }
-  ]
+  }
 }
