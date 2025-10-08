@@ -1,6 +1,7 @@
 {
   "pack": {
     "pack_format": ${PACK_FORMAT},
-    "description": "Origins NeoForge resources"
+    "description": "Your mod resources (Stonecutter variant)"
   }
 }
+
