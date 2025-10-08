@@ -1,3 +1,4 @@
+# Stonecutter target: ${LOADER_FILE}
 modLoader="neoforge"
 loaderVersion="[21,)"
 license="MIT"

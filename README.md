@@ -1,8 +1,9 @@
 # Origins (NeoForge)
 
 This repository contains the NeoForge build logic for the **Origins** mod. The project
-targets Minecraft **1.21.1** on NeoForge **21.1.209** and is configured to build
-with Gradle **8.13** and a Java **21** toolchain.
+is configured with the Stonecutter multi-version plugin and targets Minecraft
+**1.21.1** through **1.21.10** on the matching NeoForge **21.1.x** → **21.10.x** line.
+Builds continue to use Gradle **8.13** with a Java **21** toolchain.
 
 ## Requirements
 
@@ -10,12 +11,35 @@ with Gradle **8.13** and a Java **21** toolchain.
   installation is still required for Gradle to download the matching version).
 * Gradle Wrapper (included); invoke the wrapper scripts instead of a system Gradle.
 
+## Selecting a Minecraft/NeoForge variant
+
+Stonecutter maintains the Minecraft/NeoForge matrix described in `stonecutter.json`.
+Use the helper task to pick a target before building or running the project:
+
+```bash
+./gradlew stonecutterSwitchTo1.21.1-neoforge
+./gradlew --console=plain build
+```
+
+To build against the latest entry in the matrix run:
+
+```bash
+./gradlew stonecutterSwitchTo1.21.10-neoforge
+./gradlew --console=plain build
+```
+
+Once a variant is selected you can invoke any other Gradle goal (for example
+`./gradlew runClient`) and Stonecutter will reuse the active configuration.
+If you prefer the interactive CLI (`./gradlew stonecutter use <variant>`), be
+aware that Groovy DSL builds occasionally report ambiguous task names—use the
+explicit `stonecutterSwitchTo…` tasks shown above if that occurs.
+
 ## Building from source
 
 1. Clone the repository.
-2. (Optional) Update the values in `gradle.properties` to customise the mod metadata or
-   target versions.
-3. Run the build using the Gradle wrapper:
+2. (Optional) Adjust the default variant or metadata by editing `stonecutter.json` and
+   `gradle.properties`.
+3. Run the build using the Gradle wrapper (after selecting a variant as shown above):
 
    ```bash
    ./gradlew --console=plain build
@@ -99,12 +123,12 @@ audit tooling and collects reports for review. Follow this workflow to produce a
 
 ## Updating Minecraft or NeoForge versions
 
-The default Minecraft and NeoForge versions are controlled by the `minecraftVersion` and
-`neoForgeVersion` entries in `gradle.properties`. When bumping either value, also update
-the corresponding version ranges (`minecraftVersionRange`, `neoForgeVersionRange`) so the
-generated `neoforge.mods.toml` continues to match the desired compatibility matrix.
+The Stonecutter matrix in `stonecutter.json` controls which Minecraft/NeoForge pairs are
+available. Add a new entry (or update an existing one) with the desired `mcVersion` and
+`loaderVersion`, then rerun `./gradlew stonecutter use <variant>` to regenerate the
+Gradle properties and resources.
 
-If you need to produce builds for multiple Minecraft releases, the `versions/` directory
-contains per-version resource overrides. Add or adjust files within the appropriate
-sub-directory to customise metadata or assets for that specific target before packaging
-them separately.
+`gradle.properties` now stores token placeholders that Stonecutter resolves per variant.
+Only the metadata values such as `mod_id` or `mod_version` should be edited manually.
+Resource files that depend on versioned values live alongside `.stonecutter` templates in
+`src/main/resources`.
