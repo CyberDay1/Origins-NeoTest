@@ -29,3 +29,10 @@ allprojects {
     }
 }
 
+
+tasks.register("printVersions") {
+    doLast {
+        println("Minecraft=" + project.findProperty("minecraftVersion"))
+        println("NeoForge=" + project.findProperty("neoForgeVersion"))
+    }
+}
