@@ -1,5 +1,5 @@
 # Generated per Stonecutter variant
-# If your build already defines a working neoForgeVersion, keep it.
 minecraftVersion=${mcVersion}
+neoForgeVersion=${NEOFORGE_VERSION}
 
 org.gradle.jvmargs=-Xmx3G

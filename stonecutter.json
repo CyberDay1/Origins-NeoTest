@@ -3,93 +3,123 @@
   "default": "1.21.1-neoforge",
   "versions": {
     "1.21.1-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.1",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.2-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.2",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.3-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.3",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.4-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.4",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.5-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.5",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.6-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.6",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.7-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.7",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.8-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.8",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.9-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.9",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     },
     "1.21.10-neoforge": {
-      "branches": [""],
+      "branches": [
+        ""
+      ],
       "mcVersion": "1.21.10",
       "loader": "neoforge",
       "vars": {
         "PACK_FORMAT": "48",
-        "LOADER_FILE": "neoforge.mods.toml"
+        "LOADER_FILE": "neoforge.mods.toml",
+        "NEOFORGE_VERSION": "21.1.1"
       }
     }
   }
