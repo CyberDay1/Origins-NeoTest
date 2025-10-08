@@ -19,70 +19,72 @@ repositories {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${property('neoforgeVersion')}"
+    implementation "net.neoforged:neoforge:${property('neoForgeVersion')}"
     implementation 'com.google.guava:guava:31.1-jre'
 }
 
-runs {
-    runAudit {
-        client() // inherit from the client run config
-        workingDirectory project.file("run")
+if (project == rootProject) {
+    runs {
+        runAudit {
+            client() // inherit from the client run config
+            workingDirectory project.file("run")
 
-        // JVM system property for Origins auditing
-        systemProperty "origins.debugAudit", "true"
+            // JVM system property for Origins auditing
+            systemProperty "origins.debugAudit", "true"
 
-        // Runtime arguments for the Minecraft client (property assignment)
-        programArguments = ["--username", "AuditUser"]
-    }
-}
-
-tasks.register("extractFabricDatapack") {
-    doLast {
-        def zips = file("${projectDir}/external/fabric-origins-zips").listFiles()?.findAll { it.name.endsWith(".zip") }
-        if (!zips || zips.isEmpty()) {
-            throw new GradleException("No Origins zip found in external/fabric-origins-zips/")
-        }
-        def latestZip = zips.sort { -it.lastModified() }.first()
-        println "Extracting datapack from ${latestZip.name}"
-
-        copy {
-            from(zipTree(latestZip)) {
-                include "*/src/main/resources/**"
-            }
-            into("${projectDir}/run/datapacks/origins-fabric")
-            eachFile { details ->
-                // Drop top-level folder segments like origins-fabric-1.21.x-dev/
-                details.relativePath = new RelativePath(true, details.relativePath.segments.drop(3))
-            }
-            includeEmptyDirs = false
+            // Runtime arguments for the Minecraft client (property assignment)
+            programArguments = ["--username", "AuditUser"]
         }
     }
-}
 
-tasks.register("archiveParityReports") {
-    doLast {
-        def reportDir = file("${projectDir}/run/debug")
-        def targetDir = file("${projectDir}/reports/parity")
-        targetDir.mkdirs()
+    tasks.register("extractFabricDatapack") {
+        doLast {
+            def zips = file("${projectDir}/external/fabric-origins-zips").listFiles()?.findAll { it.name.endsWith(".zip") }
+            if (!zips || zips.isEmpty()) {
+                throw new GradleException("No Origins zip found in external/fabric-origins-zips/")
+            }
+            def latestZip = zips.sort { -it.lastModified() }.first()
+            println "Extracting datapack from ${latestZip.name}"
 
-        ["parity_report.json", "parity_todo.json"].each { fname ->
-            def f = new File(reportDir, fname)
-            if (f.exists()) {
-                copy {
-                    from(f)
-                    into(targetDir)
+            copy {
+                from(zipTree(latestZip)) {
+                    include "*/src/main/resources/**"
                 }
-                println "Archived ${fname} to reports/parity/"
-            } else {
-                println "No ${fname} found in run/debug/"
+                into("${projectDir}/run/datapacks/origins-fabric")
+                eachFile { details ->
+                    // Drop top-level folder segments like origins-fabric-1.21.x-dev/
+                    details.relativePath = new RelativePath(true, details.relativePath.segments.drop(3))
+                }
+                includeEmptyDirs = false
             }
         }
     }
-}
 
-tasks.named("runAudit") {
-    dependsOn("extractFabricDatapack")
-    finalizedBy("archiveParityReports")
+    tasks.register("archiveParityReports") {
+        doLast {
+            def reportDir = file("${projectDir}/run/debug")
+            def targetDir = file("${projectDir}/reports/parity")
+            targetDir.mkdirs()
+
+            ["parity_report.json", "parity_todo.json"].each { fname ->
+                def f = new File(reportDir, fname)
+                if (f.exists()) {
+                    copy {
+                        from(f)
+                        into(targetDir)
+                    }
+                    println "Archived ${fname} to reports/parity/"
+                } else {
+                    println "No ${fname} found in run/debug/"
+                }
+            }
+        }
+    }
+
+    tasks.named("runAudit") {
+        dependsOn("extractFabricDatapack")
+        finalizedBy("archiveParityReports")
+    }
 }
 
 sourceSets {
@@ -94,14 +96,18 @@ sourceSets {
 }
 
 tasks.processResources {
+    def packFormat = project.findProperty('packFormat') ?: '48'
     def modProps = [
         mod_id: project.findProperty('mod_id') ?: 'origins',
         mod_version: project.findProperty('mod_version') ?: '0.1.0',
         mod_mc: project.findProperty('minecraftVersion') ?: '1.21.1'
     ]
-    inputs.properties(modProps)
+    inputs.properties(modProps + [PACK_FORMAT: packFormat])
     filesMatching('META-INF/neoforge.mods.toml') {
         expand(modProps)
+    }
+    filesMatching('pack.mcmeta') {
+        expand([PACK_FORMAT: packFormat])
     }
 }
 
@@ -115,3 +121,4 @@ tasks.withType(JavaCompile).configureEach {
         "-Xlint:-serial"       // suppress serialVersionUID noise for data classes
     ]
 }
+
