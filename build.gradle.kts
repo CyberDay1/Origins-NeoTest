@@ -36,3 +36,10 @@ tasks.register("printVersions") {
         println("NeoForge=" + project.findProperty("neoForgeVersion"))
     }
 }
+
+// Optional helper to confirm classpath resolves without starting a client
+tasks.register("classPathCheck") {
+    doLast {
+        println(sourceSets.main.get().runtimeClasspath.asPath)
+    }
+}
