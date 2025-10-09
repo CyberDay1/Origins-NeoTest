@@ -36,3 +36,7 @@ GitHub Actions builds three representative variants on pushes and PRs:
 
 ## Maintainers
 Primary maintainer: @org/maintainers
+
+## CI artifacts
+Pull requests run a build matrix for selected variants and attach jars as artifacts.
+If an audit datapack is available the workflow uploads parity JSON reports.
