@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Datapack condition that checks the block light level at a configured position.
  */
 public final class LightLevelCondition implements Condition<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "light_level");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("light_level");
     private static final Codec<LightLevelCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.INT.optionalFieldOf("min", 0).forGetter(LightLevelCondition::minLight),
         Codec.INT.optionalFieldOf("max", 15).forGetter(LightLevelCondition::maxLight),

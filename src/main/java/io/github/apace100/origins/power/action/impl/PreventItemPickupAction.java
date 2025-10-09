@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * succeeding if the item matches the configured identifier.
  */
 public final class PreventItemPickupAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_item_pickup");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_item_pickup");
     private static final ThreadLocal<PickupContext> CONTEXT = new ThreadLocal<>();
     private static final Codec<PreventItemPickupAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(PreventItemPickupAction::item)

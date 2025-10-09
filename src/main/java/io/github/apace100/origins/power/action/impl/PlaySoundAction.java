@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -22,7 +23,7 @@ import java.util.Optional;
  * Datapack action that plays a configured sound in the world.
  */
 public final class PlaySoundAction implements Action<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "play_sound");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("play_sound");
     private static final Codec<PlaySoundAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.SOUND_EVENT.byNameCodec().fieldOf("sound").forGetter(PlaySoundAction::sound),
         Codec.FLOAT.optionalFieldOf("volume", 1.0F).forGetter(PlaySoundAction::volume),

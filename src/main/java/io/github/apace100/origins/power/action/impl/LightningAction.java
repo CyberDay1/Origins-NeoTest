@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -21,7 +22,7 @@ import java.util.Optional;
  * Datapack action that summons a lightning bolt at a configured position.
  */
 public final class LightningAction implements Action<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "lightning");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("lightning");
     private static final Codec<LightningAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Vec3.CODEC.optionalFieldOf("pos").forGetter(LightningAction::position),
         Codec.BOOL.optionalFieldOf("effect_only", false).forGetter(LightningAction::effectOnly)

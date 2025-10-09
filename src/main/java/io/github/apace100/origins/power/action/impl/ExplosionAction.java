@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Datapack action that triggers an explosion in the world.
  */
 public final class ExplosionAction implements Action<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "explosion");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("explosion");
     private static final Codec<ExplosionAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Vec3.CODEC.optionalFieldOf("pos").forGetter(ExplosionAction::position),
         Codec.FLOAT.optionalFieldOf("power", 1.0F).forGetter(ExplosionAction::power),

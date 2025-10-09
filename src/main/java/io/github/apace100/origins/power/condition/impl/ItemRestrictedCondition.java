@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
  * item tag.
  */
 public final class ItemRestrictedCondition implements Condition<ItemStack> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item_restricted");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("item_restricted");
     private static final Codec<ItemRestrictedCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("tag").forGetter(condition -> condition.tag.location())
     ).apply(instance, id -> new ItemRestrictedCondition(TagKey.create(Registries.ITEM, id))));

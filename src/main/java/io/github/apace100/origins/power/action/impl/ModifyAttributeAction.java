@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -26,7 +27,7 @@ import java.util.UUID;
  * Datapack action that modifies a living entity attribute using a temporary modifier.
  */
 public final class ModifyAttributeAction implements Action<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "modify_attribute");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("modify_attribute");
     private static final Map<String, AttributeModifier.Operation> OPERATION_LOOKUP = Map.ofEntries(
         Map.entry("add", AttributeModifier.Operation.ADD_VALUE),
         Map.entry("add_value", AttributeModifier.Operation.ADD_VALUE),

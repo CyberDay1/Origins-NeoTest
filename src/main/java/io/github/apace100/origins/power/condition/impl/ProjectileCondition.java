@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Datapack condition that checks whether the supplied entity is a projectile of a configured type.
  */
 public final class ProjectileCondition implements Condition<Entity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "projectile");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("projectile");
     private static final Codec<ProjectileCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity").forGetter(ProjectileCondition::entityType)
     ).apply(instance, ProjectileCondition::new));

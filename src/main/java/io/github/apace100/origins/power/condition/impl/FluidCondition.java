@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Datapack condition that checks the fluid state at a block position.
  */
 public final class FluidCondition implements Condition<BlockState> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "fluid");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("fluid");
     private static final Codec<FluidCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(FluidCondition::fluid)
     ).apply(instance, FluidCondition::new));

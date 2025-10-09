@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -25,7 +26,7 @@ import java.util.Optional;
  * Datapack action that cancels projectile launches from a configured weapon.
  */
 public final class PreventProjectileAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_projectile");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_projectile");
     private static final Codec<PreventProjectileAction> CODEC = RecordCodecBuilder.<PreventProjectileAction>create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("item").forGetter(PreventProjectileAction::itemId)
     ).apply(instance, itemId -> fromCodec(itemId))).flatXmap(PreventProjectileAction::validateCodec, PreventProjectileAction::validateCodec);

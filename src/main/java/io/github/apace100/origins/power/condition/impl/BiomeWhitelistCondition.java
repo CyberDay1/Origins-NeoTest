@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -25,7 +26,7 @@ import java.util.Set;
  * Datapack condition that checks whether the current biome is included in a configured whitelist.
  */
 public final class BiomeWhitelistCondition implements Condition<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "biome_whitelist");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("biome_whitelist");
     private static final ThreadLocal<Optional<BlockPos>> CONTEXT = new ThreadLocal<>();
     private static final Codec<BiomeWhitelistCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceKey.codec(Registries.BIOME).listOf().fieldOf("biomes")

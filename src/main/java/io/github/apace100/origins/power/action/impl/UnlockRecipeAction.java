@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Datapack action that unlocks a specific crafting recipe for the invoking player.
  */
 public final class UnlockRecipeAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "unlock_recipe");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("unlock_recipe");
     private static final Codec<UnlockRecipeAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("recipe").forGetter(UnlockRecipeAction::recipe)
     ).apply(instance, UnlockRecipeAction::new));

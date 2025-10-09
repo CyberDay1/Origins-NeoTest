@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Datapack action that swaps out an equipped item for a configured replacement.
  */
 public final class ReplaceEquippedItemAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "replace_equipped_item");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("replace_equipped_item");
     private static final Codec<ReplaceEquippedItemAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         EquipmentSlotUtil.codec().fieldOf("slot").forGetter(ReplaceEquippedItemAction::slot),
         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ReplaceEquippedItemAction::item),

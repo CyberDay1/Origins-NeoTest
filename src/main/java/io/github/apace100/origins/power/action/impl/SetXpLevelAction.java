@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -19,7 +20,7 @@ import java.util.Optional;
 public final class SetXpLevelAction implements Action<Player> {
     private static final int MIN_LEVEL = 0;
 
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "set_xp_level");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("set_xp_level");
     private static final Codec<SetXpLevelAction> CODEC = RecordCodecBuilder.<SetXpLevelAction>create(instance -> instance.group(
         Codec.INT.fieldOf("level").forGetter(SetXpLevelAction::level)
     ).apply(instance, level -> new SetXpLevelAction(level))).flatXmap(SetXpLevelAction::validate, SetXpLevelAction::validate);

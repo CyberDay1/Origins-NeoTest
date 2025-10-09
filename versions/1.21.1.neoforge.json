@@ -1,0 +1,10 @@
+{
+  "mc": "1.21.1",
+  "loader": "neoforge",
+  "neo": "21.1.209",
+  "pack_format": 48,
+  "java": 21,
+  "compatible_versions": [
+    "1.21.1"
+  ]
+}

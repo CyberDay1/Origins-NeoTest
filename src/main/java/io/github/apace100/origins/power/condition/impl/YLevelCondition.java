@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -13,7 +14,7 @@ import net.minecraft.world.entity.Entity;
  * Datapack condition that checks if an entity is within a configured Y-level range.
  */
 public final class YLevelCondition implements Condition<Entity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "y_level");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("y_level");
     private static final Codec<YLevelCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.DOUBLE.optionalFieldOf("min", Double.NEGATIVE_INFINITY).forGetter(YLevelCondition::minY),
         Codec.DOUBLE.optionalFieldOf("max", Double.POSITIVE_INFINITY).forGetter(YLevelCondition::maxY)

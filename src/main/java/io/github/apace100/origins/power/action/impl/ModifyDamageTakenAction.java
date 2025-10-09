@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
  * Datapack action which adjusts the most recent damage taken by a living entity.
  */
 public final class ModifyDamageTakenAction implements Action<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "modify_damage_taken");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("modify_damage_taken");
     private static final Codec<ModifyDamageTakenAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.FLOAT.fieldOf("amount").forGetter(ModifyDamageTakenAction::amount)
     ).apply(instance, ModifyDamageTakenAction::new));

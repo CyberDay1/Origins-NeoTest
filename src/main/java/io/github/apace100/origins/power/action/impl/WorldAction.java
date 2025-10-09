@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Scaffold implementation for world level datapack actions.
  */
 public final class WorldAction implements Action<Level> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "world");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("world");
     private static final Codec<WorldAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.STRING.optionalFieldOf("event").forGetter(WorldAction::event)
     ).apply(instance, WorldAction::new));

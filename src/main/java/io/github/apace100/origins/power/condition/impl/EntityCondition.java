@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Scaffold implementation for general entity datapack conditions.
  */
 public final class EntityCondition implements Condition<Entity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "entity");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("entity");
     private static final Codec<EntityCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.optionalFieldOf("entity_type").forGetter(EntityCondition::entityType)
     ).apply(instance, EntityCondition::new));

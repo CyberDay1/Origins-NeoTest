@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -21,7 +22,7 @@ import java.util.Optional;
 public final class ModifyProjectileAction implements Action<Entity> {
     private static final double MIN_MULTIPLIER = 0.0D;
 
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "modify_projectile");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("modify_projectile");
     private static final Codec<ModifyProjectileAction> CODEC = RecordCodecBuilder.<ModifyProjectileAction>create(instance -> instance.group(
         Codec.DOUBLE.optionalFieldOf("speed_multiplier", 1.0D).forGetter(ModifyProjectileAction::speedMultiplier),
         Codec.DOUBLE.optionalFieldOf("damage_multiplier", 1.0D).forGetter(ModifyProjectileAction::damageMultiplier)

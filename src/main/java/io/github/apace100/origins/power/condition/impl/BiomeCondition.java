@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Scaffold implementation for biome datapack conditions.
  */
 public final class BiomeCondition implements Condition<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "biome");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("biome");
     private static final ThreadLocal<Optional<BlockPos>> CONTEXT = new ThreadLocal<>();
     private static final Codec<BiomeCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(BiomeCondition::biomeKey)

@@ -12,6 +12,9 @@ available on the compile and runtime classpaths:
 
 Each jar is treated as `compileOnly` and `runtimeOnly`, ensuring the sources build
 against the latest public APIs without packaging the mods inside the release jar.
+The legacy `1.21.1-neoforge` descriptor now keeps these companions strictly on the
+compile classpath so the owner build stays isolated from newer runtime bundles
+while still compiling against the shared APIs.
 The new `validateCompileMatrix`, `validateRuntimeMatrix`, and
 `validatePortalFunctionMatrix` tasks gate CI so we do not regress optional
 integration coverage.

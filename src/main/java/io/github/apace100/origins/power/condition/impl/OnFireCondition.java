@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import io.github.apace100.origins.power.condition.Condition;
@@ -11,7 +12,7 @@ import static io.github.apace100.origins.Origins.MOD_ID;
  * Datapack condition that checks whether an entity is currently on fire.
  */
 public final class OnFireCondition implements Condition<Entity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(MOD_ID, "on_fire");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("on_fire");
 
     private OnFireCondition() {
     }

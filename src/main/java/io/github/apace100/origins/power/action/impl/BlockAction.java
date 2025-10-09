@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * Scaffold implementation for block based datapack actions.
  */
 public final class BlockAction implements Action<BlockAction.BlockActionContext> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "block");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("block");
     private static final Codec<BlockAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.optionalFieldOf("block").forGetter(BlockAction::blockId)
     ).apply(instance, BlockAction::new));

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Scaffold implementation for item based datapack actions.
  */
 public final class ItemAction implements Action<ItemStack> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("item");
     private static final Codec<ItemAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.optionalFieldOf("item").forGetter(ItemAction::itemId)
     ).apply(instance, ItemAction::new));

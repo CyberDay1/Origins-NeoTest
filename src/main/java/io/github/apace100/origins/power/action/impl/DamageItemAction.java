@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -16,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
  * Datapack action that damages an equipped item by a configured amount.
  */
 public final class DamageItemAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "damage_item");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("damage_item");
     private static final Codec<DamageItemAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         EquipmentSlotUtil.codec().fieldOf("slot").forGetter(DamageItemAction::slot),
         Codec.INT.fieldOf("amount").forGetter(DamageItemAction::amount)

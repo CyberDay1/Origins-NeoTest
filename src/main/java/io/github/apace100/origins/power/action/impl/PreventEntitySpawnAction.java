@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Datapack action that cancels spawn attempts for the configured entity type.
  */
 public final class PreventEntitySpawnAction implements Action<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_entity_spawn");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_entity_spawn");
     private static final ThreadLocal<SpawnContext> CONTEXT = new ThreadLocal<>();
     private static final Codec<PreventEntitySpawnAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity").forGetter(PreventEntitySpawnAction::entityType)

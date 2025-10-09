@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -22,7 +23,7 @@ public final class FoodCondition implements Condition<Player> {
     private static final double DEFAULT_SATURATION_MIN = 0.0D;
     private static final double DEFAULT_SATURATION_MAX = 20.0D;
 
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "food");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("food");
     private static final Range DEFAULT_RANGE = new Range(Optional.empty(), Optional.empty());
     private static final Codec<Range> HUNGER_RANGE_CODEC = createRangeCodec(DEFAULT_HUNGER_MIN, DEFAULT_HUNGER_MAX);
     private static final Codec<Range> SATURATION_RANGE_CODEC = createRangeCodec(DEFAULT_SATURATION_MIN, DEFAULT_SATURATION_MAX);

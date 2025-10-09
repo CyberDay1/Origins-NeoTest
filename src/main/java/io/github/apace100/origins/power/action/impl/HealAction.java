@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -14,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
  * Datapack action that heals a living entity by a fixed amount.
  */
 public final class HealAction implements Action<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "heal");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("heal");
     private static final Codec<HealAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.FLOAT.fieldOf("amount").forGetter(HealAction::amount)
     ).apply(instance, HealAction::new));

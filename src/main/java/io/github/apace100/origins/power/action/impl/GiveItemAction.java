@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Datapack action that gives a configured item stack to the invoking player.
  */
 public final class GiveItemAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "give_item");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("give_item");
     private static final Codec<GiveItemAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(GiveItemAction::item),
         Codec.INT.optionalFieldOf("count", 1).forGetter(GiveItemAction::count)

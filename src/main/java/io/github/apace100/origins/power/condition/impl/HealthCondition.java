@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import io.github.apace100.origins.Origins;
@@ -11,7 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
  * Datapack condition that validates a living entity's health against a configured range.
  */
 public final class HealthCondition implements Condition<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "health");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("health");
 
     private final float minHealth;
     private final float maxHealth;

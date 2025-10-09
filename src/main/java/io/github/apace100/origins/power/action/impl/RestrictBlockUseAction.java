@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -27,7 +28,7 @@ import java.util.Optional;
  * in the configured block tag.
  */
 public final class RestrictBlockUseAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "restrict_block_use");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("restrict_block_use");
     private static final ThreadLocal<BlockContext> CONTEXT = new ThreadLocal<>();
     private static final Codec<RestrictBlockUseAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("tag").forGetter(action -> action.tag.location())

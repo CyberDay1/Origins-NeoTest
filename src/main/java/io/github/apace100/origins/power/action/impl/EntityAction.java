@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Scaffold implementation for entity based datapack actions.
  */
 public final class EntityAction implements Action<Entity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "entity");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("entity");
     private static final Codec<EntityAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.optionalFieldOf("entity_type").forGetter(EntityAction::entityType)
     ).apply(instance, EntityAction::new));

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -21,7 +22,7 @@ public final class ModifyFoodAction implements Action<Player> {
     private static final float MIN_SATURATION_DELTA = -20.0F;
     private static final float MAX_SATURATION_DELTA = 20.0F;
 
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "modify_food");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("modify_food");
     private static final Codec<ModifyFoodAction> CODEC = RecordCodecBuilder.<ModifyFoodAction>create(instance -> instance.group(
         Codec.INT.optionalFieldOf("hunger", 0).forGetter(ModifyFoodAction::hungerDelta),
         Codec.FLOAT.optionalFieldOf("saturation", 0.0F).forGetter(ModifyFoodAction::saturationDelta)

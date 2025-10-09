@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
  * entity's next attack.
  */
 public final class ModifyDamageDealtAction implements Action<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "modify_damage_dealt");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("modify_damage_dealt");
     private static final Codec<ModifyDamageDealtAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.FLOAT.fieldOf("amount").forGetter(ModifyDamageDealtAction::amount)
     ).apply(instance, ModifyDamageDealtAction::new));

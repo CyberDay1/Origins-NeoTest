@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Datapack action that spawns an entity at the configured position.
  */
 public final class SpawnEntityAction implements Action<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "spawn_entity");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("spawn_entity");
     private static final Codec<SpawnEntityAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity").forGetter(SpawnEntityAction::type),
         Vec3.CODEC.fieldOf("pos").forGetter(SpawnEntityAction::position)
