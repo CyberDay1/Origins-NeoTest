@@ -28,7 +28,7 @@ The repository is configured for Stonecutter variants 1.21.1 through 1.21.10.
 - Vars available in templates: ${PACK_FORMAT}, ${LOADER_FILE}.
 
 ## NeoForge version overrides
-Each Stonecutter variant can set a specific `NEOFORGE_VERSION`. By default, all are `21.1.1`. To override for a single variant, edit `stonecutter.json` → that version's "vars" → `"NEOFORGE_VERSION"` and rebuild after switching the variant.
+Each Stonecutter variant can set a specific `NEOFORGE_VERSION`. The active default (`1.21.1-neoforge`) now resolves to `21.1.209`, while other variants declare their own NeoForge builds in `stonecutter.json`. To adjust a single variant, edit that entry's `"NEOFORGE_VERSION"` and rebuild after switching the variant.
 
 ## CI
 GitHub Actions builds three representative variants on pushes and PRs:
