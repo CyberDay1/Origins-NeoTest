@@ -1,0 +1,20 @@
+name: Verify Pack Formats
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  verify-pack-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Make script executable
+        run: chmod +x tools/verify-pack-format.sh
+      - name: Run verification
+        run: ./tools/verify-pack-format.sh

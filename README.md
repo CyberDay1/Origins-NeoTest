@@ -40,3 +40,28 @@ Primary maintainer: @org/maintainers
 ## CI artifacts
 Pull requests run a build matrix for selected variants and attach jars as artifacts.
 If an audit datapack is available the workflow uploads parity JSON reports.
+
+## Pack format verification
+
+The repository includes a sweep to verify `pack.mcmeta` `pack_format` across Stonecutter variants.
+
+Expected values:
+
+| Variant | pack_format |
+|---|---|
+| 1.21.10-neoforge | 88 |
+| 1.21.9-neoforge | 88 |
+| 1.21.8-neoforge | 81 |
+| 1.21.7-neoforge | 81 |
+| 1.21.6-neoforge | 80 |
+| 1.21.5-neoforge | 71 |
+| 1.21.4-neoforge | 61 |
+| 1.21.3-neoforge | 57 |
+| 1.21.2-neoforge | 57 |
+| 1.21.1-neoforge | 48 |
+
+Run locally:
+```bash
+chmod +x tools/verify-pack-format.sh
+./tools/verify-pack-format.sh
+```
