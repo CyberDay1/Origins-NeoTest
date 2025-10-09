@@ -1,43 +1,11 @@
-# Contributing Guidelines
+# Contributing
 
-Thank you for your interest in contributing to Origins NeoTest! This project relies on a clean build free of compiler or Gradle warnings. Please follow the guidelines below when preparing changes.
+Use conventional commits where possible. Open pull requests against the default branch.
 
-## Before You Open a Pull Request
+## Code review
+At least one maintainer review is required. Mention @org/maintainers for escalations.
 
-1. Ensure your development environment uses JDK 21.
-2. Run the full build locally with the strict warning configuration:
-   ```bash
-   ./gradlew clean build --warning-mode all
-   ```
-   This command surfaces all Gradle deprecation warnings and enforces the compiler lint settings configured in `build.gradle`.
-3. Validate mixin compatibility and ensure no placeholder textures are present before pushing:
-   ```bash
-   ./gradlew validateMixinCompatLevel
-   python3 scripts/assert-no-placeholders.py
-   ```
-   These commands ensure that mixin definitions declare `JAVA_21` compatibility and that no temporary placeholder PNGs slip into commits.
-4. Resolve any warnings or validation failures locally. Pull requests that surface compiler warnings, mixin compatibility issues, or placeholder assets will be rejected by continuous integration.
-
-## Refreshing the Fabric datapack snapshot
-
-Auditing parity changes requires the latest Fabric Origins datapack. Drop the newest zip into `external/fabric-origins-zips/` and run the audit configuration:
-
-```powershell
-# Drop latest zip into external/fabric-origins-zips/
-.\gradlew.bat runAudit
-/reload
-/origins debug parity
-/origins debug todo
-```
-
-Only the most recent zip in the folder is extracted. Gradle unpacks the datapack into `run/datapacks/origins-fabric/` automatically before the client launches.
-
-When the session ends, the build copies any `parity_report.json` and `parity_todo.json` files from `run/debug/` into `reports/parity/`. Review the archived reports and include them in your pull request so parity progress stays version-controlled.
-
-## Submitting Your Pull Request
-
-- Provide clear descriptions of the changes made and the testing performed.
-- Keep your branch up to date with the main branch to minimize merge conflicts.
-- CI will automatically run `./gradlew clean build --warning-mode all --console=plain --stacktrace`, `./gradlew validateMixinCompatLevel`, and `python3 scripts/assert-no-placeholders.py`, uploading a Gradle problems report artifact for review. Builds that produce warnings, violate mixin compatibility, or commit placeholder assets will fail.
-
-We appreciate your contributions and attention to build quality!
+## Development
+- Java 21, Gradle
+- Use Stonecutter to select a variant before building
+- No binaries or large artifacts in git
