@@ -34,5 +34,5 @@ Each Stonecutter variant can set a specific `NEOFORGE_VERSION`. By default, all 
 GitHub Actions builds three representative variants on pushes and PRs:
 1.21.1-neoforge, 1.21.5-neoforge, 1.21.10-neoforge.
 
-## Contributors
-Primary maintainer: @connor-murphy
+## Maintainers
+Primary maintainer: @org/maintainers

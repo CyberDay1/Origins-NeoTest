@@ -1,5 +1,5 @@
 # Require review for critical files
-* @connor-murphy
+* @org/maintainers  # TODO: replace with real team
 
 # CI workflows
-.github/workflows/* @connor-murphy
+.github/workflows/* @org/maintainers
