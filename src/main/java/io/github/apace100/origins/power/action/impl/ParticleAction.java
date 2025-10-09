@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -24,7 +25,7 @@ import java.util.function.Function;
  * Datapack action that spawns particles in the world.
  */
 public final class ParticleAction implements Action<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "particle");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("particle");
     private static final Codec<ParticleAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.PARTICLE_TYPE.byNameCodec()
             .comapFlatMap(ParticleAction::validateParticleType, Function.identity())

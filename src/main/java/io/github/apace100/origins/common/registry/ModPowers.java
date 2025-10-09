@@ -1,4 +1,5 @@
 package io.github.apace100.origins.common.registry;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,7 +15,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.List;
 
 public final class ModPowers {
-    public static final ResourceLocation REGISTRY_NAME = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "powers");
+    public static final ResourceLocation REGISTRY_NAME = ResourceLocationCompat.mod("powers");
     public static final DeferredRegister<Codec<?>> POWERS =
         DeferredRegister.create(REGISTRY_NAME, Origins.MOD_ID);
 

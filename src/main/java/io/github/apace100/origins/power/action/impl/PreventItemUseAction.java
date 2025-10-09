@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -22,7 +23,7 @@ import java.util.Optional;
  * Datapack action that cancels item usage for a configured hand and item.
  */
 public final class PreventItemUseAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_item_use");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_item_use");
     private static final Codec<PreventItemUseAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.STRING.comapFlatMap(PreventItemUseAction::decodeHand, PreventItemUseAction::encodeHand).fieldOf("slot").forGetter(action -> action.hand),
         ResourceLocation.CODEC.fieldOf("item").forGetter(PreventItemUseAction::itemId)

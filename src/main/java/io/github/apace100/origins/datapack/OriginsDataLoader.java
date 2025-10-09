@@ -1,4 +1,5 @@
 package io.github.apace100.origins.datapack;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -144,10 +145,10 @@ public final class OriginsDataLoader extends SimpleJsonResourceReloadListener {
     private static final JsonGatherer ACTION_GATHERER = new JsonGatherer(ACTIONS_DIRECTORY);
     private static final JsonGatherer CONDITION_GATHERER = new JsonGatherer(CONDITIONS_DIRECTORY);
     private static final Map<ResourceLocation, ResourceLocation> POWER_ALIASES = Map.of(
-        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytra"),
-        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytra_flight"),
-        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytrian_flight"),
-        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "elytra_flight")
+        ResourceLocationCompat.mod("elytra"),
+        ResourceLocationCompat.mod("elytra_flight"),
+        ResourceLocationCompat.mod("elytrian_flight"),
+        ResourceLocationCompat.mod("elytra_flight")
     );
 
     private static volatile ReloadStats LAST_STATS = ReloadStats.empty();

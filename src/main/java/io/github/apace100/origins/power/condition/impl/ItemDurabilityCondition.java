@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -13,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
  * Datapack condition that checks whether an item stack's durability ratio falls within a range.
  */
 public final class ItemDurabilityCondition implements Condition<ItemStack> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item_durability");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("item_durability");
     private static final Codec<ItemDurabilityCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.DOUBLE.optionalFieldOf("min", 0.0D).forGetter(ItemDurabilityCondition::minRatio),
         Codec.DOUBLE.optionalFieldOf("max", 1.0D).forGetter(ItemDurabilityCondition::maxRatio)

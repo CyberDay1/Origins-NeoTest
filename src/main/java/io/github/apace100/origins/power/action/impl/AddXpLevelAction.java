@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Datapack action that adds experience levels to a player.
  */
 public final class AddXpLevelAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "add_xp_level");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("add_xp_level");
     private static final Codec<AddXpLevelAction> CODEC = RecordCodecBuilder.<AddXpLevelAction>create(instance -> instance.group(
         Codec.INT.fieldOf("levels").forGetter(AddXpLevelAction::levels)
     ).apply(instance, levels -> new AddXpLevelAction(levels))).flatXmap(AddXpLevelAction::validate, AddXpLevelAction::validate);

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -23,7 +24,7 @@ import java.util.Optional;
  * Datapack condition that checks for a specific enchantment level range on an item stack.
  */
 public final class ItemEnchantmentCondition implements Condition<ItemStack> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item_enchantment");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("item_enchantment");
     private static final RegistryAccess.Frozen BUILTIN_ACCESS = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     private static final Registry<Enchantment> ENCHANTMENT_REGISTRY = BUILTIN_ACCESS.registryOrThrow(Registries.ENCHANTMENT);
     private static final Codec<ItemEnchantmentCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(

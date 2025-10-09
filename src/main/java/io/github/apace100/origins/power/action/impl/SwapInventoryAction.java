@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Datapack action that swaps the contents of two inventory slots.
  */
 public final class SwapInventoryAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "swap_inventory");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("swap_inventory");
     private static final Codec<SwapInventoryAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         InventorySlotUtil.CODEC.fieldOf("slot_a").forGetter(SwapInventoryAction::slotA),
         InventorySlotUtil.CODEC.fieldOf("slot_b").forGetter(SwapInventoryAction::slotB)

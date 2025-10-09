@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import io.github.apace100.origins.Origins;
@@ -55,10 +56,10 @@ final class ConditionFactoryUtil {
         String normalizedSuffix = normalizeSuffix(suffix);
         String parentPath = parentId.getPath();
         if (parentPath.isEmpty()) {
-            return ResourceLocation.fromNamespaceAndPath(parentId.getNamespace(), normalizedSuffix);
+            return ResourceLocationCompat.of(parentId.getNamespace(), normalizedSuffix);
         }
         String delimiter = parentPath.endsWith("/") ? "" : "/";
-        return ResourceLocation.fromNamespaceAndPath(parentId.getNamespace(), parentPath + delimiter + normalizedSuffix);
+        return ResourceLocationCompat.of(parentId.getNamespace(), parentPath + delimiter + normalizedSuffix);
     }
 
     private static String normalizeSuffix(String suffix) {

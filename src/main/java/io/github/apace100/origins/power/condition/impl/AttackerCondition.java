@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * Datapack condition that delegates to a nested entity condition for the attacker.
  */
 public final class AttackerCondition implements Condition<DamageSource> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "attacker");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("attacker");
     private static final Codec<JsonObject> JSON_OBJECT_CODEC = Codec.PASSTHROUGH.flatXmap(dynamic -> {
         JsonElement element = dynamic.convert(JsonOps.INSTANCE).getValue();
         if (!element.isJsonObject()) {
@@ -83,7 +84,7 @@ public final class AttackerCondition implements Condition<DamageSource> {
     }
 
     private static AttackerCondition fromCodec(JsonObject nested) {
-        ResourceLocation tempId = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "attacker/codec");
+        ResourceLocation tempId = ResourceLocationCompat.mod("attacker/codec");
         Optional<Condition<?>> resolved = ConditionFactoryUtil.resolveNestedCondition(tempId, nested, "entity_condition", "entity_condition");
         if (resolved.isEmpty()) {
             return new AttackerCondition(context -> false, nested.deepCopy());

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -16,7 +17,7 @@ import net.minecraft.world.level.Level;
  * Scaffold implementation for dimension datapack conditions.
  */
 public final class DimensionCondition implements Condition<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "dimension");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("dimension");
     private static final Codec<DimensionCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimensionCondition::dimensionKey)
     ).apply(instance, DimensionCondition::new));

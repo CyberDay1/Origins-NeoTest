@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,7 +15,7 @@ import java.util.Optional;
  * Datapack condition that validates whether any passenger on an entity satisfies a nested condition.
  */
 public final class PassengerCondition implements Condition<Entity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "passenger");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("passenger");
 
     private final Condition<Entity> passengerCondition;
 

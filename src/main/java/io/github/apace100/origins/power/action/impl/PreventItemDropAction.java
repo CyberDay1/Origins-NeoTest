@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * during the current drop interaction.
  */
 public final class PreventItemDropAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_item_drop");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_item_drop");
     private static final ThreadLocal<DropContext> CONTEXT = new ThreadLocal<>();
     private static final Codec<PreventItemDropAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(PreventItemDropAction::item)

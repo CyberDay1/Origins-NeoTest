@@ -1,4 +1,5 @@
 package io.github.apace100.origins.common.registry;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.mojang.serialization.Codec;
 import io.github.apace100.origins.Origins;
@@ -9,7 +10,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModConditions {
-    public static final ResourceLocation REGISTRY_NAME = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "conditions");
+    public static final ResourceLocation REGISTRY_NAME = ResourceLocationCompat.mod("conditions");
     public static final DeferredRegister<Codec<?>> CONDITIONS =
         DeferredRegister.create(REGISTRY_NAME, Origins.MOD_ID);
 

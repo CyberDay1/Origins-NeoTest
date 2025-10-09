@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Datapack action that consumes a configured quantity of an item from the player's inventory.
  */
 public final class ConsumeItemAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "consume_item");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("consume_item");
     private static final Codec<ConsumeItemAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ConsumeItemAction::item),
         Codec.INT.optionalFieldOf("count", 1).forGetter(ConsumeItemAction::count)

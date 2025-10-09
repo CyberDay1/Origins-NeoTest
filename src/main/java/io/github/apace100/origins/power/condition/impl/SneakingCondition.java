@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import io.github.apace100.origins.power.condition.Condition;
@@ -11,7 +12,7 @@ import static io.github.apace100.origins.Origins.MOD_ID;
  * Datapack condition that checks whether a player is sneaking.
  */
 public final class SneakingCondition implements Condition<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(MOD_ID, "sneaking");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("sneaking");
 
     private SneakingCondition() {
     }

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,7 +18,7 @@ import java.util.List;
  * Scaffold implementation for time of day datapack conditions.
  */
 public final class TimeOfDayCondition implements Condition<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "time_of_day");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("time_of_day");
     private static final Codec<List<Integer>> RANGE_CODEC = Codec.INT.listOf().flatXmap(TimeOfDayCondition::validateRange, TimeOfDayCondition::validateRange);
     private static final Codec<TimeOfDayCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         RANGE_CODEC.fieldOf("range").forGetter(TimeOfDayCondition::range)

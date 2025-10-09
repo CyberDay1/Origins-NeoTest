@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * Datapack condition that matches a spawn attempt for a specific entity type.
  */
 public final class PreventEntitySpawnCondition implements Condition<EntityType<?>> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_entity_spawn");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_entity_spawn");
     private static final Codec<PreventEntitySpawnCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("entity").forGetter(PreventEntitySpawnCondition::entityType)
     ).apply(instance, PreventEntitySpawnCondition::new));

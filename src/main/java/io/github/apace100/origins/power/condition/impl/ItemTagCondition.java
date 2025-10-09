@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -16,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
  * Datapack condition that checks whether an item stack belongs to a specific item tag.
  */
 public final class ItemTagCondition implements Condition<ItemStack> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "item_tag");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("item_tag");
     private static final Codec<ItemTagCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("tag").forGetter(condition -> condition.tag().location())
     ).apply(instance, id -> new ItemTagCondition(TagKey.create(Registries.ITEM, id))));

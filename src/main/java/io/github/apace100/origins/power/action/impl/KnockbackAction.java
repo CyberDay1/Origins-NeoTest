@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -17,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
  * Datapack action that applies a knockback impulse to an entity.
  */
 public final class KnockbackAction implements Action<Entity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "knockback");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("knockback");
     private static final Codec<Vec3> DIRECTION_CODEC = Vec3.CODEC.flatXmap(KnockbackAction::validateDirection, KnockbackAction::validateDirection);
     private static final Codec<KnockbackAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.FLOAT.fieldOf("strength").forGetter(KnockbackAction::strength),

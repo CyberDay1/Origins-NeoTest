@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -25,7 +26,7 @@ import java.util.Optional;
  * Datapack action that cancels block interactions against a configured block.
  */
 public final class PreventBlockUseAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_block_use");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_block_use");
     private static final ThreadLocal<BlockInteraction> CONTEXT = new ThreadLocal<>();
     private static final Codec<PreventBlockUseAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(PreventBlockUseAction::block)

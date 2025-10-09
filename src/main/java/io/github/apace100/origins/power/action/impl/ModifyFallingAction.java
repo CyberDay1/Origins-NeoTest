@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -19,7 +20,7 @@ import java.util.function.BiConsumer;
 public final class ModifyFallingAction implements Action<Player> {
     private static final double MIN_MULTIPLIER = 0.0D;
 
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "modify_falling");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("modify_falling");
     private static final ThreadLocal<FallContext> CONTEXT = new ThreadLocal<>();
     private static final Codec<ModifyFallingAction> CODEC = RecordCodecBuilder.<ModifyFallingAction>create(instance -> instance.group(
         Codec.DOUBLE.fieldOf("multiplier").forGetter(ModifyFallingAction::multiplier)

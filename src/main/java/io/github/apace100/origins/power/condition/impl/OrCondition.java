@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Datapack condition that succeeds when any nested condition passes.
  */
 public final class OrCondition implements Condition<Object> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "or");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("or");
 
     private final List<Condition<Object>> conditions;
 

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.common.network;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.neoforge.capability.OriginCapabilities;
@@ -15,7 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public record SyncOriginS2C(Optional<ResourceLocation> originId, Set<ResourceLocation> powers, boolean phantomized) implements CustomPacketPayload {
-    public static final Type<SyncOriginS2C> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "sync_origin"));
+    public static final Type<SyncOriginS2C> TYPE = new Type<>(ResourceLocationCompat.mod("sync_origin"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncOriginS2C> STREAM_CODEC = StreamCodec.composite(
         ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), SyncOriginS2C::originId,
         ByteBufCodecs.collection(java.util.HashSet::new, ResourceLocation.STREAM_CODEC), SyncOriginS2C::powers,

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Datapack action that replaces a block at the configured position.
  */
 public final class SetBlockAction implements Action<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "set_block");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("set_block");
     private static final Codec<SetBlockAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.BLOCK.byNameCodec().xmap(Block::defaultBlockState, BlockState::getBlock).fieldOf("block").forGetter(SetBlockAction::state),
         BlockPos.CODEC.fieldOf("pos").forGetter(SetBlockAction::pos)

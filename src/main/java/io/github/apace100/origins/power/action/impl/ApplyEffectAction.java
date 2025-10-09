@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * Datapack action that applies a configured status effect to a living entity.
  */
 public final class ApplyEffectAction implements Action<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "apply_effect");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("apply_effect");
     private static final Codec<ApplyEffectAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.MOB_EFFECT.holderByNameCodec().fieldOf("effect").forGetter(ApplyEffectAction::effect),
         Codec.INT.optionalFieldOf("duration", 20).forGetter(ApplyEffectAction::duration),

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -17,7 +18,7 @@ import net.minecraft.util.GsonHelper;
  * Datapack action that grants a configured advancement to the invoking player.
  */
 public final class GrantAdvancementAction implements Action<ServerPlayer> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "grant_advancement");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("grant_advancement");
     private static final Codec<GrantAdvancementAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("advancement").forGetter(GrantAdvancementAction::advancementId)
     ).apply(instance, GrantAdvancementAction::new));

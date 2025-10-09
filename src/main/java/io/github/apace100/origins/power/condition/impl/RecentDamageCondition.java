@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import java.util.WeakHashMap;
  * Datapack condition that checks if a living entity has taken damage recently.
  */
 public final class RecentDamageCondition implements Condition<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "recent_damage");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("recent_damage");
     private static final Map<LivingEntity, Long> LAST_DAMAGE_TICKS = Collections.synchronizedMap(new WeakHashMap<>());
     private static final Codec<RecentDamageCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.INT.fieldOf("seconds").forGetter(RecentDamageCondition::seconds)

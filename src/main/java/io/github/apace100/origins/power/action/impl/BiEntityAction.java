@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Scaffold implementation for bi-entity datapack actions.
  */
 public final class BiEntityAction implements Action<BiEntityAction.BiEntityContext> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "bi_entity");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("bi_entity");
     private static final Codec<BiEntityAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.STRING.optionalFieldOf("relationship").forGetter(BiEntityAction::relationship)
     ).apply(instance, relationship -> new BiEntityAction(relationship.map(Relationship::fromString))));

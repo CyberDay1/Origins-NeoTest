@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -11,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
  * Datapack action that cancels fall damage for the current fall event.
  */
 public final class NoFallDamageAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "no_fall_damage");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("no_fall_damage");
     private static final Codec<NoFallDamageAction> CODEC = Codec.unit(new NoFallDamageAction());
 
     private NoFallDamageAction() {

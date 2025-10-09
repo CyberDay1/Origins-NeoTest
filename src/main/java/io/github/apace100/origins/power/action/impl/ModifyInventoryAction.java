@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -20,7 +21,7 @@ import java.util.Optional;
  * Datapack action that replaces the contents of a specific player inventory slot.
  */
 public final class ModifyInventoryAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "modify_inventory");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("modify_inventory");
     private static final Codec<ModifyInventoryAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         InventorySlotUtil.CODEC.fieldOf("slot").forGetter(ModifyInventoryAction::slot),
         BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ModifyInventoryAction::item),

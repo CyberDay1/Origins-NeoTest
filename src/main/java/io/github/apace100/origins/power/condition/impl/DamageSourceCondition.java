@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -13,7 +14,7 @@ import net.minecraft.world.damagesource.DamageSource;
  * Datapack condition that matches an incoming damage source by identifier.
  */
 public final class DamageSourceCondition implements Condition<DamageSource> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "damage_source");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("damage_source");
     private static final Codec<DamageSourceCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.STRING.fieldOf("source").forGetter(DamageSourceCondition::expectedSource)
     ).apply(instance, DamageSourceCondition::new));

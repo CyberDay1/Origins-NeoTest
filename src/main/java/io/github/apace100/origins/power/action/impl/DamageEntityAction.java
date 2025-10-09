@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -20,7 +21,7 @@ import net.minecraft.world.entity.Entity;
  * Datapack action that applies damage to the context entity.
  */
 public final class DamageEntityAction implements Action<Entity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "damage_entity");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("damage_entity");
     private static final Codec<DamageEntityAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.FLOAT.fieldOf("amount").forGetter(DamageEntityAction::amount),
         ResourceLocation.CODEC.fieldOf("source").forGetter(DamageEntityAction::sourceId)

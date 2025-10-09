@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * Datapack action that grants raw experience points to a player.
  */
 public final class AddXpAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "add_xp");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("add_xp");
     private static final Codec<AddXpAction> CODEC = RecordCodecBuilder.<AddXpAction>create(instance -> instance.group(
         Codec.INT.fieldOf("amount").forGetter(AddXpAction::amount)
     ).apply(instance, amount -> new AddXpAction(amount))).flatXmap(AddXpAction::validate, AddXpAction::validate);

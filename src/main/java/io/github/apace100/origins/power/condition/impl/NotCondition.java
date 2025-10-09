@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,7 +14,7 @@ import java.util.Optional;
  * Datapack condition that negates a nested condition.
  */
 public final class NotCondition implements Condition<Object> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "not");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("not");
 
     private final Condition<Object> condition;
 

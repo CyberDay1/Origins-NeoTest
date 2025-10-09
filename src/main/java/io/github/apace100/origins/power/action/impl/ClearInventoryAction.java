@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
  * Datapack action that removes all items from a player's inventory matching a configured item tag.
  */
 public final class ClearInventoryAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "clear_inventory");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("clear_inventory");
     private static final Codec<ClearInventoryAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("tag").forGetter(action -> action.tag.location())
     ).apply(instance, id -> new ClearInventoryAction(TagKey.create(Registries.ITEM, id))));

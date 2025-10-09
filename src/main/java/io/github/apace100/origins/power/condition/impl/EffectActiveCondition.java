@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Datapack condition that checks whether a living entity has an active status effect.
  */
 public final class EffectActiveCondition implements Condition<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "effect_active");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("effect_active");
     private static final Codec<EffectActiveCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.MOB_EFFECT.holderByNameCodec().fieldOf("effect").forGetter(EffectActiveCondition::effect)
     ).apply(instance, EffectActiveCondition::new));

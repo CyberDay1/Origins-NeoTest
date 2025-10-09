@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -18,7 +19,7 @@ import java.util.Optional;
  * Datapack action that removes a specific recipe from the invoking player's recipe book.
  */
 public final class LockRecipeAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "lock_recipe");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("lock_recipe");
     private static final Codec<LockRecipeAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("recipe").forGetter(LockRecipeAction::recipe)
     ).apply(instance, LockRecipeAction::new));

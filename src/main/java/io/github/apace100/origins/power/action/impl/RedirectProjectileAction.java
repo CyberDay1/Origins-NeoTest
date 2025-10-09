@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -22,7 +23,7 @@ public final class RedirectProjectileAction implements Action<Entity> {
     private static final double MINIMUM_SPEED_SQUARED = 1.0E-7D;
 
     public static final ResourceLocation TYPE =
-        ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "redirect_projectile");
+        ResourceLocationCompat.mod("redirect_projectile");
     private static final Codec<RedirectProjectileAction> CODEC =
         RecordCodecBuilder.<RedirectProjectileAction>create(instance -> instance.group(
             Codec.DOUBLE.optionalFieldOf("yaw_offset", 0.0D).forGetter(RedirectProjectileAction::yawOffset),

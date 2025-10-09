@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -22,7 +23,7 @@ import java.util.Optional;
  * Datapack action that stops players from eating a configured item.
  */
 public final class PreventFoodAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_food");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_food");
     private static final Codec<PreventFoodAction> CODEC = RecordCodecBuilder.<PreventFoodAction>create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("item").forGetter(PreventFoodAction::itemId)
     ).apply(instance, itemId -> fromCodec(itemId))).flatXmap(PreventFoodAction::validateCodec, PreventFoodAction::validateCodec);

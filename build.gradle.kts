@@ -204,7 +204,9 @@ if (project == rootProject) {
         implementation("net.neoforged:neoforge:${project.property("neoForgeVersion")}:userdev")
         optionalDependencyFiles.values.forEach { files ->
             add("compileOnly", files)
-            add("runtimeOnly", files)
+            if (project.name != "1.21.1-neoforge") {
+                add("runtimeOnly", files)
+            }
         }
     }
 

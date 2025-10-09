@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,7 +23,7 @@ import java.util.Set;
  * Datapack condition that checks whether a world is part of a dimension whitelist.
  */
 public final class DimensionWhitelistCondition implements Condition<ServerLevel> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "dimension_whitelist");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("dimension_whitelist");
     private static final Codec<DimensionWhitelistCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimensions")
             .forGetter(condition -> List.copyOf(condition.dimensions))

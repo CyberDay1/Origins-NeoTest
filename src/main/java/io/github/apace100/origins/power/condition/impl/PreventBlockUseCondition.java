@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.condition.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Datapack condition that evaluates whether a block state matches a configured block type.
  */
 public final class PreventBlockUseCondition implements Condition<BlockState> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_block_use");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_block_use");
     private static final Codec<PreventBlockUseCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(PreventBlockUseCondition::block)
     ).apply(instance, PreventBlockUseCondition::new));

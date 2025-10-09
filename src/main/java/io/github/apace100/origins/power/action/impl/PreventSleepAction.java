@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * Datapack action that cancels the current sleep attempt for the invoking player.
  */
 public final class PreventSleepAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "prevent_sleep");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("prevent_sleep");
     private static final ThreadLocal<SleepContext> CONTEXT = new ThreadLocal<>();
     private static final Codec<PreventSleepAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.STRING.optionalFieldOf("message").forGetter(PreventSleepAction::message)

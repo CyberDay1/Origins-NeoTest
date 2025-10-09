@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
  * attack if the configured probability check succeeds.
  */
 public final class CriticalHitAction implements Action<LivingEntity> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "critical_hit");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("critical_hit");
     private static final Codec<CriticalHitAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.FLOAT.fieldOf("chance").forGetter(CriticalHitAction::chance),
         Codec.FLOAT.fieldOf("multiplier").forGetter(CriticalHitAction::multiplier)

@@ -1,4 +1,5 @@
 package io.github.apace100.origins.power.action.impl;
+import io.github.apace100.origins.util.ResourceLocationCompat;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -19,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
  * item tag for the current interaction.
  */
 public final class RestrictItemUseAction implements Action<Player> {
-    public static final ResourceLocation TYPE = ResourceLocation.fromNamespaceAndPath(Origins.MOD_ID, "restrict_item_use");
+    public static final ResourceLocation TYPE = ResourceLocationCompat.mod("restrict_item_use");
     private static final ThreadLocal<ItemUseContext> CONTEXT = new ThreadLocal<>();
     private static final Codec<RestrictItemUseAction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("tag").forGetter(action -> action.tag.location())

@@ -26,6 +26,9 @@ The repository is configured for Stonecutter variants 1.21.1 through 1.21.10.
 ## Notes
 - Java 21 toolchain recommended.
 - Vars available in templates: ${PACK_FORMAT}, ${LOADER_FILE}.
+- `1.21.1-neoforge` stays the standalone owner descriptor; optional runtime
+  companions remain compile-only for that baseline so later NeoForge bundles do
+  not leak into legacy builds.
 
 ## NeoForge version overrides
 Each Stonecutter variant can set a specific `NEOFORGE_VERSION`. The active default (`1.21.1-neoforge`) now resolves to `21.1.209`, while other variants declare their own NeoForge builds in `stonecutter.json`. To adjust a single variant, edit that entry's `"NEOFORGE_VERSION"` and rebuild after switching the variant.
@@ -65,3 +68,5 @@ Run locally:
 chmod +x tools/verify-pack-format.sh
 ./tools/verify-pack-format.sh
 ```
+
+This sweep also runs automatically for pull requests via the `Verify Pack Formats` workflow.
