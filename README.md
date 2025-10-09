@@ -70,3 +70,6 @@ chmod +x tools/verify-pack-format.sh
 ```
 
 This sweep also runs automatically for pull requests via the `Verify Pack Formats` workflow.
+
+## CI
+GitHub Actions builds every Stonecutter variant and uploads per-variant jars as artifacts.
